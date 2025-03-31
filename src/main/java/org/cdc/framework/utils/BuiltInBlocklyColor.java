@@ -1,7 +1,5 @@
 package org.cdc.framework.utils;
 
-import java.util.Locale;
-
 public enum BuiltInBlocklyColor {
     LOGIC,MATH,TEXTS;
 
@@ -11,6 +9,10 @@ public enum BuiltInBlocklyColor {
      * @return color
      */
     public String toString(int hue){
-        return "%{BKY_"+this.name().toUpperCase(Locale.ROOT)+"_"+Math.clamp(hue,0,360)+"}";
+        return ColorUtils.colorHue(name().toUpperCase(),hue);
+    }
+
+    public String toString(){
+        return ColorUtils.colorHue(name().toUpperCase());
     }
 }

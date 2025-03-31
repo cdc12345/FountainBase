@@ -1,6 +1,8 @@
 package org.cdc.framework.utils;
 
-public enum BuiltInTypes {
+import org.cdc.framework.interfaces.IVariableType;
+
+public enum BuiltInTypes implements IVariableType {
     Number("number","Number"),Direction("direction","Direction"),Entity("entity","Entity"),ItemStack("itemstack","MCItem"),Boolean("logic","Boolean"),String("string","String")
     ,BlockState("blockstate","MCItemBlock"),DamageSource("damagesource","DamageSource"),ActionResultType("actionresulttype","ActionResultType");
 
@@ -17,5 +19,15 @@ public enum BuiltInTypes {
 
     public String getLowerName() {
         return lowerName;
+    }
+
+    @Override
+    public java.lang.String getBlocklyVariableType() {
+        return getHigherName();
+    }
+
+    @Override
+    public java.lang.String getVariableType() {
+        return getLowerName();
     }
 }

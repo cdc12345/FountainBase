@@ -5,6 +5,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
 import org.cdc.framework.MCreatorPluginFactory;
+import org.cdc.framework.interfaces.IGeneratorInit;
 import org.cdc.framework.utils.ColorUtils;
 
 import java.awt.*;
@@ -15,7 +16,7 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
-public class VariableBuilder extends JsonBuilder implements IGeneratorInit{
+public class VariableBuilder extends JsonBuilder implements IGeneratorInit {
 
     public VariableBuilder(File rootPath) {
         super(rootPath, new File(rootPath,"variables"));

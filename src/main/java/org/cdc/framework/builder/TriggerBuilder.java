@@ -4,6 +4,8 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import org.cdc.framework.MCreatorPluginFactory;
+import org.cdc.framework.interfaces.IGeneratorInit;
+import org.cdc.framework.interfaces.IVariableType;
 import org.cdc.framework.utils.Side;
 
 import java.io.ByteArrayInputStream;
@@ -64,6 +66,11 @@ public class TriggerBuilder extends JsonBuilder implements IGeneratorInit {
         jsonObject.addProperty("name", name);
         jsonObject.addProperty("type", type);
         dependencies.add(jsonObject);
+        return this;
+    }
+
+    public TriggerBuilder appendDependency(String name, IVariableType type){
+        appendDependency(name,type.getVariableType());
         return this;
     }
 

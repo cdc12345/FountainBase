@@ -1,6 +1,7 @@
 package org.cdc.framework.builder;
 
 import org.cdc.framework.MCreatorPluginFactory;
+import org.cdc.framework.interfaces.IGeneratorInit;
 
 import java.io.ByteArrayInputStream;
 import java.io.File;
@@ -12,7 +13,7 @@ import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-public class DataListBuilder extends FileOutputBuilder<ArrayList<String>> implements IGeneratorInit{
+public class DataListBuilder extends FileOutputBuilder<ArrayList<String>> implements IGeneratorInit {
     private final ArrayList<String> result;
     public DataListBuilder(File rootPath) {
         super(rootPath, new File(rootPath,"datalists"));

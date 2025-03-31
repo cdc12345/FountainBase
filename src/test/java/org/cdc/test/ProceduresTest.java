@@ -38,7 +38,7 @@ public class ProceduresTest {
         mcr.createProcedure().setName("hey_set").setColor(Color.RED).setPreviousStatement(null)
                 .setNextStatement(null).setGroup("name").setToolBoxId(BuiltInToolBoxId.Procedure.CUSTOM_VARIABLES)
                 .setInputsInline(true).appendArgs0InputValue("hello", BuiltInTypes.Number.getLowerName())
-                .appendArgs0InputValue("hello1",null).appendRequiredApi("helloworld").initGenerator().buildAndOutput();
+                .appendArgs0InputValue("hello1",(String) null).appendRequiredApi("helloworld").initGenerator().buildAndOutput();
         mcr.initGenerator(Generators.FORGE1201);
     }
 

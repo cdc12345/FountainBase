@@ -1,6 +1,9 @@
 package org.cdc.framework;
 
 import org.cdc.framework.builder.*;
+import org.cdc.framework.interfaces.IGeneratorInit;
+import org.cdc.framework.interfaces.IProcedureCategory;
+import org.cdc.framework.interfaces.IVariableType;
 import org.cdc.framework.utils.MCreatorVersions;
 
 import java.io.ByteArrayInputStream;
@@ -62,6 +65,19 @@ public class MCreatorPluginFactory {
         });
     }
 
+    public ProcedureBuilder createProcedureCategory(){
+        return createProcedureCategory(null);
+    }
+
+    public ProcedureBuilder createProcedureCategory(IProcedureCategory category){
+        var pro = createProcedure();
+        pro.markType();
+        if (category != null){
+            pro.setName(category.getName());
+        }
+        return pro;
+    }
+
     public ProcedureBuilder createProcedure() {
         createFolder("procedures");
         try {
@@ -90,18 +106,27 @@ public class MCreatorPluginFactory {
         return new AITasksBuilder(rootPath);
     }
 
-    public VariableBuilder createVariable() {
+    public VariableBuilder createVariable(){
+        return createVariable(null);
+    }
+
+    public VariableBuilder createVariable(IVariableType type) {
         createFolder("variables");
+        VariableBuilder builder;
         try {
             var class1 = Class.forName("org.cdc.framework.builder."+version+".VariableBuilder");
-            return (VariableBuilder) class1.getConstructor(new Class[]{File.class}).newInstance(rootPath);
+            builder = (VariableBuilder) class1.getConstructor(new Class[]{File.class}).newInstance(rootPath);
         } catch (ClassNotFoundException ignored){
 
         } catch (InvocationTargetException | InstantiationException |
                  IllegalAccessException | NoSuchMethodException e) {
             throw new RuntimeException(e);
         }
-        return new VariableBuilder(rootPath);
+        builder = new VariableBuilder(rootPath);
+        if (type != null){
+            builder.setName(type.getVariableType()).setBlocklyVariableType(type.getBlocklyVariableType());
+        }
+        return builder;
     }
 
     public LanguageBuilder createDefaultLanguage() {

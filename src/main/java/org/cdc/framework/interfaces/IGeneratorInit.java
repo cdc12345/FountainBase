@@ -1,4 +1,4 @@
-package org.cdc.framework.builder;
+package org.cdc.framework.interfaces;
 
 import org.cdc.framework.MCreatorPluginFactory;
 

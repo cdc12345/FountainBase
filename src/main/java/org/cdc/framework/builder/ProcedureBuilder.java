@@ -6,6 +6,9 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
 import org.cdc.framework.MCreatorPluginFactory;
+import org.cdc.framework.interfaces.IGeneratorInit;
+import org.cdc.framework.interfaces.IProcedureCategory;
+import org.cdc.framework.interfaces.IVariableType;
 import org.cdc.framework.utils.ColorUtils;
 
 import java.awt.*;
@@ -114,6 +117,35 @@ public class ProcedureBuilder extends JsonBuilder implements IGeneratorInit {
         return this;
     }
 
+    public ProcedureBuilder setOutput(IVariableType variableType){
+        return setOutput(variableType.getBlocklyVariableType());
+    }
+
+    /**
+     * 会把第一个参数作为返回值
+     * "output": ["Boolean","String"]
+     *
+     * @param higherNames 输出类型,必须第一个字母大写
+     * @return this
+     */
+    public ProcedureBuilder setOutput(String... higherNames){
+        JsonArray jsonElements = new JsonArray();
+        for (String name:higherNames){
+            jsonElements.add(name);
+        }
+        result.getAsJsonObject().add("output",jsonElements);
+        return this;
+    }
+
+    public ProcedureBuilder setOutput(IVariableType... higherNames){
+        JsonArray jsonElements = new JsonArray();
+        for (IVariableType name:higherNames){
+            jsonElements.add(name.getBlocklyVariableType());
+        }
+        result.getAsJsonObject().add("output",jsonElements);
+        return this;
+    }
+
     public ProcedureBuilder setGroup(String group) {
         mcreator.addProperty("group", group);
         return this;
@@ -122,6 +154,10 @@ public class ProcedureBuilder extends JsonBuilder implements IGeneratorInit {
     public ProcedureBuilder setToolBoxId(String toolBoxId) {
         mcreator.addProperty("toolbox_id", toolBoxId);
         return this;
+    }
+
+    public ProcedureBuilder setToolBoxId(IProcedureCategory category){
+        return setToolBoxId(category.getName());
     }
 
     public ProcedureBuilder appendToolBoxInit(String init) {
@@ -138,6 +174,14 @@ public class ProcedureBuilder extends JsonBuilder implements IGeneratorInit {
 
     public ProcedureBuilder appendArgs0InputValue(String name, String lowerName) {
         return appendArgs0InputValue(name, lowerName, true);
+    }
+
+    public ProcedureBuilder appendArgs0InputValue(String name, IVariableType type) {
+        return appendArgs0InputValue(name, type.getVariableType(), true);
+    }
+
+    public ProcedureBuilder appendArgs0InputValue(String name, IVariableType type, boolean addToInputs) {
+        return appendArgs0InputValue(name,type.getVariableType(),addToInputs);
     }
 
     /**
@@ -404,6 +448,10 @@ public class ProcedureBuilder extends JsonBuilder implements IGeneratorInit {
             jsonObject.addProperty("type", lowerName.toLowerCase());
             provides.add(jsonObject);
             return this;
+        }
+
+        public StatementBuilder appendProvide(String name, IVariableType type){
+            return appendProvide(name,type.getVariableType());
         }
 
         @Override
