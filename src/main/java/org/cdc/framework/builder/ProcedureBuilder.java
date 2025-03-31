@@ -14,6 +14,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 public class ProcedureBuilder extends JsonBuilder implements IGeneratorInit {
@@ -27,6 +28,7 @@ public class ProcedureBuilder extends JsonBuilder implements IGeneratorInit {
     private final JsonArray statements;
     private final JsonArray args0;
     private final JsonArray dependencies;
+    private final JsonArray requiredApis;
     private final JsonArray extensions;
 
     public ProcedureBuilder(File rootPath) {
@@ -46,6 +48,7 @@ public class ProcedureBuilder extends JsonBuilder implements IGeneratorInit {
         this.statements = new JsonArray();
         this.dependencies = new JsonArray();
         this.extensions = new JsonArray();
+        this.requiredApis = new JsonArray();
 
         this.args0 = new JsonArray();
     }
@@ -288,11 +291,26 @@ public class ProcedureBuilder extends JsonBuilder implements IGeneratorInit {
         return appendDependency(jsonObject);
     }
 
+    public ProcedureBuilder appendRequiredApi(String name){
+        requiredApis.add(name);
+        return this;
+    }
+
     public ProcedureBuilder setLanguage(LanguageBuilder languageBuilder, String value) {
         if (isType)
             languageBuilder.appendProcedureCategory(fileName, value);
-        else
+        else {
+            Pattern var = Pattern.compile("%\\d");
+            var ma = var.matcher(value);
+            int count = 0;
+            while (ma.find()){
+                count++;
+            }
+            if (count != args0.size()){
+                throw new RuntimeException("\" "+value + " \"is not a regular content because its parameter count: "+count);
+            }
             languageBuilder.appendProcedure(fileName, value);
+        }
         return this;
     }
 
@@ -311,14 +329,14 @@ public class ProcedureBuilder extends JsonBuilder implements IGeneratorInit {
             procedures.mkdirs();
         }
         try {
-            StringBuilder builder = new StringBuilder();
-            builder.append(inputs.asList().stream().map(a->"${input$"+a.getAsString() +"}").collect(Collectors.joining(",","<#-","->")));
-            builder.append(System.lineSeparator());
-            builder.append(statements.asList().stream().map(a->"${statement$"+a.getAsString() +"}").collect(Collectors.joining(",","<#-","->")));
-            builder.append(System.lineSeparator());
-            builder.append(fields.asList().stream().map(a->"${field$"+a.getAsString() +"}").collect(Collectors.joining(",","<#-","->")));
-            Files.copy(new ByteArrayInputStream(builder.toString().getBytes(StandardCharsets.UTF_8)), new File(procedures, fileName + ".ftl").toPath());
-        } catch (IOException ignored) {
+            String builder = inputs.asList().stream().map(a -> "${input$" + a.getAsString() + "}").collect(Collectors.joining(",", "<#-", "->")) +
+                    System.lineSeparator() +
+                    statements.asList().stream().map(a -> "${statement$" + a.getAsString() + "}").collect(Collectors.joining(",", "<#-", "->")) +
+                    System.lineSeparator() +
+                    fields.asList().stream().map(a -> "${field$" + a.getAsString() + "}").collect(Collectors.joining(",", "<#-", "->"));
+            Files.copy(new ByteArrayInputStream(builder.getBytes(StandardCharsets.UTF_8)), new File(procedures, fileName + ".ftl").toPath());
+        } catch (IOException e) {
+            System.out.println(e.getMessage());
         }
 
     }
@@ -352,6 +370,9 @@ public class ProcedureBuilder extends JsonBuilder implements IGeneratorInit {
         }
         if (!dependencies.isEmpty()) {
             mcreator.add("dependencies", dependencies);
+        }
+        if (!requiredApis.isEmpty()){
+            mcreator.add("required_apis",requiredApis);
         }
         return result;
     }

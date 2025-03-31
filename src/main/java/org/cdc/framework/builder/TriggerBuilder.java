@@ -17,13 +17,16 @@ import java.util.stream.Collectors;
 public class TriggerBuilder extends JsonBuilder implements IGeneratorInit {
 
     private final JsonArray dependencies;
+    private final JsonArray requiredApis;
 
     public TriggerBuilder(File rootPath) {
         super(rootPath, new File(rootPath, "triggers"));
 
         this.result = new JsonObject();
         this.dependencies = new JsonArray();
+        this.requiredApis = new JsonArray();
         this.result.getAsJsonObject().add("dependencies_provided", dependencies);
+        this.result.getAsJsonObject().add("required_api",requiredApis);
     }
 
     public TriggerBuilder setName(String name) {
@@ -64,6 +67,11 @@ public class TriggerBuilder extends JsonBuilder implements IGeneratorInit {
         return this;
     }
 
+    public TriggerBuilder appendRequiredApi(String name){
+        requiredApis.add(name);
+        return this;
+    }
+
     public TriggerBuilder setLanguage(LanguageBuilder languageBuilder, String content) {
         languageBuilder.appendTrigger(fileName, content);
         return this;
@@ -81,12 +89,13 @@ public class TriggerBuilder extends JsonBuilder implements IGeneratorInit {
 
     @Override
     public void initGenerator0(String generatorName) {
-        var generator1 = Paths.get(rootPath.getPath(),generatorName,"mappings",fileName + ".ftl");
+        var generator1 = Paths.get(rootPath.getPath(),generatorName,"triggers",fileName + ".ftl");
         StringBuilder builder = new StringBuilder();
         builder.append(dependencies.asList().stream().filter(JsonElement::isJsonObject).map(a -> "${input$" + a.getAsJsonObject().get("name").getAsString() + "}").collect(Collectors.joining(",", "<#-", "->")));
         try {
             Files.copy(new ByteArrayInputStream(builder.toString().getBytes(StandardCharsets.UTF_8)), generator1);
-        } catch (IOException ignored) {
+        } catch (IOException e) {
+            System.out.println(e.getLocalizedMessage());
         }
     }
 

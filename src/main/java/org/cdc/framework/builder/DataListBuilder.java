@@ -31,7 +31,7 @@ public class DataListBuilder extends FileOutputBuilder<ArrayList<String>> implem
     }
 
     @Override
-    ArrayList<String> build() {
+    public ArrayList<String> build() {
         return result;
     }
 

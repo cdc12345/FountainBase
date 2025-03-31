@@ -1,5 +1,7 @@
 package org.cdc.framework.builder;
 
+import com.google.errorprone.annotations.DoNotCall;
+import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
@@ -55,8 +57,19 @@ public class VariableBuilder extends JsonBuilder implements IGeneratorInit{
         return this;
     }
 
+    /**
+     * this is not implement in 2025.1
+     *
+     * @param name name
+     * @return this
+     */
+    @DoNotCall("this version not supported")
+    public VariableBuilder appendRequiredApi(String name){
+        return this;
+    }
+
     @Override
-    JsonElement build() {
+    public JsonElement build() {
         return result;
     }
 

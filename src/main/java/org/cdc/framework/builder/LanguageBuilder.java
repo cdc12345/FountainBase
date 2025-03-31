@@ -19,12 +19,31 @@ public class LanguageBuilder extends FileOutputBuilder<Properties> {
         this.fileName = fileName;
         this.fileExtension = "properties";
 
+
+        loadDefault();
         load();
     }
+
+    @CanIgnoreReturnValue
+    public LanguageBuilder loadDefault(){
+        if (!"texts".equals(fileName))
+            return this;
+        try {
+            var file = new File(targetPath,"texts."+fileExtension);
+            if (file.exists())
+                this.result.load(new FileReader(file));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        return this;
+    }
+
     @CanIgnoreReturnValue
     public LanguageBuilder load(){
         try {
-            this.result.load(new FileReader(new File(targetPath,fileName+"."+fileExtension)));
+            var file = new File(targetPath,fileName+"."+fileExtension);
+            if (file.exists())
+                this.result.load(new FileReader(file));
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -36,10 +55,23 @@ public class LanguageBuilder extends FileOutputBuilder<Properties> {
         return this;
     }
 
+    /**
+     * blockly.block.atomic_itemstack_set=Set itemstack atomic %1 to %2
+     * @param key key
+     * @param value value
+     * @return this
+     */
     public LanguageBuilder appendLocalization(String key,String value){
         this.result.setProperty(key,value);
         return this;
     }
+
+    /**
+     * blockly.block.atomic_itemstack_set=Set itemstack atomic %1 to %2
+     * @param proName procedure's name
+     * @param value value
+     * @return this
+     */
     @CanIgnoreReturnValue
     public LanguageBuilder appendProcedure(String proName,String value){
         return appendLocalization("blockly.block."+proName,value);
