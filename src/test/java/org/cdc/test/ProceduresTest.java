@@ -1,9 +1,9 @@
 package org.cdc.test;
 
 import org.cdc.framework.MCreatorPluginFactory;
+import org.cdc.framework.utils.BuiltInToolBoxId;
 import org.cdc.framework.utils.BuiltInTypes;
 import org.cdc.framework.utils.Generators;
-import org.cdc.framework.utils.BuiltInToolBoxId;
 import org.cdc.framework.utils.Side;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -70,9 +70,7 @@ public class ProceduresTest {
         mcr.createDefaultLanguage().appendLocalization("test","test").buildAndOutput();
         mcr.createLanguage(Locale.getDefault()).appendLocalization("test1","test1").buildAndOutput();
 
-        Assertions.assertThrows(RuntimeException.class,()->{
-            mcr.createProcedure().setName("test_lang").appendArgs0InputValue("hello","hey").setLanguage(mcr.createDefaultLanguage(),"hey");
-        });
+        Assertions.assertThrows(RuntimeException.class,()-> mcr.createProcedure().setName("test_lang").appendArgs0InputValue("hello","hey").setLanguage(mcr.createDefaultLanguage(),"hey"));
     }
 
     @Test
