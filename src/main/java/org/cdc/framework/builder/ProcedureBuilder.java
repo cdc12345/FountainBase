@@ -1,13 +1,22 @@
 package org.cdc.framework.builder;
 
 import com.google.errorprone.annotations.CanIgnoreReturnValue;
-import com.google.gson.*;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonPrimitive;
+import org.cdc.framework.MCreatorPluginFactory;
 import org.cdc.framework.utils.ColorUtils;
 
 import java.awt.*;
+import java.io.ByteArrayInputStream;
 import java.io.File;
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.util.stream.Collectors;
 
-public class ProcedureBuilder extends JsonBuilder {
+public class ProcedureBuilder extends JsonBuilder implements IGeneratorInit {
     private boolean isType;
 
     private String colorKey;
@@ -20,11 +29,11 @@ public class ProcedureBuilder extends JsonBuilder {
     private final JsonArray dependencies;
     private final JsonArray extensions;
 
-    public ProcedureBuilder(File rootPath){
-        this(rootPath,"procedures");
+    public ProcedureBuilder(File rootPath) {
+        this(rootPath, "procedures");
     }
 
-    public ProcedureBuilder(File rootPath,String child) {
+    public ProcedureBuilder(File rootPath, String child) {
         super(rootPath, new File(rootPath, child));
 
         this.colorKey = "colour";
@@ -136,7 +145,7 @@ public class ProcedureBuilder extends JsonBuilder {
      * }
      *
      * @param name        名字
-     * @param higherName       这个是检查类型,必须是Object这样的
+     * @param higherName  这个是检查类型,必须是Object这样的
      * @param addToInputs 是否自动添加到inputs
      * @return this
      */
@@ -208,14 +217,15 @@ public class ProcedureBuilder extends JsonBuilder {
     }
 
     /**
-     *     {
-     *       "type": "field_ai_condition_selector",
-     *       "name": "condition"
-     *     }
+     * {
+     * "type": "field_ai_condition_selector",
+     * "name": "condition"
+     * }
+     *
      * @param name 名字
      * @return this
      */
-    public ProcedureBuilder appendArgs0FieldAIConditionSelector(String name){
+    public ProcedureBuilder appendArgs0FieldAIConditionSelector(String name) {
         JsonObject jsonObject = new JsonObject();
         jsonObject.addProperty("type", "field_ai_condition_selector");
         jsonObject.addProperty("name", name);
@@ -224,7 +234,6 @@ public class ProcedureBuilder extends JsonBuilder {
     }
 
     /**
-     *
      * @param jsonObject element
      * @return this
      * @apiNote append
@@ -268,7 +277,7 @@ public class ProcedureBuilder extends JsonBuilder {
      * }
      * ]
      *
-     * @param name 名称
+     * @param name      名称
      * @param lowerName 类型,比如全部小写
      * @return this
      */
@@ -281,23 +290,57 @@ public class ProcedureBuilder extends JsonBuilder {
 
     public ProcedureBuilder setLanguage(LanguageBuilder languageBuilder, String value) {
         if (isType)
-            languageBuilder.appendProcedureCategory(fileName,value);
+            languageBuilder.appendProcedureCategory(fileName, value);
         else
             languageBuilder.appendProcedure(fileName, value);
         return this;
     }
 
+    public ProcedureBuilder initGenerator(){
+        MCreatorPluginFactory.generatorInits.add(this);
+        return this;
+    }
+
+    public void initGenerator0(String generatorName) {
+        if (isType) {
+            return;
+        }
+        File generator = new File(rootPath, generatorName);
+        File procedures = new File(generator, targetPath.getName());
+        if (!procedures.exists()) {
+            procedures.mkdirs();
+        }
+        try {
+            StringBuilder builder = new StringBuilder();
+            builder.append(inputs.asList().stream().map(a->"${input$"+a.getAsString() +"}").collect(Collectors.joining(",","<#-","->")));
+            builder.append(System.lineSeparator());
+            builder.append(statements.asList().stream().map(a->"${statement$"+a.getAsString() +"}").collect(Collectors.joining(",","<#-","->")));
+            builder.append(System.lineSeparator());
+            builder.append(fields.asList().stream().map(a->"${field$"+a.getAsString() +"}").collect(Collectors.joining(",","<#-","->")));
+            Files.copy(new ByteArrayInputStream(builder.toString().getBytes(StandardCharsets.UTF_8)), new File(procedures, fileName + ".ftl").toPath());
+        } catch (IOException ignored) {
+        }
+
+    }
+
+    @Override
+    public boolean isSupported(MCreatorPluginFactory mCreatorPluginFactory) {
+        return rootPath.equals(mCreatorPluginFactory.rootPath());
+    }
+
     @Override
     JsonElement build() {
-        if (!args0.isEmpty()) {
-            this.result.getAsJsonObject().add("args0", args0);
-        }
+        //root
         if (!extensions.isEmpty()) {
             this.result.getAsJsonObject().add("extensions", extensions);
+        }
+        if (!args0.isEmpty()) {
+            this.result.getAsJsonObject().add("args0", args0);
         }
         if (!mcreator.isEmpty()) {
             this.result.getAsJsonObject().add("mcreator", mcreator);
         }
+        //mcreator
         if (!inputs.isEmpty()) {
             this.mcreator.add("inputs", inputs);
         }
@@ -330,7 +373,7 @@ public class ProcedureBuilder extends JsonBuilder {
         }
 
         /**
-         * @param name 名称
+         * @param name      名称
          * @param lowerName 类型,必须全部小写
          * @return this
          */

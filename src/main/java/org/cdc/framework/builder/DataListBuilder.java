@@ -1,14 +1,18 @@
 package org.cdc.framework.builder;
 
+import org.cdc.framework.MCreatorPluginFactory;
+
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
+import java.util.HashMap;
 
-public class DataListBuilder extends FileOutputBuilder<ArrayList<String>>{
+public class DataListBuilder extends FileOutputBuilder<ArrayList<String>> implements IGeneratorInit{
     private final ArrayList<String> result;
     public DataListBuilder(File rootPath) {
         super(rootPath, new File(rootPath,"datalists"));
@@ -43,5 +47,29 @@ public class DataListBuilder extends FileOutputBuilder<ArrayList<String>>{
             throw new RuntimeException(e);
         }
         return build;
+    }
+
+    public DataListBuilder initGenerator(){
+        MCreatorPluginFactory.generatorInits.add(this);
+        return this;
+    }
+
+    @Override
+    public void initGenerator0(String generatorName) {
+        HashMap<String,String> hashMap = new HashMap<>();
+        for (String name:result){
+            hashMap.put(name,name);
+        }
+        var generator1 = Paths.get(rootPath.getPath(),generatorName,"mappings",getFileFullName());
+        try {
+            Files.copy(new ByteArrayInputStream(hashMap.toString().replace("{","").
+                    replace("}","").replace("=",": ").
+                    replace(", ",System.lineSeparator()).getBytes(StandardCharsets.UTF_8)),generator1);
+        } catch (IOException ignored) {}
+    }
+
+    @Override
+    public boolean isSupported(MCreatorPluginFactory mCreatorPluginFactory) {
+        return mCreatorPluginFactory.rootPath().equals(rootPath);
     }
 }

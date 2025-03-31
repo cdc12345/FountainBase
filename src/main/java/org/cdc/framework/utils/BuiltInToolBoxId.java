@@ -1,6 +1,6 @@
 package org.cdc.framework.utils;
 
-public class ToolBoxBuiltinId {
+public class BuiltInToolBoxId {
     public static final String OTHER = "other";
     public static final String APIS = "apis";
     public static final String MC_ELEMENTS = "mcelements";

@@ -3,42 +3,44 @@ package org.cdc.framework;
 import org.cdc.framework.builder.*;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.Locale;
 
-public record MCreatorPlugin(File rootPath) {
+public record MCreatorPluginFactory(File rootPath) {
+
+    public static final ArrayList<IGeneratorInit> generatorInits = new ArrayList<>();
+
+    public static MCreatorPluginFactory createFactory(String folder) {
+        return new MCreatorPluginFactory(new File(folder));
+    }
 
     public void createFolder(String name) {
         var file = new File(rootPath, name);
         file.mkdirs();
     }
 
-    public void initGenerator(String generator){
+    public void initGenerator(String generator) {
         createFolder(generator);
-        var generator1 = new File(rootPath,generator);
-        if (new File(rootPath,"aitasks").exists()){
-            var aitasks1 = new File(generator1,"aitasks");
-            aitasks1.mkdirs();
-        }
+        var generator1 = new File(rootPath, generator);
+        var file = new File(generator1, "aitasks");
+        file.mkdirs();
 
-        if (new File(rootPath,"datalists").exists()){
-            var file = new File(generator1,"mappings");
-            file.mkdirs();
-        }
+        file = new File(generator1, "mappings");
+        file.mkdirs();
 
-        if (new File(rootPath,"procedures").exists()){
-            var file = new File(generator1,"procedures");
-            file.mkdirs();
-        }
+        file = new File(generator1, "procedures");
+        file.mkdirs();
 
-        if (new File(rootPath,"triggers").exists()){
-            var file = new File(generator1,"triggers");
-            file.mkdirs();
-        }
+        file = new File(generator1, "triggers");
+        file.mkdirs();
 
-        if (new File(rootPath,"variables").exists()){
-            var file = new File(generator1,"variables");
-            file.mkdirs();
-        }
+        file = new File(generator1, "variables");
+        file.mkdirs();
+
+        generatorInits.forEach(a -> {
+            if (a.isSupported(this))
+                a.initGenerator0(generator);
+        });
     }
 
     public ProcedureBuilder createProcedure() {
@@ -46,9 +48,9 @@ public record MCreatorPlugin(File rootPath) {
         return new ProcedureBuilder(rootPath);
     }
 
-    public ProcedureBuilder createAITask() {
+    public AITasksBuilder createAITask() {
         createFolder("aitasks");
-        return new ProcedureBuilder(rootPath, "aitasks");
+        return new AITasksBuilder(rootPath);
     }
 
     public VariableBuilder createVariable() {

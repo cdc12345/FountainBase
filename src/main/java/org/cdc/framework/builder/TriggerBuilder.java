@@ -3,66 +3,95 @@ package org.cdc.framework.builder;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import org.cdc.framework.MCreatorPluginFactory;
 import org.cdc.framework.utils.Side;
 
+import java.io.ByteArrayInputStream;
 import java.io.File;
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.stream.Collectors;
 
-public class TriggerBuilder extends JsonBuilder{
+public class TriggerBuilder extends JsonBuilder implements IGeneratorInit {
 
     private final JsonArray dependencies;
 
     public TriggerBuilder(File rootPath) {
-        super(rootPath, new File(rootPath,"triggers"));
+        super(rootPath, new File(rootPath, "triggers"));
 
         this.result = new JsonObject();
         this.dependencies = new JsonArray();
-        this.result.getAsJsonObject().add("dependencies_provided",dependencies);
+        this.result.getAsJsonObject().add("dependencies_provided", dependencies);
     }
 
-    public TriggerBuilder setName(String name){
+    public TriggerBuilder setName(String name) {
         this.fileName = name;
         return this;
     }
 
-    public TriggerBuilder setHasResult(boolean hasResult){
-        this.result.getAsJsonObject().addProperty("has_result",hasResult);
+    public TriggerBuilder setHasResult(boolean hasResult) {
+        this.result.getAsJsonObject().addProperty("has_result", hasResult);
         return this;
     }
 
-    public TriggerBuilder setCancelable(boolean cancelable){
-        this.result.getAsJsonObject().addProperty("cancelable",cancelable);
+    public TriggerBuilder setCancelable(boolean cancelable) {
+        this.result.getAsJsonObject().addProperty("cancelable", cancelable);
         return this;
     }
 
-    public TriggerBuilder setSide(Side side){
-        this.result.getAsJsonObject().addProperty("side",side.name().toLowerCase());
+    public TriggerBuilder setSide(Side side) {
+        this.result.getAsJsonObject().addProperty("side", side.name().toLowerCase());
         return this;
     }
 
     /**
-     *     {
-     *       "name": "z",
-     *       "type": "number"
-     *     }
+     * {
+     * "name": "z",
+     * "type": "number"
+     * }
+     *
      * @param name 依赖名称
      * @param type 依赖类型.类似于number
      * @return this
      */
-    public TriggerBuilder appendDependency(String name,String type){
+    public TriggerBuilder appendDependency(String name, String type) {
         JsonObject jsonObject = new JsonObject();
-        jsonObject.addProperty("name",name);
-        jsonObject.addProperty("type",type);
+        jsonObject.addProperty("name", name);
+        jsonObject.addProperty("type", type);
         dependencies.add(jsonObject);
         return this;
     }
 
-    public TriggerBuilder setLanguage(LanguageBuilder languageBuilder,String content){
-        languageBuilder.appendTrigger(fileName,content);
+    public TriggerBuilder setLanguage(LanguageBuilder languageBuilder, String content) {
+        languageBuilder.appendTrigger(fileName, content);
         return this;
     }
 
     @Override
     JsonElement build() {
         return result;
+    }
+
+    public TriggerBuilder initGenerator() {
+        MCreatorPluginFactory.generatorInits.add(this);
+        return this;
+    }
+
+    @Override
+    public void initGenerator0(String generatorName) {
+        var generator1 = Paths.get(rootPath.getPath(),generatorName,"mappings",fileName + ".ftl");
+        StringBuilder builder = new StringBuilder();
+        builder.append(dependencies.asList().stream().filter(JsonElement::isJsonObject).map(a -> "${input$" + a.getAsJsonObject().get("name").getAsString() + "}").collect(Collectors.joining(",", "<#-", "->")));
+        try {
+            Files.copy(new ByteArrayInputStream(builder.toString().getBytes(StandardCharsets.UTF_8)), generator1);
+        } catch (IOException ignored) {
+        }
+    }
+
+    @Override
+    public boolean isSupported(MCreatorPluginFactory mCreatorPluginFactory) {
+        return mCreatorPluginFactory.rootPath().equals(rootPath);
     }
 }

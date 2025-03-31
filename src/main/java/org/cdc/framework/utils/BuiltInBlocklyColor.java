@@ -2,7 +2,7 @@ package org.cdc.framework.utils;
 
 import java.util.Locale;
 
-public enum BlocklyInnerColor {
+public enum BuiltInBlocklyColor {
     LOGIC,MATH,TEXTS;
 
     /**
