@@ -91,7 +91,7 @@ public class LanguageBuilder extends FileOutputBuilder<Properties> {
     }
 
     @Override
-    Properties build() {
+    public Properties build() {
         return null;
     }
 

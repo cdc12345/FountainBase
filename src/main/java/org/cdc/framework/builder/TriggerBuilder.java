@@ -78,7 +78,7 @@ public class TriggerBuilder extends JsonBuilder implements IGeneratorInit {
     }
 
     @Override
-    JsonElement build() {
+    public JsonElement build() {
         return result;
     }
 

@@ -347,7 +347,7 @@ public class ProcedureBuilder extends JsonBuilder implements IGeneratorInit {
     }
 
     @Override
-    JsonElement build() {
+    public JsonElement build() {
         //root
         if (!extensions.isEmpty()) {
             this.result.getAsJsonObject().add("extensions", extensions);
@@ -407,7 +407,7 @@ public class ProcedureBuilder extends JsonBuilder implements IGeneratorInit {
         }
 
         @Override
-        JsonElement build() {
+        public JsonElement build() {
             if (!provides.isEmpty()) {
                 this.result.getAsJsonObject().add("provides", provides);
             }

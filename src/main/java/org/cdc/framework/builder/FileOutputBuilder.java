@@ -19,7 +19,7 @@ public abstract class FileOutputBuilder<T> {
         return fileName + "." +fileExtension;
     }
 
-    abstract T build();
+    public abstract T build();
 
-    abstract T buildAndOutput();
+    public abstract T buildAndOutput();
 }
