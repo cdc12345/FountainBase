@@ -27,7 +27,7 @@ public class ProceduresTest {
     }
 
     @Test
-    public void versionTest() {
+    public void generatorTest() {
         MCreatorPluginFactory mcr = new MCreatorPluginFactory(new File("plugins"));
         mcr.initGenerator(Generators.FORGE1201);
     }
@@ -38,7 +38,10 @@ public class ProceduresTest {
         mcr.createProcedure().setName("hey_set").setColor(Color.RED).setPreviousStatement(null)
                 .setNextStatement(null).setGroup("name").setToolBoxId(BuiltInToolBoxId.Procedure.CUSTOM_VARIABLES)
                 .setInputsInline(true).appendArgs0InputValue("hello", BuiltInTypes.Number.getLowerName())
-                .appendArgs0InputValue("hello1",(String) null).appendRequiredApi("helloworld").initGenerator().buildAndOutput();
+                .appendArgs0InputValue("hello1",(String) null).appendRequiredApi("helloworld").toolBoxInitBuilder().setName("hello").appendConstantNumber(1).buildAndReturn().initGenerator().buildAndOutput();
+        Assertions.assertThrows(RuntimeException.class, ()->{
+            mcr.createProcedure().buildAndOutput();
+        });
         mcr.initGenerator(Generators.FORGE1201);
     }
 

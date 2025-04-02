@@ -21,6 +21,11 @@ public abstract class JsonBuilder extends FileOutputBuilder<JsonElement>{
 
     @Override
     public JsonElement buildAndOutput() {
+
+        if (fileName == null){
+            throw new RuntimeException("filename can not be null!");
+        }
+
         var json = build();
         if (targetPath != null) {
             try {

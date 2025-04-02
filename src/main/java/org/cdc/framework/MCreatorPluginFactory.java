@@ -4,6 +4,8 @@ import org.cdc.framework.builder.*;
 import org.cdc.framework.interfaces.IGeneratorInit;
 import org.cdc.framework.interfaces.IProcedureCategory;
 import org.cdc.framework.interfaces.IVariableType;
+import org.cdc.framework.utils.BuilderUtils;
+import org.cdc.framework.utils.FileUtils;
 import org.cdc.framework.utils.MCreatorVersions;
 
 import java.io.ByteArrayInputStream;
@@ -24,6 +26,8 @@ public class MCreatorPluginFactory {
         return new MCreatorPluginFactory(new File(folder));
     }
 
+    private String currentInit;
+
     private final File rootPath;
     private String version;
 
@@ -42,54 +46,77 @@ public class MCreatorPluginFactory {
     }
 
     public void initGenerator(String generator) {
+        initGenerator(generator,false);
+    }
+
+    public void initGenerator(String generator,boolean replace) {
         createFolder(generator);
         var generator1 = new File(rootPath, generator);
         var file = new File(generator1, "aitasks");
+        if (replace){
+            FileUtils.deleteNonEmptyDirector(file);
+        }
         file.mkdirs();
 
         file = new File(generator1, "mappings");
+        if (replace){
+            FileUtils.deleteNonEmptyDirector(file);
+        }
         file.mkdirs();
 
         file = new File(generator1, "procedures");
+        if (replace){
+            FileUtils.deleteNonEmptyDirector(file);
+        }
         file.mkdirs();
 
         file = new File(generator1, "triggers");
+        if (replace){
+            FileUtils.deleteNonEmptyDirector(file);
+        }
         file.mkdirs();
 
         file = new File(generator1, "variables");
+        if (replace){
+            FileUtils.deleteNonEmptyDirector(file);
+        }
         file.mkdirs();
 
+        file = new File(generator1,"templates");
+        if (replace){
+            FileUtils.deleteNonEmptyDirector(file);
+        }
+        file.mkdirs();
+
+        currentInit = generator;
         generatorInits.forEach(a -> {
             if (a.isSupported(this))
                 a.initGenerator0(generator);
         });
+        currentInit = null;
     }
 
-    public ProcedureBuilder createProcedureCategory(){
-        return createProcedureCategory(null);
+    public ProcedureBuilder createProcedure(){
+        return createProcedure(null);
     }
 
-    public ProcedureBuilder createProcedureCategory(IProcedureCategory category){
-        var pro = createProcedure();
-        pro.markType();
-        if (category != null){
-            pro.setName(category.getName());
-        }
-        return pro;
-    }
-
-    public ProcedureBuilder createProcedure() {
+    public ProcedureBuilder createProcedure(String name) {
         createFolder("procedures");
+        ProcedureBuilder builder;
         try {
             var class1 = Class.forName("org.cdc.framework.builder."+version+".ProcedureBuilder");
-            return (ProcedureBuilder) class1.getConstructor(new Class[]{File.class}).newInstance(rootPath);
+            builder = (ProcedureBuilder) class1.getConstructor(new Class[]{File.class}).newInstance(rootPath);
         } catch (ClassNotFoundException ignored){
 
         } catch (InvocationTargetException | InstantiationException |
                                                           IllegalAccessException | NoSuchMethodException e) {
             throw new RuntimeException(e);
         }
-        return new ProcedureBuilder(rootPath);
+        builder = new ProcedureBuilder(rootPath);
+        if (name != null){
+            builder.setName(name);
+        }
+        return builder;
     }
 
     public AITasksBuilder createAITask() {
@@ -193,7 +220,19 @@ public class MCreatorPluginFactory {
         }
     }
 
+    public ProcedureBuilder createProcedureCategory(){
+        return BuilderUtils.createProcedureCategory(this,null);
+    }
+
+    public ProcedureBuilder createAITaskCategory(){
+        return BuilderUtils.createAITaskCategory(this,null);
+    }
+
     public File rootPath() {
         return rootPath;
+    }
+
+    public String getCurrentInit() {
+        return currentInit;
     }
 }

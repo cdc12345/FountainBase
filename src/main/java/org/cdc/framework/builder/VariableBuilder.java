@@ -89,6 +89,6 @@ public class VariableBuilder extends JsonBuilder implements IGeneratorInit {
 
     @Override
     public boolean isSupported(MCreatorPluginFactory mCreatorPluginFactory) {
-        return mCreatorPluginFactory.rootPath().equals(rootPath);
+        return mCreatorPluginFactory.rootPath().equals(rootPath) && !mCreatorPluginFactory.getCurrentInit().startsWith("datapack");
     }
 }

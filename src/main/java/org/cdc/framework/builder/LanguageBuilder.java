@@ -6,6 +6,7 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.Properties;
 
 public class LanguageBuilder extends FileOutputBuilder<Properties> {
@@ -90,6 +91,10 @@ public class LanguageBuilder extends FileOutputBuilder<Properties> {
         return appendLocalization("blockly.category."+category,value);
     }
 
+    public LanguageBuilder appendWarning(String warningKey, String value){
+        return appendLocalization("blockly.warning."+warningKey,value);
+    }
+
     @Override
     public Properties build() {
         return null;
@@ -98,7 +103,7 @@ public class LanguageBuilder extends FileOutputBuilder<Properties> {
     @Override
     public Properties buildAndOutput() {
         try {
-            this.result.store(new FileWriter(new File(targetPath,fileName+"."+fileExtension)),"Auto-Generated");
+            this.result.store(new FileWriter(new File(targetPath,fileName+"."+fileExtension), StandardCharsets.UTF_8),"Auto-Generated");
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

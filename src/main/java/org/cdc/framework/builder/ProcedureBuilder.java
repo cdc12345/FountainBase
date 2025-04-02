@@ -33,6 +33,7 @@ public class ProcedureBuilder extends JsonBuilder implements IGeneratorInit {
     private final JsonArray dependencies;
     private final JsonArray requiredApis;
     private final JsonArray extensions;
+    private final JsonArray warnings;
 
     public ProcedureBuilder(File rootPath) {
         this(rootPath, "procedures");
@@ -52,9 +53,11 @@ public class ProcedureBuilder extends JsonBuilder implements IGeneratorInit {
         this.dependencies = new JsonArray();
         this.extensions = new JsonArray();
         this.requiredApis = new JsonArray();
+        this.warnings = new JsonArray();
 
         this.args0 = new JsonArray();
     }
+
 
     public ProcedureBuilder setName(String name) {
         this.fileName = name;
@@ -167,21 +170,25 @@ public class ProcedureBuilder extends JsonBuilder implements IGeneratorInit {
         return this;
     }
 
+    public ToolBoxInitBuilder toolBoxInitBuilder(){
+        return new ToolBoxInitBuilder();
+    }
+
     public ProcedureBuilder appendArgs0Element(JsonElement jsonElement) {
         args0.add(jsonElement);
         return this;
     }
 
-    public ProcedureBuilder appendArgs0InputValue(String name, String lowerName) {
-        return appendArgs0InputValue(name, lowerName, true);
+    public ProcedureBuilder appendArgs0InputValue(String name, String higherName) {
+        return appendArgs0InputValue(name, higherName, true);
     }
 
     public ProcedureBuilder appendArgs0InputValue(String name, IVariableType type) {
-        return appendArgs0InputValue(name, type.getVariableType(), true);
+        return appendArgs0InputValue(name, type, true);
     }
 
     public ProcedureBuilder appendArgs0InputValue(String name, IVariableType type, boolean addToInputs) {
-        return appendArgs0InputValue(name,type.getVariableType(),addToInputs);
+        return appendArgs0InputValue(name,type.getBlocklyVariableType(),addToInputs);
     }
 
     /**
@@ -280,6 +287,13 @@ public class ProcedureBuilder extends JsonBuilder implements IGeneratorInit {
         return appendArgs0Element(jsonObject);
     }
 
+    public ProcedureBuilder appendArgs0InputDummy(String name){
+        JsonObject jsonObject = new JsonObject();
+        jsonObject.addProperty("type","input_dummy");
+        jsonObject.addProperty("name",name);
+        return appendArgs0Element(jsonObject);
+    }
+
     /**
      * @param jsonObject element
      * @return this
@@ -340,6 +354,12 @@ public class ProcedureBuilder extends JsonBuilder implements IGeneratorInit {
         return this;
     }
 
+    public ProcedureBuilder appendWarning(String key){
+        warnings.add(key);
+        return this;
+    }
+
+    @CanIgnoreReturnValue
     public ProcedureBuilder setLanguage(LanguageBuilder languageBuilder, String value) {
         if (isType)
             languageBuilder.appendProcedureCategory(fileName, value);
@@ -387,7 +407,7 @@ public class ProcedureBuilder extends JsonBuilder implements IGeneratorInit {
 
     @Override
     public boolean isSupported(MCreatorPluginFactory mCreatorPluginFactory) {
-        return rootPath.equals(mCreatorPluginFactory.rootPath());
+        return rootPath.equals(mCreatorPluginFactory.rootPath()) && !mCreatorPluginFactory.getCurrentInit().startsWith("datapack");
     }
 
     @Override
@@ -417,6 +437,9 @@ public class ProcedureBuilder extends JsonBuilder implements IGeneratorInit {
         }
         if (!requiredApis.isEmpty()){
             mcreator.add("required_apis",requiredApis);
+        }
+        if (!warnings.isEmpty()){
+            mcreator.add("warnings",warnings);
         }
         return result;
     }
@@ -465,6 +488,41 @@ public class ProcedureBuilder extends JsonBuilder implements IGeneratorInit {
         public ProcedureBuilder buildAndReturn() {
             ProcedureBuilder.this.appendStatement(build());
             return ProcedureBuilder.this;
+        }
+    }
+
+    public class ToolBoxInitBuilder {
+        private final String placeholder = "﨎";
+        private String result = placeholder;
+
+        protected ToolBoxInitBuilder appendElement(String element){
+            result = result.replace(placeholder,element);
+            return this;
+        }
+
+        public ToolBoxInitBuilder setName(String name){
+            return appendElement("<value name=\""+name+"\">"+placeholder+"</value>");
+        }
+
+        public ToolBoxInitBuilder appendDefaultEntity() {
+            return appendElement("<block type=\"entity_from_deps\">" + placeholder + "</block>");
+        }
+
+        public ToolBoxInitBuilder appendDefaultItem(){
+            return appendElement("<block type=\"itemstack_to_mcitem\">"+placeholder+"</block>");
+        }
+
+        public ToolBoxInitBuilder appendConstantNumber(int num){
+            return appendElement("<block type=\"math_number\"><field name=\"NUM\">"+num+"</field></block>");
+        }
+
+        public ToolBoxInitBuilder appendConstantString(String str){
+            return appendElement("<block type=\"text\"><field name=\"TEXT\">"+str+"</field></block>");
+        }
+
+        public ProcedureBuilder buildAndReturn(){
+            result = result.replace(placeholder,"");
+            return ProcedureBuilder.this.appendToolBoxInit(result);
         }
     }
 }

@@ -12,12 +12,14 @@ import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
-public class DataListBuilder extends FileOutputBuilder<ArrayList<String>> implements IGeneratorInit {
-    private final ArrayList<String> result;
+public class DataListBuilder extends FileOutputBuilder<List<String>> implements IGeneratorInit {
+    private final Map<String,String> result;
     public DataListBuilder(File rootPath) {
         super(rootPath, new File(rootPath,"datalists"));
-        result =new ArrayList<>();
+        result = new HashMap<>();
         this.fileExtension = "yaml";
     }
 
@@ -26,18 +28,25 @@ public class DataListBuilder extends FileOutputBuilder<ArrayList<String>> implem
         return this;
     }
 
-    public DataListBuilder appendElement(String element){
-        result.add(element);
+    public DataListBuilder appendElement(String element) {
+        return appendElement(element,element);
+    }
+
+    public DataListBuilder appendElement(String element,String defaultMapping){
+        result.put(element, defaultMapping);
         return this;
     }
 
     @Override
-    public ArrayList<String> build() {
-        return result;
+    public List<String> build() {
+        return result.keySet().stream().toList();
     }
 
     @Override
-    public ArrayList<String> buildAndOutput() {
+    public List<String> buildAndOutput() {
+        if (fileName == null){
+            throw new RuntimeException("filename can not be null");
+        }
         var build = build();
         try {
             StringBuilder stringBuilder = new StringBuilder();
@@ -57,10 +66,7 @@ public class DataListBuilder extends FileOutputBuilder<ArrayList<String>> implem
 
     @Override
     public void initGenerator0(String generatorName) {
-        HashMap<String,String> hashMap = new HashMap<>();
-        for (String name:result){
-            hashMap.put(name,name);
-        }
+        HashMap<String, String> hashMap = new HashMap<>(result);
         var generator1 = Paths.get(rootPath.getPath(),generatorName,"mappings",getFileFullName());
         try {
             Files.copy(new ByteArrayInputStream(hashMap.toString().replace("{","").

@@ -3,6 +3,12 @@ package org.cdc.framework.utils;
 public class BuiltInToolBoxId {
     public static class AITasks {
         public static final String COMBAT_TASKS = "combattasks";
+        public static final String BASIC_TASKS = "basictasks";
+        public static final String MOVEMENT_TASKS = "movementtasks";
+        public static final String OTHER_TASKS = "othertasks";
+        public static final String PARENT_OWNER_TASKS = "parentownertasks";
+        public static final String TARGET_TASKS = "targettasks";
+        public static final String VILLAGE_TASKS = "villagetasks";
     }
 
     public static class Procedure{
