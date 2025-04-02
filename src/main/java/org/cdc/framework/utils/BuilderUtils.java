@@ -30,4 +30,8 @@ public class BuilderUtils {
         }
         return pro;
     }
+
+    public static boolean isSupportProcedure(String generatorName){
+        return generatorName.startsWith("forge") || generatorName.startsWith("neoforge");
+    }
 }

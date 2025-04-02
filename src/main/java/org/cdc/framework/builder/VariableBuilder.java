@@ -6,6 +6,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
 import org.cdc.framework.MCreatorPluginFactory;
 import org.cdc.framework.interfaces.IGeneratorInit;
+import org.cdc.framework.utils.BuilderUtils;
 import org.cdc.framework.utils.ColorUtils;
 
 import java.awt.*;
@@ -89,6 +90,6 @@ public class VariableBuilder extends JsonBuilder implements IGeneratorInit {
 
     @Override
     public boolean isSupported(MCreatorPluginFactory mCreatorPluginFactory) {
-        return mCreatorPluginFactory.rootPath().equals(rootPath) && !mCreatorPluginFactory.getCurrentInit().startsWith("datapack");
+        return mCreatorPluginFactory.rootPath().equals(rootPath) && BuilderUtils.isSupportProcedure(mCreatorPluginFactory.getCurrentInit());
     }
 }

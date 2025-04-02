@@ -9,6 +9,7 @@ import org.cdc.framework.MCreatorPluginFactory;
 import org.cdc.framework.interfaces.IGeneratorInit;
 import org.cdc.framework.interfaces.IProcedureCategory;
 import org.cdc.framework.interfaces.IVariableType;
+import org.cdc.framework.utils.BuilderUtils;
 import org.cdc.framework.utils.ColorUtils;
 
 import java.awt.*;
@@ -407,7 +408,7 @@ public class ProcedureBuilder extends JsonBuilder implements IGeneratorInit {
 
     @Override
     public boolean isSupported(MCreatorPluginFactory mCreatorPluginFactory) {
-        return rootPath.equals(mCreatorPluginFactory.rootPath()) && !mCreatorPluginFactory.getCurrentInit().startsWith("datapack");
+        return rootPath.equals(mCreatorPluginFactory.rootPath()) && BuilderUtils.isSupportProcedure(mCreatorPluginFactory.getCurrentInit());
     }
 
     @Override
