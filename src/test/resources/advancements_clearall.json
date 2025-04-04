@@ -1,0 +1,15 @@
+{
+  "inputsInline": true,
+  "previousStatement": null,
+  "nextStatement": null,
+  "colour": "251",
+  "mcreator": {
+    "toolbox_id": "unsafe",
+    "dependencies": [
+      {
+        "name": "world",
+        "type": "world"
+      }
+    ]
+  }
+}

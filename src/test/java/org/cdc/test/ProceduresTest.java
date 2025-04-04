@@ -24,6 +24,7 @@ public class ProceduresTest {
     public void variableTest(){
         MCreatorPluginFactory mcr = new MCreatorPluginFactory(new File("plugins"));
         mcr.createVariable().setColor(Color.RED).setName("hey").setNullable(true).setIgnoredByCoverage(true).buildAndOutput();
+        mcr.createVariable().setName("atomicitemstack").setColor(255).setBlocklyVariableType("AtomicItemStack").setNullable(false).setIgnoredByCoverage(true).buildAndOutput();
     }
 
     @Test
@@ -42,6 +43,8 @@ public class ProceduresTest {
         Assertions.assertThrows(RuntimeException.class, ()->{
             mcr.createProcedure().buildAndOutput();
         });
+
+        mcr.createProcedure("advancements_clearall").setInputsInline(true).setColor("251").setPreviousStatement(null).setNextStatement(null).setToolBoxId("unsafe").appendDependency("world","world").buildAndOutput();
         mcr.initGenerator(Generators.FORGE1201);
     }
 

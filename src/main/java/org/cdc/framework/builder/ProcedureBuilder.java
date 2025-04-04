@@ -10,6 +10,8 @@ import org.cdc.framework.interfaces.IGeneratorInit;
 import org.cdc.framework.interfaces.IProcedureCategory;
 import org.cdc.framework.interfaces.IVariableType;
 import org.cdc.framework.utils.BuilderUtils;
+import org.cdc.framework.utils.BuiltInCategories;
+import org.cdc.framework.utils.BuiltInToolBoxId;
 import org.cdc.framework.utils.ColorUtils;
 
 import java.awt.*;
@@ -57,6 +59,13 @@ public class ProcedureBuilder extends JsonBuilder implements IGeneratorInit {
         this.warnings = new JsonArray();
 
         this.args0 = new JsonArray();
+        this.result.getAsJsonObject().add("args0", args0);
+        this.result.getAsJsonObject().add("extensions", extensions);
+    }
+
+    public ProcedureBuilder appendJsonElement(String name,JsonElement jsonElement){
+        this.result.getAsJsonObject().add(name,jsonElement);
+        return this;
     }
 
 
@@ -169,6 +178,14 @@ public class ProcedureBuilder extends JsonBuilder implements IGeneratorInit {
             mcreator.add("toolbox_init", new JsonArray());
         mcreator.get("toolbox_init").getAsJsonArray().add(init);
         return this;
+    }
+
+    public ProcedureBuilder setCategory(IProcedureCategory category){
+        return setToolBoxId(category);
+    }
+
+    public ProcedureBuilder setCategory(String category){
+        return setToolBoxId(category);
     }
 
     public ToolBoxInitBuilder toolBoxInitBuilder(){
@@ -296,6 +313,22 @@ public class ProcedureBuilder extends JsonBuilder implements IGeneratorInit {
     }
 
     /**
+     *
+     * @param src
+     * @param width
+     * @param height
+     * @return
+     */
+    public ProcedureBuilder appendArgs0FieldImage(String src,int width,int height){
+        JsonObject jsonObject = new JsonObject();
+        jsonObject.addProperty("type","field_image");
+        jsonObject.addProperty("src",src);
+        jsonObject.addProperty("width",width);
+        jsonObject.addProperty("height",height);
+        return appendArgs0Element(jsonObject);
+    }
+
+    /**
      * @param jsonObject element
      * @return this
      * @apiNote append
@@ -355,6 +388,15 @@ public class ProcedureBuilder extends JsonBuilder implements IGeneratorInit {
         return this;
     }
 
+    /**
+     *
+     *     "warnings": [
+     *       "place_feature_ghost_blocks"
+     *     ]
+     *
+     * @param key warningKey
+     * @return this
+     */
     public ProcedureBuilder appendWarning(String key){
         warnings.add(key);
         return this;
@@ -394,12 +436,12 @@ public class ProcedureBuilder extends JsonBuilder implements IGeneratorInit {
             procedures.mkdirs();
         }
         try {
-            String builder = inputs.asList().stream().map(a -> "${input$" + a.getAsString() + "}").collect(Collectors.joining(",", "<#-", "->")) +
+            String builder = BuilderUtils.generateInputsComment(inputs) +
                     System.lineSeparator() +
-                    statements.asList().stream().map(a -> "${statement$" + a.getAsString() + "}").collect(Collectors.joining(",", "<#-", "->")) +
+                    BuilderUtils.generateStatementsComment(statements) +
                     System.lineSeparator() +
-                    fields.asList().stream().map(a -> "${field$" + a.getAsString() + "}").collect(Collectors.joining(",", "<#-", "->"));
-            Files.copy(new ByteArrayInputStream(builder.getBytes(StandardCharsets.UTF_8)), new File(procedures, fileName + ".ftl").toPath());
+                    BuilderUtils.generateFieldsComment(fields);
+            Files.copy(new ByteArrayInputStream(builder.getBytes(StandardCharsets.UTF_8)), new File(procedures, fileName + ".java.ftl").toPath());
         } catch (IOException e) {
             System.out.println(e.getMessage());
         }
@@ -414,14 +456,11 @@ public class ProcedureBuilder extends JsonBuilder implements IGeneratorInit {
     @Override
     public JsonElement build() {
         //root
-        if (!extensions.isEmpty()) {
-            this.result.getAsJsonObject().add("extensions", extensions);
+        if (extensions.isEmpty()) {
+            this.result.getAsJsonObject().remove("extensions");
         }
-        if (!args0.isEmpty()) {
-            this.result.getAsJsonObject().add("args0", args0);
-        }
-        if (!mcreator.isEmpty()) {
-            this.result.getAsJsonObject().add("mcreator", mcreator);
+        if (args0.isEmpty()) {
+            this.result.getAsJsonObject().remove("args0");
         }
         //mcreator
         if (!inputs.isEmpty()) {
@@ -441,6 +480,14 @@ public class ProcedureBuilder extends JsonBuilder implements IGeneratorInit {
         }
         if (!warnings.isEmpty()){
             mcreator.add("warnings",warnings);
+        }
+
+        if (!mcreator.isEmpty()) {
+            this.result.getAsJsonObject().add("mcreator", mcreator);
+        }
+
+        if (!mcreator.has("toolbox_id")){
+            setToolBoxId(BuiltInToolBoxId.Procedure.OTHER);
         }
         return result;
     }

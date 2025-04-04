@@ -29,6 +29,7 @@ public class TriggerBuilder extends JsonBuilder implements IGeneratorInit {
         this.dependencies = new JsonArray();
         this.requiredApis = new JsonArray();
         this.result.getAsJsonObject().add("dependencies_provided", dependencies);
+
         this.result.getAsJsonObject().add("required_api",requiredApis);
     }
 
@@ -87,6 +88,9 @@ public class TriggerBuilder extends JsonBuilder implements IGeneratorInit {
 
     @Override
     public JsonElement build() {
+        if (requiredApis.isEmpty()){
+            result.getAsJsonObject().remove("required_api");
+        }
         return result;
     }
 
@@ -97,9 +101,12 @@ public class TriggerBuilder extends JsonBuilder implements IGeneratorInit {
 
     @Override
     public void initGenerator0(String generatorName) {
-        var generator1 = Paths.get(rootPath.getPath(),generatorName,"triggers",fileName + ".ftl");
+        var generator1 = Paths.get(rootPath.getPath(),generatorName,"triggers",fileName + ".java.ftl");
+        System.out.println(generator1);
         StringBuilder builder = new StringBuilder();
         builder.append(dependencies.asList().stream().filter(JsonElement::isJsonObject).map(a -> "${input$" + a.getAsJsonObject().get("name").getAsString() + "}").collect(Collectors.joining(",", "<#-", "->")));
+        builder.append(System.lineSeparator());
+        builder.append("<#include \"procedures.java.ftl\">");
         try {
             Files.copy(new ByteArrayInputStream(builder.toString().getBytes(StandardCharsets.UTF_8)), generator1);
         } catch (IOException e) {

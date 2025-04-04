@@ -66,6 +66,9 @@ public class DataListBuilder extends FileOutputBuilder<List<String>> implements 
 
     @Override
     public void initGenerator0(String generatorName) {
+        if (fileName == null){
+            return;
+        }
         HashMap<String, String> hashMap = new HashMap<>(result);
         var generator1 = Paths.get(rootPath.getPath(),generatorName,"mappings",getFileFullName());
         try {

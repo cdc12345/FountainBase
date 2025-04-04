@@ -8,10 +8,10 @@ public class ColorUtils {
     }
 
     public static String colorHue(String name){
-        return "{BKY_"+name+"_HUE}";
+        return "%{BKY_"+name+"_HUE}";
     }
 
     public static String colorHue(String name,int hue){
-        return "{BKY_"+name+"_"+Math.clamp(hue,0,360)+"}";
+        return "%{BKY_"+name+"_"+Math.clamp(hue,0,360)+"}";
     }
 }

@@ -4,7 +4,7 @@ import org.cdc.framework.interfaces.IVariableType;
 
 public enum BuiltInTypes implements IVariableType {
     Number("number","Number"),Direction("direction","Direction"),Entity("entity","Entity"),ItemStack("itemstack","MCItem"),Boolean("logic","Boolean"),String("string","String")
-    ,BlockState("blockstate","MCItemBlock"),DamageSource("damagesource","DamageSource"),ActionResultType("actionresulttype","ActionResultType");
+    ,BlockState("blockstate","MCItemBlock"),DamageSource("damagesource","DamageSource"),ActionResultType("actionresulttype","ActionResultType"),World("world","");
 
     private final String lowerName;
     private final String higherName;

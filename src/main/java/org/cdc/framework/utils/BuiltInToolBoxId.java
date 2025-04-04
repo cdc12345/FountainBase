@@ -22,5 +22,20 @@ public class BuiltInToolBoxId {
         public static final String TEXT = "text";
         public static final String ADVANCED = "advanced";
         public static final String CUSTOM_VARIABLES = "customvariables";
+        public static final String ENTITY_DATA = "entitydata";
+        public static final String ENTITY_MANAGEMENT= "entitymanagement";
+        public static final String ENTITY_PROCEDURES = "entityprocedures";
+        public static final String BLOCK_ACTIONS = "blockactions";
+        public static final String BLOCK_DATA = "blockdata";
+        public static final String BLOCK_PROCEDURES = "blockprocedures";
+        public static final String WORLD_DATA = "worlddata";
+        public static final String WORLD_MANAGEMENT = "worldmanagement";
+        public static final String WORLD_PROCEDURES = "worldprocedures";
+        public static final String PLAYER_DATA = "playerdata";
+        public static final String PLAYER_MANAGEMENT = "playermanagement";
+        public static final String PLAYER_PROCEDURES = "playerprocedures";
+        public static final String ITEM_DATA = "itemdata";
+        public static final String ITEM_MANAGEMENT = "itemmanagement";
+        public static final String ITEM_PROCEDURES = "itemprocedures";
     }
 }
