@@ -6,6 +6,16 @@ public enum BuiltInTypes implements IVariableType {
     Number("number","Number"),Direction("direction","Direction"),Entity("entity","Entity"),ItemStack("itemstack","MCItem"),Boolean("logic","Boolean"),String("string","String")
     ,BlockState("blockstate","MCItemBlock"),DamageSource("damagesource","DamageSource"),ActionResultType("actionresulttype","ActionResultType"),World("world","");
 
+
+    public static BuiltInTypes getType(String name){
+        for (BuiltInTypes types: BuiltInTypes.values()){
+            if (types.higherName.equals(name) || types.lowerName.equals(name)){
+                return types;
+            }
+        }
+        return null;
+    }
+
     private final String lowerName;
     private final String higherName;
     BuiltInTypes(String lowerName, String higherName){

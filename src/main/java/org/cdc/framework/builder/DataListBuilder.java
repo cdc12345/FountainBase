@@ -10,12 +10,10 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
-public class DataListBuilder extends FileOutputBuilder<List<String>> implements IGeneratorInit {
+public class DataListBuilder extends FileOutputBuilder<Map<String,String>> implements IGeneratorInit {
     private final Map<String,String> result;
     public DataListBuilder(File rootPath) {
         super(rootPath, new File(rootPath,"datalists"));
@@ -38,17 +36,18 @@ public class DataListBuilder extends FileOutputBuilder<List<String>> implements 
     }
 
     @Override
-    public List<String> build() {
-        return result.keySet().stream().toList();
+    public Map<String,String> build() {
+        return result;
     }
 
     @Override
-    public List<String> buildAndOutput() {
+    public Map<String,String> buildAndOutput() {
         if (fileName == null){
             throw new RuntimeException("filename can not be null");
         }
-        var build = build();
+        var build1 = build();
         try {
+            var build = build1.keySet().stream().toList();
             StringBuilder stringBuilder = new StringBuilder();
             stringBuilder.append("- ").append(build.getFirst());
             build.stream().skip(1).forEach(a-> stringBuilder.append(System.lineSeparator()).append("- ").append(a));
@@ -56,7 +55,7 @@ public class DataListBuilder extends FileOutputBuilder<List<String>> implements 
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-        return build;
+        return build1;
     }
 
     public DataListBuilder initGenerator(){

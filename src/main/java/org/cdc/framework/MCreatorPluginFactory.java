@@ -235,4 +235,29 @@ public class MCreatorPluginFactory {
     public String getCurrentInit() {
         return currentInit;
     }
+
+    public ToolKit getToolKit(){
+        return new ToolKit();
+    }
+
+    public class ToolKit{
+        private ToolKit(){
+        }
+
+        public ProcedureBuilder createInputProcedure(String name){
+            return BuilderUtils.createCommonProcedure(MCreatorPluginFactory.this, name);
+        }
+
+        public ProcedureBuilder createOutputProcedure(String name,String output){
+            return BuilderUtils.createOutputProcedure(MCreatorPluginFactory.this,name,output);
+        }
+
+        public ProcedureBuilder createOutputProcedure(String name,IVariableType output){
+            return BuilderUtils.createOutputProcedure(MCreatorPluginFactory.this,name,output);
+        }
+
+        public String getCurrentInitGenerator(){
+            return MCreatorPluginFactory.this.currentInit;
+        }
+    }
 }
