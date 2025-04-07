@@ -1,6 +1,5 @@
 package org.cdc.test;
 
-import org.cdc.framework.MCreatorPluginFactory;
 import org.cdc.framework.utils.ColorUtils;
 import org.cdc.framework.utils.FileUtils;
 import org.junit.jupiter.api.Assertions;
@@ -19,6 +18,6 @@ public class UtilsTest {
         System.out.println(FileUtils.tryGenerateProcedureBuilderCode(new File("src/test/resources/advancements_clearall.json")));
         System.out.println(FileUtils.tryGenerateProcedureBuilderCode(new File("src/test/resources/block_namespace.json")));
         System.out.println(FileUtils.tryGenerateVariableCode(new File("src/test/resources/atomicitemstack.json")));
-        MCreatorPluginFactory mcr = null;
+        System.out.println(FileUtils.tryGenerateTrigger(new File("src/test/resources/effect_applicable.json")));
     }
 }

@@ -10,7 +10,6 @@ import org.cdc.framework.interfaces.IGeneratorInit;
 import org.cdc.framework.interfaces.IProcedureCategory;
 import org.cdc.framework.interfaces.IVariableType;
 import org.cdc.framework.utils.BuilderUtils;
-import org.cdc.framework.utils.BuiltInCategories;
 import org.cdc.framework.utils.BuiltInToolBoxId;
 import org.cdc.framework.utils.ColorUtils;
 
@@ -21,7 +20,6 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.util.regex.Pattern;
-import java.util.stream.Collectors;
 
 public class ProcedureBuilder extends JsonBuilder implements IGeneratorInit {
     private boolean isType;
@@ -61,7 +59,14 @@ public class ProcedureBuilder extends JsonBuilder implements IGeneratorInit {
         this.args0 = new JsonArray();
         this.result.getAsJsonObject().add("args0", args0);
         this.result.getAsJsonObject().add("extensions", extensions);
+
+        appendDefault();
     }
+
+    private void appendDefault(){
+        this.setGroup("name").setCategory(BuiltInToolBoxId.Procedure.OTHER).setInputsInline(true);
+    }
+
 
     public ProcedureBuilder appendJsonElement(String name,JsonElement jsonElement){
         this.result.getAsJsonObject().add(name,jsonElement);
@@ -314,10 +319,10 @@ public class ProcedureBuilder extends JsonBuilder implements IGeneratorInit {
 
     /**
      *
-     * @param src
-     * @param width
-     * @param height
-     * @return
+     * @param src resource url
+     * @param width width
+     * @param height height
+     * @return this
      */
     public ProcedureBuilder appendArgs0FieldImage(String src,int width,int height){
         JsonObject jsonObject = new JsonObject();
@@ -402,6 +407,12 @@ public class ProcedureBuilder extends JsonBuilder implements IGeneratorInit {
         return this;
     }
 
+    public ProcedureBuilder appendWarning(String key,LanguageBuilder languageBuilder,String value){
+        warnings.add(key);
+        languageBuilder.appendWarning(key,value);
+        return this;
+    }
+
     @CanIgnoreReturnValue
     public ProcedureBuilder setLanguage(LanguageBuilder languageBuilder, String value) {
         if (isType)
@@ -417,6 +428,13 @@ public class ProcedureBuilder extends JsonBuilder implements IGeneratorInit {
                 throw new RuntimeException("\" "+value + " \"is not a regular content because its parameter count: "+count);
             }
             languageBuilder.appendProcedure(fileName, value);
+        }
+        return this;
+    }
+
+    public ProcedureBuilder setToolTip(LanguageBuilder languageBuilder,String value){
+        if (!isType){
+            languageBuilder.appendProcedureToolTip(fileName,value);
         }
         return this;
     }
@@ -484,10 +502,6 @@ public class ProcedureBuilder extends JsonBuilder implements IGeneratorInit {
 
         if (!mcreator.isEmpty()) {
             this.result.getAsJsonObject().add("mcreator", mcreator);
-        }
-
-        if (!mcreator.has("toolbox_id")){
-            setToolBoxId(BuiltInToolBoxId.Procedure.OTHER);
         }
         return result;
     }

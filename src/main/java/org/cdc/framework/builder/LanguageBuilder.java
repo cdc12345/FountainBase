@@ -82,6 +82,7 @@ public class LanguageBuilder extends FileOutputBuilder<Properties> {
         return appendLocalization("trigger."+triggerName,value);
     }
 
+    @CanIgnoreReturnValue
     public LanguageBuilder appendProcedureToolTip(String proName,String value){
         return appendLocalization("blockly.block."+proName+".tooltip",value);
     }
@@ -91,6 +92,7 @@ public class LanguageBuilder extends FileOutputBuilder<Properties> {
         return appendLocalization("blockly.category."+category,value);
     }
 
+    @CanIgnoreReturnValue
     public LanguageBuilder appendWarning(String warningKey, String value){
         return appendLocalization("blockly.warning."+warningKey,value);
     }
