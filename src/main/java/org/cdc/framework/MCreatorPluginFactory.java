@@ -30,10 +30,13 @@ public class MCreatorPluginFactory {
 
     private final File rootPath;
     private String version;
+    
+    private ToolKit toolkit;
 
     public MCreatorPluginFactory(File rootPath){
         this.rootPath = rootPath;
         this.version = MCreatorVersions.V_2025_1;
+        this.toolkit = new ToolKit();
     }
 
     public void createFolder(String name) {
@@ -237,7 +240,7 @@ public class MCreatorPluginFactory {
     }
 
     public ToolKit getToolKit(){
-        return new ToolKit();
+        return toolkit;
     }
 
     public class ToolKit{
