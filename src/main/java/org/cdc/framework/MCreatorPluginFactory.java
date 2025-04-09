@@ -2,7 +2,6 @@ package org.cdc.framework;
 
 import org.cdc.framework.builder.*;
 import org.cdc.framework.interfaces.IGeneratorInit;
-import org.cdc.framework.interfaces.IProcedureCategory;
 import org.cdc.framework.interfaces.IVariableType;
 import org.cdc.framework.utils.BuilderUtils;
 import org.cdc.framework.utils.FileUtils;
