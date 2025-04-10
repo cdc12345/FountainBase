@@ -14,6 +14,9 @@ public class BuilderUtils {
         return mCreatorPluginFactory.createProcedure(name).setOutput(output).setGroup("name").setInputsInline(true);
     }
 
+    /**
+     * mCreatorPluginFactory.createProcedure(name).setOutput(variableType).setGroup("name").setInputsInline(true)
+     */
     public static ProcedureBuilder createOutputProcedure(MCreatorPluginFactory mCreatorPluginFactory, String name, IVariableType variableType) {
         return mCreatorPluginFactory.createProcedure(name).setOutput(variableType).setGroup("name").setInputsInline(true);
     }
