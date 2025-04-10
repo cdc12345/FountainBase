@@ -10,6 +10,8 @@ import org.junit.jupiter.api.Test;
 
 import java.awt.*;
 import java.io.File;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.Locale;
 
 public class ProceduresTest {
@@ -31,6 +33,7 @@ public class ProceduresTest {
     public void generatorTest() {
         MCreatorPluginFactory mcr = new MCreatorPluginFactory(new File("plugins"));
         mcr.initGenerator(Generators.FORGE1201);
+        Assertions.assertTrue(Files.exists(Path.of(mcr.rootPath().getPath(), "forge-1.20.1")));
     }
 
     @Test
@@ -50,7 +53,7 @@ public class ProceduresTest {
     @Test
     public void aiTasksTest(){
         MCreatorPluginFactory mcr = MCreatorPluginFactory.createFactory("plugins");
-        mcr.createAITask().setName("hey_am_you").setColor(Color.RED).setPreviousStatement(null).setNextStatement(null).setGroup("name").setInputsInline(true).setToolBoxId(BuiltInToolBoxId.AITasks.COMBAT_TASKS).appendArgs0FieldAIConditionSelector("ai").initGenerator().buildAndOutput();
+        mcr.createAITask("hey_am_you").setColor(Color.RED).setPreviousStatement(null).setNextStatement(null).setGroup("name").setInputsInline(true).setToolBoxId(BuiltInToolBoxId.AITasks.COMBAT_TASKS).appendArgs0FieldAIConditionSelector("ai").initGenerator().buildAndOutput();
         mcr.initGenerator(Generators.FORGE1201);
     }
 

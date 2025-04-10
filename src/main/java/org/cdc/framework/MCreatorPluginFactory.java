@@ -120,19 +120,28 @@ public class MCreatorPluginFactory {
         }
         return builder;
     }
-
+    
     public AITasksBuilder createAITask() {
+    	return createAITask(null);
+    }
+
+    public AITasksBuilder createAITask(String name) {
         createFolder("aitasks");
+        AITasksBuilder instance;
         try {
             var class1 = Class.forName("org.cdc.framework.builder."+version+".AITasksBuilder");
-            return (AITasksBuilder) class1.getConstructor(new Class[]{File.class}).newInstance(rootPath);
+            instance = (AITasksBuilder) class1.getConstructor(new Class[]{File.class}).newInstance(rootPath);
         } catch (ClassNotFoundException ignored){
 
         } catch (InvocationTargetException | InstantiationException |
                  IllegalAccessException | NoSuchMethodException e) {
             throw new RuntimeException(e);
         }
-        return new AITasksBuilder(rootPath);
+        instance = new AITasksBuilder(rootPath);
+        if (name != null) {
+        	instance.setName(name);
+        }
+        return instance;
     }
 
     public VariableBuilder createVariable(){
@@ -185,33 +194,45 @@ public class MCreatorPluginFactory {
         }
         return new LanguageBuilder(rootPath, "texts_" + locale.getLanguage() + "_" + locale.getCountry());
     }
-
+    
     public DataListBuilder createDataList() {
-        createFolder("datalists");
-        try {
-            var class1 = Class.forName("org.cdc.framework.builder."+version+".DataListBuilder");
-            return (DataListBuilder) class1.getConstructor(new Class[]{File.class}).newInstance(rootPath);
-        } catch (ClassNotFoundException ignored){
-
-        } catch (InvocationTargetException | InstantiationException |
-                 IllegalAccessException | NoSuchMethodException e) {
-            throw new RuntimeException(e);
-        }
-        return new DataListBuilder(rootPath);
+    	return createDataList(null);
     }
 
-    public TriggerBuilder createTrigger() {
-        createFolder("triggers");
+    public DataListBuilder createDataList(String name) {
+        createFolder("datalists");
+        DataListBuilder instance;
         try {
-            var class1 = Class.forName("org.cdc.framework.builder."+version+".TriggerBuilder");
-            return (TriggerBuilder) class1.getConstructor(new Class[]{File.class}).newInstance(rootPath);
+            var class1 = Class.forName("org.cdc.framework.builder."+version+".DataListBuilder");
+            instance = (DataListBuilder) class1.getConstructor(new Class[]{File.class}).newInstance(rootPath);
         } catch (ClassNotFoundException ignored){
 
         } catch (InvocationTargetException | InstantiationException |
                  IllegalAccessException | NoSuchMethodException e) {
             throw new RuntimeException(e);
         }
-        return new TriggerBuilder(rootPath);
+        instance = new DataListBuilder(rootPath);
+        return instance.setName(name);
+    }
+    
+    public TriggerBuilder createTrigger() {
+    	return createTrigger(null);
+    }
+
+    public TriggerBuilder createTrigger(String name) {
+        createFolder("triggers");
+        TriggerBuilder instance;
+        try {
+            var class1 = Class.forName("org.cdc.framework.builder."+version+".TriggerBuilder");
+            instance = (TriggerBuilder) class1.getConstructor(new Class[]{File.class}).newInstance(rootPath);
+        } catch (ClassNotFoundException ignored){
+
+        } catch (InvocationTargetException | InstantiationException |
+                 IllegalAccessException | NoSuchMethodException e) {
+            throw new RuntimeException(e);
+        }
+        instance = new TriggerBuilder(rootPath);
+        return instance.setName(name);
     }
 
     public void createApis(String apiName){
