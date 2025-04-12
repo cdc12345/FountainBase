@@ -16,29 +16,31 @@ import java.util.Locale;
 
 public class ProceduresTest {
 
+    private final String pluginPath = "build/plugins";
+
     @Test
     public void typeTest(){
-        MCreatorPluginFactory mcr = new MCreatorPluginFactory(new File("plugins"));
+        MCreatorPluginFactory mcr = new MCreatorPluginFactory(new File(pluginPath));
         mcr.createProcedure().setName("helloworld").markType().setColor(Color.RED).buildAndOutput();
     }
 
     @Test
     public void variableTest(){
-        MCreatorPluginFactory mcr = new MCreatorPluginFactory(new File("plugins"));
-        mcr.createVariable().setColor(Color.RED).setName("hey").setNullable(true).setIgnoredByCoverage(true).buildAndOutput();
+        MCreatorPluginFactory mcr = new MCreatorPluginFactory(new File(pluginPath));
+        mcr.createVariable().setName("hey").setColor(Color.RED).setNullable(true).setIgnoredByCoverage(true).buildAndOutput();
         mcr.createVariable().setName("atomicitemstack").setColor(255).setBlocklyVariableType("AtomicItemStack").setNullable(false).setIgnoredByCoverage(true).buildAndOutput();
     }
 
     @Test
     public void generatorTest() {
-        MCreatorPluginFactory mcr = new MCreatorPluginFactory(new File("plugins"));
+        MCreatorPluginFactory mcr = new MCreatorPluginFactory(new File(pluginPath));
         mcr.initGenerator(Generators.FORGE1201);
         Assertions.assertTrue(Files.exists(Path.of(mcr.rootPath().getPath(), "forge-1.20.1")));
     }
 
     @Test
     public void procedureTest(){
-        MCreatorPluginFactory mcr = new MCreatorPluginFactory(new File("plugins"));
+        MCreatorPluginFactory mcr = new MCreatorPluginFactory(new File(pluginPath));
         mcr.createProcedure().setName("hey_set").setColor(Color.RED).setPreviousStatement(null)
                 .setNextStatement(null).setGroup("name").setToolBoxId(BuiltInToolBoxId.Procedure.CUSTOM_VARIABLES)
                 .setInputsInline(true).appendArgs0InputValue("hello", BuiltInTypes.Number.getLowerName())
@@ -52,14 +54,14 @@ public class ProceduresTest {
 
     @Test
     public void aiTasksTest(){
-        MCreatorPluginFactory mcr = MCreatorPluginFactory.createFactory("plugins");
+        MCreatorPluginFactory mcr = MCreatorPluginFactory.createFactory(pluginPath);
         mcr.createAITask("hey_am_you").setColor(Color.RED).setPreviousStatement(null).setNextStatement(null).setGroup("name").setInputsInline(true).setToolBoxId(BuiltInToolBoxId.AITasks.COMBAT_TASKS).appendArgs0FieldAIConditionSelector("ai").initGenerator().buildAndOutput();
         mcr.initGenerator(Generators.FORGE1201);
     }
 
     @Test
     public void triggersTest(){
-        MCreatorPluginFactory mcr = MCreatorPluginFactory.createFactory("plugins");
+        MCreatorPluginFactory mcr = MCreatorPluginFactory.createFactory(pluginPath);
         mcr.createTrigger().setName("hello").appendDependency("name","type").setCancelable(true).setSide(Side.Client).setHasResult(true).initGenerator().buildAndOutput();
         mcr.createTrigger().setName("effect_applicable").setCancelable(true).setHasResult(true).appendRequiredApi("hey").appendDependency("entity",BuiltInTypes.Entity).appendDependency("world",BuiltInTypes.World).appendDependency("x",BuiltInTypes.Number).appendDependency("y",BuiltInTypes.Number).appendDependency("z",BuiltInTypes.Number).appendDependency("effect","object").buildAndOutput();
         mcr.initGenerator(Generators.FORGE1201);
@@ -67,7 +69,7 @@ public class ProceduresTest {
 
     @Test
     public void datalistTest(){
-        MCreatorPluginFactory mcr = MCreatorPluginFactory.createFactory("plugins");
+        MCreatorPluginFactory mcr = MCreatorPluginFactory.createFactory(pluginPath);
         mcr.createDataList().setName("datalist").appendElement("hello").initGenerator().buildAndOutput();
         mcr.createDataList().setName("types").appendElement("hey","hello").initGenerator().build();
         mcr.initGenerator(Generators.FORGE1201);
@@ -75,7 +77,7 @@ public class ProceduresTest {
 
     @Test
     public void langTest(){
-        MCreatorPluginFactory mcr = MCreatorPluginFactory.createFactory("plugins");
+        MCreatorPluginFactory mcr = MCreatorPluginFactory.createFactory(pluginPath);
         mcr.createDefaultLanguage().appendLocalization("test","test").buildAndOutput();
         mcr.createLanguage(Locale.getDefault()).appendLocalization("test1","test1").buildAndOutput();
 
@@ -84,7 +86,7 @@ public class ProceduresTest {
 
     @Test
     public void apisTest(){
-        MCreatorPluginFactory mCreatorPluginFactory = MCreatorPluginFactory.createFactory("plugins");
+        MCreatorPluginFactory mCreatorPluginFactory = MCreatorPluginFactory.createFactory(pluginPath);
         mCreatorPluginFactory.createApis("helloworld");
     }
 }

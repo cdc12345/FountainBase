@@ -1,13 +1,15 @@
 package org.cdc.framework.builder;
 
-import com.google.errorprone.annotations.CanIgnoreReturnValue;
-
 import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.Properties;
+
+import org.cdc.framework.interfaces.IVariableType;
+
+import com.google.errorprone.annotations.CanIgnoreReturnValue;
 
 public class LanguageBuilder extends FileOutputBuilder<Properties> {
 
@@ -20,26 +22,9 @@ public class LanguageBuilder extends FileOutputBuilder<Properties> {
         this.fileName = fileName;
         this.fileExtension = "properties";
 
-
-        loadDefault();
         load();
     }
 
-    @CanIgnoreReturnValue
-    public LanguageBuilder loadDefault(){
-        if (!"texts".equals(fileName))
-            return this;
-        try {
-            var file = new File(targetPath,"texts."+fileExtension);
-            if (file.exists())
-                this.result.load(new FileReader(file));
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-        return this;
-    }
-
-    @CanIgnoreReturnValue
     public LanguageBuilder load(){
         try {
             var file = new File(targetPath,fileName+"."+fileExtension);
@@ -73,21 +58,17 @@ public class LanguageBuilder extends FileOutputBuilder<Properties> {
      * @param value value
      * @return this
      */
-    @CanIgnoreReturnValue
     public LanguageBuilder appendProcedure(String proName,String value){
         return appendLocalization("blockly.block."+proName,value);
     }
-    @CanIgnoreReturnValue
     public LanguageBuilder appendTrigger(String triggerName,String value){
         return appendLocalization("trigger."+triggerName,value);
     }
 
-    @CanIgnoreReturnValue
     public LanguageBuilder appendProcedureToolTip(String proName,String value){
         return appendLocalization("blockly.block."+proName+".tooltip",value);
     }
 
-    @CanIgnoreReturnValue
     public LanguageBuilder appendProcedureCategory(String category,String value){
         return appendLocalization("blockly.category."+category,value);
     }
@@ -95,6 +76,10 @@ public class LanguageBuilder extends FileOutputBuilder<Properties> {
     @CanIgnoreReturnValue
     public LanguageBuilder appendWarning(String warningKey, String value){
         return appendLocalization("blockly.warning."+warningKey,value);
+    }
+    
+    public LanguageBuilder appendCustomVariableDependency(IVariableType variable, String value) {
+    	return appendLocalization("blockly.block.custom_dependency_"+variable.getVariableType(), value);
     }
 
     @Override

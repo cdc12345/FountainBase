@@ -5,8 +5,6 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 
-import javax.management.DescriptorKey;
-
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
@@ -43,16 +41,17 @@ public class FileUtils {
 
 	/**
 	 * generate code
-	 * 
 	 * @param fl file
 	 * @return generatedCode
 	 */
-	@DescriptorKey("incomplete")
 	public static String tryGenerateProcedureBuilderCode(File fl) {
 		Gson gson = new Gson();
 		var file = gson.fromJson(loadStringFromFile(fl), JsonObject.class);
 		StringBuilder builder = new StringBuilder();
 		builder.append("mcr.createProcedure(\"").append(getFileName(fl)).append("\")");
+		if (fl.getName().startsWith("$")){
+			builder.append(".markType()");
+		}
 		if (file.has("extensions")) {
 			JsonArray jsonArray = file.getAsJsonArray("extensions");
 			for (JsonElement jsonElement : jsonArray) {

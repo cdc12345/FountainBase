@@ -239,6 +239,11 @@ public class ProcedureBuilder extends JsonBuilder implements IGeneratorInit {
 		return appendArgs0Element(jsonObject);
 	}
 
+	/**
+	 * 添加语句
+	 * @param name 语句名称
+	 * @return this
+	 */
 	public ProcedureBuilder appendArgs0StatementInput(String name) {
 		JsonObject jsonObject = new JsonObject();
 		jsonObject.addProperty("type", "input_statement");
@@ -292,6 +297,11 @@ public class ProcedureBuilder extends JsonBuilder implements IGeneratorInit {
 		return appendArgs0Element(jsonObject);
 	}
 
+	/**
+	 * 占位置用的(
+	 * @param name name
+	 * @return this
+	 */
 	public ProcedureBuilder appendArgs0InputDummy(String name) {
 		JsonObject jsonObject = new JsonObject();
 		jsonObject.addProperty("type", "input_dummy");
@@ -300,7 +310,7 @@ public class ProcedureBuilder extends JsonBuilder implements IGeneratorInit {
 	}
 
 	/**
-	 *
+	 * 比如服务器图标啥的(
 	 * @param src    resource url
 	 * @param width  width
 	 * @param height height
