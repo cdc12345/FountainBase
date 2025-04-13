@@ -410,7 +410,7 @@ public class ProcedureBuilder extends JsonBuilder implements IGeneratorInit {
 			}
 			if (count != args0.size()) {
 				throw new RuntimeException(
-						"\" " + value + " \"is not a regular content because its parameter count: " + count);
+						"\" " + value + " \"is not a regular content because we need parameter count: " + args0.size());
 			}
 			languageBuilder.appendProcedure(fileName, value);
 		}
