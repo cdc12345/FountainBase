@@ -47,7 +47,7 @@ public class ProceduresTest {
                 .appendArgs0InputValue("hello1",(String) null).appendRequiredApi("helloworld").toolBoxInitBuilder().setName("hello").appendConstantNumber(1).buildAndReturn().initGenerator().buildAndOutput();
         Assertions.assertThrows(RuntimeException.class, ()-> mcr.createProcedure().buildAndOutput());
 
-        mcr.createProcedure("advancements_clearall").setInputsInline(true).setColor("251").setPreviousStatement(null).setNextStatement(null).setToolBoxId("unsafe").appendDependency("world","world").buildAndOutput();
+        mcr.createProcedure("advancements_clearall").setInputsInline(true).setColor("251").setPreviousStatement(null).setNextStatement(null).setToolBoxId("unsafe").appendDependency("world",BuiltInTypes.World).buildAndOutput();
         mcr.createProcedure("block_namespace").setInputsInline(true).setColor("%{BKY_TEXTS_HUE}").setOutput(BuiltInTypes.String).setToolBoxId("blockdata").setGroup("name").buildAndOutput();
         mcr.initGenerator(Generators.FORGE1201);
     }
