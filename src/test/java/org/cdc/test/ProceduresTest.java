@@ -72,6 +72,14 @@ public class ProceduresTest {
         MCreatorPluginFactory mcr = MCreatorPluginFactory.createFactory(pluginPath);
         mcr.createDataList().setName("datalist").appendElement("hello").initGenerator().buildAndOutput();
         mcr.createDataList().setName("types").appendElement("hey","hello").initGenerator().build();
+        mcr.createDataList().setName("blocksitems").appendElement("""
+                external: 
+                   readable_name: "Air"
+                   type: block""", """
+                  
+                  - Blocks.AI
+                  - "air"
+                """).initGenerator().buildAndOutput();
         mcr.initGenerator(Generators.FORGE1201);
     }
 

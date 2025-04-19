@@ -106,7 +106,7 @@ public class MCreatorPluginFactory {
         createFolder("procedures");
         ProcedureBuilder builder;
         try {
-            var class1 = Class.forName("org.cdc.framework.builder."+version+".ProcedureBuilder");
+            var class1 = this.getClass().getClassLoader().loadClass("org.cdc.framework.builder."+version+".ProcedureBuilder");
             builder = (ProcedureBuilder) class1.getConstructor(new Class[]{File.class}).newInstance(rootPath);
         } catch (ClassNotFoundException ignored){
 
@@ -129,7 +129,7 @@ public class MCreatorPluginFactory {
         createFolder("aitasks");
         AITasksBuilder instance;
         try {
-            var class1 = Class.forName("org.cdc.framework.builder."+version+".AITasksBuilder");
+            var class1 = this.getClass().getClassLoader().loadClass("org.cdc.framework.builder."+version+".AITasksBuilder");
             instance = (AITasksBuilder) class1.getConstructor(new Class[]{File.class}).newInstance(rootPath);
         } catch (ClassNotFoundException ignored){
 
@@ -152,7 +152,7 @@ public class MCreatorPluginFactory {
         createFolder("variables");
         VariableBuilder builder;
         try {
-            var class1 = Class.forName("org.cdc.framework.builder."+version+".VariableBuilder");
+            var class1 = this.getClass().getClassLoader().loadClass("org.cdc.framework.builder."+version+".VariableBuilder");
             builder = (VariableBuilder) class1.getConstructor(new Class[]{File.class}).newInstance(rootPath);
         } catch (ClassNotFoundException ignored){
 
@@ -170,7 +170,7 @@ public class MCreatorPluginFactory {
     public LanguageBuilder createDefaultLanguage() {
         createFolder("lang");
         try {
-            var class1 = Class.forName("org.cdc.framework.builder."+version+".LanguageBuilder");
+            var class1 = this.getClass().getClassLoader().loadClass("org.cdc.framework.builder."+version+".LanguageBuilder");
             return (LanguageBuilder) class1.getConstructor(new Class[]{File.class,String.class}).newInstance(rootPath,"texts");
         } catch (ClassNotFoundException ignored){
 
@@ -184,7 +184,7 @@ public class MCreatorPluginFactory {
     public LanguageBuilder createLanguage(Locale locale) {
         createFolder("lang");
         try {
-            var class1 = Class.forName("org.cdc.framework.builder."+version+".LanguageBuilder");
+            var class1 = this.getClass().getClassLoader().loadClass("org.cdc.framework.builder."+version+".LanguageBuilder");
             return (LanguageBuilder) class1.getConstructor(new Class[]{File.class,String.class}).newInstance(rootPath,"texts_" + locale.getLanguage() + "_" + locale.getCountry());
         } catch (ClassNotFoundException ignored){
 
@@ -203,7 +203,7 @@ public class MCreatorPluginFactory {
         createFolder("datalists");
         DataListBuilder instance;
         try {
-            var class1 = Class.forName("org.cdc.framework.builder."+version+".DataListBuilder");
+            var class1 = this.getClass().getClassLoader().loadClass("org.cdc.framework.builder."+version+".DataListBuilder");
             instance = (DataListBuilder) class1.getConstructor(new Class[]{File.class}).newInstance(rootPath);
         } catch (ClassNotFoundException ignored){
 
@@ -223,7 +223,7 @@ public class MCreatorPluginFactory {
         createFolder("triggers");
         TriggerBuilder instance;
         try {
-            var class1 = Class.forName("org.cdc.framework.builder."+version+".TriggerBuilder");
+            var class1 = this.getClass().getClassLoader().loadClass("org.cdc.framework.builder."+version+".TriggerBuilder");
             instance = (TriggerBuilder) class1.getConstructor(new Class[]{File.class}).newInstance(rootPath);
         } catch (ClassNotFoundException ignored){
 

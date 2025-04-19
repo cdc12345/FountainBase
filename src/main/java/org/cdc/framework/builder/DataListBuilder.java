@@ -68,7 +68,12 @@ public class DataListBuilder extends FileOutputBuilder<Map<String,String>> imple
         if (fileName == null){
             return;
         }
-        HashMap<String, String> hashMap = new HashMap<>(result);
+        HashMap<String, String> hashMap = new HashMap<>();
+        for (Map.Entry<String,String> entry:result.entrySet()){
+            if (entry.getKey().contains(": ")){
+                hashMap.put(entry.getKey().substring(0,entry.getKey().indexOf(':')),entry.getValue());
+            }
+        }
         var generator1 = Paths.get(rootPath.getPath(),generatorName,"mappings",getFileFullName());
         try {
             Files.copy(new ByteArrayInputStream(hashMap.toString().replace("{","").
