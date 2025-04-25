@@ -282,5 +282,14 @@ public class MCreatorPluginFactory {
         public String getCurrentInitGenerator(){
             return MCreatorPluginFactory.this.currentInit;
         }
+
+        public void clearGenerator(String generatorName){
+            var generator = new File(rootPath, generatorName);
+            FileUtils.deleteEmptyDirectoryInDirectory(generator);
+        }
+
+        public void clearPlugin(){
+            FileUtils.deleteEmptyDirectoryInDirectory(rootPath);
+        }
     }
 }

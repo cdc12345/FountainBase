@@ -20,7 +20,6 @@ tasks.withType(JavaCompile.class).configureEach {
 }
 
 
-
 test {
     useJUnitPlatform()
 }

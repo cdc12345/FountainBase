@@ -16,9 +16,25 @@ public class FileUtils {
 			File[] files = directory.listFiles();
 
 			for (File file : files) {
-				file.delete();
+				if (!file.delete()){
+					deleteNonEmptyDirector(file);
+				}
 			}
 			directory.delete();
+
+		} catch (Exception e) {
+			e.getStackTrace();
+		}
+	}
+
+	public static void deleteEmptyDirectoryInDirectory(File directory){
+		try {
+			File[] files = directory.listFiles();
+
+			for (File file : files) {
+				if (file.isDirectory())
+					file.delete();
+			}
 
 		} catch (Exception e) {
 			e.getStackTrace();
