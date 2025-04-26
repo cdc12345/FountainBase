@@ -2,6 +2,7 @@ package org.cdc.framework.builder;
 
 import org.cdc.framework.MCreatorPluginFactory;
 import org.cdc.framework.interfaces.IGeneratorInit;
+import org.cdc.framework.utils.FileUtils;
 
 import java.io.ByteArrayInputStream;
 import java.io.File;
@@ -22,7 +23,7 @@ public class DataListBuilder extends FileOutputBuilder<Map<String,String>> imple
     }
 
     public DataListBuilder setName(String name){
-        this.fileName = name;
+        this.fileName = FileUtils.filterSpace(name);
         return this;
     }
 

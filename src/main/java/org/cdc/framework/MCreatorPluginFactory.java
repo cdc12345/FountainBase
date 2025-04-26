@@ -19,277 +19,283 @@ import java.util.Locale;
 
 public class MCreatorPluginFactory {
 
-    public static final ArrayList<IGeneratorInit> generatorInits = new ArrayList<>();
+	public static final ArrayList<IGeneratorInit> generatorInits = new ArrayList<>();
 
-    public static MCreatorPluginFactory createFactory(String folder) {
-        return new MCreatorPluginFactory(new File(folder));
-    }
+	public static MCreatorPluginFactory createFactory(String folder) {
+		return new MCreatorPluginFactory(new File(folder));
+	}
 
-    private String currentInit;
+	private String currentInit;
 
-    private final File rootPath;
-    private String version;
-    
-    private ToolKit toolkit;
+	private final File rootPath;
+	private String version;
 
-    public MCreatorPluginFactory(File rootPath){
-        this.rootPath = rootPath;
-        this.version = MCreatorVersions.V_2025_1;
-        this.toolkit = new ToolKit();
-    }
+	private ToolKit toolkit;
 
-    public void createFolder(String name) {
-        var file = new File(rootPath, name);
-        file.mkdirs();
-    }
+	public MCreatorPluginFactory(File rootPath) {
+		this.rootPath = rootPath;
+		this.version = MCreatorVersions.V_2025_1;
+		this.toolkit = new ToolKit();
+	}
 
-    public void setVersion(String version){
-        this.version = version;
-    }
+	public void createFolder(String name) {
+		var file = new File(rootPath, name);
+		file.mkdirs();
+	}
 
-    public void initGenerator(String generator) {
-        initGenerator(generator,false);
-    }
+	public void setVersion(String version) {
+		this.version = version;
+	}
 
-    public void initGenerator(String generator,boolean replace) {
-        createFolder(generator);
-        var generator1 = new File(rootPath, generator);
-        var file = new File(generator1, "aitasks");
-        if (replace){
-            FileUtils.deleteNonEmptyDirector(file);
-        }
-        file.mkdirs();
+	public void initGenerator(String generator) {
+		initGenerator(generator, false);
+	}
 
-        file = new File(generator1, "mappings");
-        if (replace){
-            FileUtils.deleteNonEmptyDirector(file);
-        }
-        file.mkdirs();
+	public void initGenerator(String generator, boolean replace) {
+		createFolder(generator);
+		var generator1 = new File(rootPath, generator);
+		var file = new File(generator1, "aitasks");
+		if (replace) {
+			FileUtils.deleteNonEmptyDirector(file);
+		}
+		file.mkdirs();
 
-        file = new File(generator1, "procedures");
-        if (replace){
-            FileUtils.deleteNonEmptyDirector(file);
-        }
-        file.mkdirs();
+		file = new File(generator1, "mappings");
+		if (replace) {
+			FileUtils.deleteNonEmptyDirector(file);
+		}
+		file.mkdirs();
 
-        file = new File(generator1, "triggers");
-        if (replace){
-            FileUtils.deleteNonEmptyDirector(file);
-        }
-        file.mkdirs();
+		file = new File(generator1, "procedures");
+		if (replace) {
+			FileUtils.deleteNonEmptyDirector(file);
+		}
+		file.mkdirs();
 
-        file = new File(generator1, "variables");
-        if (replace){
-            FileUtils.deleteNonEmptyDirector(file);
-        }
-        file.mkdirs();
+		file = new File(generator1, "triggers");
+		if (replace) {
+			FileUtils.deleteNonEmptyDirector(file);
+		}
+		file.mkdirs();
 
-        file = new File(generator1,"templates");
-        if (replace){
-            FileUtils.deleteNonEmptyDirector(file);
-        }
-        file.mkdirs();
+		file = new File(generator1, "variables");
+		if (replace) {
+			FileUtils.deleteNonEmptyDirector(file);
+		}
+		file.mkdirs();
 
-        currentInit = generator;
-        generatorInits.forEach(a -> {
-            if (a.isSupported(this))
-                a.initGenerator0(generator);
-        });
-        currentInit = null;
-    }
+		file = new File(generator1, "templates");
+		if (replace) {
+			FileUtils.deleteNonEmptyDirector(file);
+		}
+		file.mkdirs();
 
-    public ProcedureBuilder createProcedure(){
-        return createProcedure(null);
-    }
+		currentInit = generator;
+		generatorInits.forEach(a -> {
+			if (a.isSupported(this)) {
+				a.initGenerator0(generator);
+			}
+		});
+		currentInit = null;
+	}
 
-    public ProcedureBuilder createProcedure(String name) {
-        createFolder("procedures");
-        ProcedureBuilder builder;
-        try {
-            var class1 = this.getClass().getClassLoader().loadClass("org.cdc.framework.builder."+version+".ProcedureBuilder");
-            builder = (ProcedureBuilder) class1.getConstructor(new Class[]{File.class}).newInstance(rootPath);
-        } catch (ClassNotFoundException ignored){
+	public ProcedureBuilder createProcedure() {
+		return createProcedure(null);
+	}
 
-        } catch (InvocationTargetException | InstantiationException |
-                                                          IllegalAccessException | NoSuchMethodException e) {
-            throw new RuntimeException(e);
-        }
-        builder = new ProcedureBuilder(rootPath);
-        if (name != null){
-            builder.setName(name);
-        }
-        return builder;
-    }
-    
-    public AITasksBuilder createAITask() {
-    	return createAITask(null);
-    }
+	public ProcedureBuilder createProcedure(String name) {
+		createFolder("procedures");
+		ProcedureBuilder builder = new ProcedureBuilder(rootPath);
+		try {
+			var class1 = this.getClass().getClassLoader()
+					.loadClass("org.cdc.framework.builder." + version + ".ProcedureBuilder");
+			builder = (ProcedureBuilder) class1.getConstructor(new Class[] { File.class }).newInstance(rootPath);
+		} catch (ClassNotFoundException ignored) {
 
-    public AITasksBuilder createAITask(String name) {
-        createFolder("aitasks");
-        AITasksBuilder instance;
-        try {
-            var class1 = this.getClass().getClassLoader().loadClass("org.cdc.framework.builder."+version+".AITasksBuilder");
-            instance = (AITasksBuilder) class1.getConstructor(new Class[]{File.class}).newInstance(rootPath);
-        } catch (ClassNotFoundException ignored){
+		} catch (InvocationTargetException | InstantiationException | IllegalAccessException |
+				 NoSuchMethodException e) {
+			throw new RuntimeException(e);
+		}
+		if (name != null) {
+			builder.setName(name);
+		}
+		return builder;
+	}
 
-        } catch (InvocationTargetException | InstantiationException |
-                 IllegalAccessException | NoSuchMethodException e) {
-            throw new RuntimeException(e);
-        }
-        instance = new AITasksBuilder(rootPath);
-        if (name != null) {
-        	instance.setName(name);
-        }
-        return instance;
-    }
+	public AITasksBuilder createAITask() {
+		return createAITask(null);
+	}
 
-    public VariableBuilder createVariable(){
-        return createVariable(null);
-    }
+	public AITasksBuilder createAITask(String name) {
+		createFolder("aitasks");
+		AITasksBuilder instance = new AITasksBuilder(rootPath);
+		try {
+			var class1 = this.getClass().getClassLoader()
+					.loadClass("org.cdc.framework.builder." + version + ".AITasksBuilder");
+			instance = (AITasksBuilder) class1.getConstructor(new Class[] { File.class }).newInstance(rootPath);
+		} catch (ClassNotFoundException ignored) {
 
-    public VariableBuilder createVariable(IVariableType type) {
-        createFolder("variables");
-        VariableBuilder builder;
-        try {
-            var class1 = this.getClass().getClassLoader().loadClass("org.cdc.framework.builder."+version+".VariableBuilder");
-            builder = (VariableBuilder) class1.getConstructor(new Class[]{File.class}).newInstance(rootPath);
-        } catch (ClassNotFoundException ignored){
+		} catch (InvocationTargetException | InstantiationException | IllegalAccessException |
+				 NoSuchMethodException e) {
+			throw new RuntimeException(e);
+		}
+		if (name != null) {
+			instance.setName(name);
+		}
+		return instance;
+	}
 
-        } catch (InvocationTargetException | InstantiationException |
-                 IllegalAccessException | NoSuchMethodException e) {
-            throw new RuntimeException(e);
-        }
-        builder = new VariableBuilder(rootPath);
-        if (type != null){
-            builder.setName(type.getVariableType()).setBlocklyVariableType(type.getBlocklyVariableType());
-        }
-        return builder;
-    }
+	public VariableBuilder createVariable() {
+		return createVariable(null);
+	}
 
-    public LanguageBuilder createDefaultLanguage() {
-        createFolder("lang");
-        try {
-            var class1 = this.getClass().getClassLoader().loadClass("org.cdc.framework.builder."+version+".LanguageBuilder");
-            return (LanguageBuilder) class1.getConstructor(new Class[]{File.class,String.class}).newInstance(rootPath,"texts");
-        } catch (ClassNotFoundException ignored){
+	public VariableBuilder createVariable(IVariableType type) {
+		createFolder("variables");
+		VariableBuilder builder = new VariableBuilder(rootPath);
+		try {
+			var class1 = this.getClass().getClassLoader()
+					.loadClass("org.cdc.framework.builder." + version + ".VariableBuilder");
+			builder = (VariableBuilder) class1.getConstructor(new Class[] { File.class }).newInstance(rootPath);
+		} catch (ClassNotFoundException ignored) {
 
-        } catch (InvocationTargetException | InstantiationException |
-                 IllegalAccessException | NoSuchMethodException e) {
-            throw new RuntimeException(e);
-        }
-        return new LanguageBuilder(rootPath, "texts");
-    }
+		} catch (InvocationTargetException | InstantiationException | IllegalAccessException |
+				 NoSuchMethodException e) {
+			throw new RuntimeException(e);
+		}
+		if (type != null) {
+			builder.setName(type.getVariableType()).setBlocklyVariableType(type.getBlocklyVariableType());
+		}
+		return builder;
+	}
 
-    public LanguageBuilder createLanguage(Locale locale) {
-        createFolder("lang");
-        try {
-            var class1 = this.getClass().getClassLoader().loadClass("org.cdc.framework.builder."+version+".LanguageBuilder");
-            return (LanguageBuilder) class1.getConstructor(new Class[]{File.class,String.class}).newInstance(rootPath,"texts_" + locale.getLanguage() + "_" + locale.getCountry());
-        } catch (ClassNotFoundException ignored){
+	public LanguageBuilder createDefaultLanguage() {
+		createFolder("lang");
+		try {
+			var class1 = this.getClass().getClassLoader()
+					.loadClass("org.cdc.framework.builder." + version + ".LanguageBuilder");
+			return (LanguageBuilder) class1.getConstructor(new Class[] { File.class, String.class })
+					.newInstance(rootPath, "texts");
+		} catch (ClassNotFoundException ignored) {
 
-        } catch (InvocationTargetException | InstantiationException |
-                 IllegalAccessException | NoSuchMethodException e) {
-            throw new RuntimeException(e);
-        }
-        return new LanguageBuilder(rootPath, "texts_" + locale.getLanguage() + "_" + locale.getCountry());
-    }
-    
-    public DataListBuilder createDataList() {
-    	return createDataList(null);
-    }
+		} catch (InvocationTargetException | InstantiationException | IllegalAccessException |
+				 NoSuchMethodException e) {
+			throw new RuntimeException(e);
+		}
+		return new LanguageBuilder(rootPath, "texts");
+	}
 
-    public DataListBuilder createDataList(String name) {
-        createFolder("datalists");
-        DataListBuilder instance;
-        try {
-            var class1 = this.getClass().getClassLoader().loadClass("org.cdc.framework.builder."+version+".DataListBuilder");
-            instance = (DataListBuilder) class1.getConstructor(new Class[]{File.class}).newInstance(rootPath);
-        } catch (ClassNotFoundException ignored){
+	public LanguageBuilder createLanguage(Locale locale) {
+		createFolder("lang");
+		try {
+			var class1 = this.getClass().getClassLoader()
+					.loadClass("org.cdc.framework.builder." + version + ".LanguageBuilder");
+			return (LanguageBuilder) class1.getConstructor(new Class[] { File.class, String.class })
+					.newInstance(rootPath, "texts_" + locale.getLanguage() + "_" + locale.getCountry());
+		} catch (ClassNotFoundException ignored) {
 
-        } catch (InvocationTargetException | InstantiationException |
-                 IllegalAccessException | NoSuchMethodException e) {
-            throw new RuntimeException(e);
-        }
-        instance = new DataListBuilder(rootPath);
-        return instance.setName(name);
-    }
-    
-    public TriggerBuilder createTrigger() {
-    	return createTrigger(null);
-    }
+		} catch (InvocationTargetException | InstantiationException | IllegalAccessException |
+				 NoSuchMethodException e) {
+			throw new RuntimeException(e);
+		}
+		return new LanguageBuilder(rootPath, "texts_" + locale.getLanguage() + "_" + locale.getCountry());
+	}
 
-    public TriggerBuilder createTrigger(String name) {
-        createFolder("triggers");
-        TriggerBuilder instance;
-        try {
-            var class1 = this.getClass().getClassLoader().loadClass("org.cdc.framework.builder."+version+".TriggerBuilder");
-            instance = (TriggerBuilder) class1.getConstructor(new Class[]{File.class}).newInstance(rootPath);
-        } catch (ClassNotFoundException ignored){
+	public DataListBuilder createDataList() {
+		return createDataList(null);
+	}
 
-        } catch (InvocationTargetException | InstantiationException |
-                 IllegalAccessException | NoSuchMethodException e) {
-            throw new RuntimeException(e);
-        }
-        instance = new TriggerBuilder(rootPath);
-        return instance.setName(name);
-    }
+	public DataListBuilder createDataList(String name) {
+		createFolder("datalists");
+		DataListBuilder instance = new DataListBuilder(rootPath);
+		try {
+			var class1 = this.getClass().getClassLoader()
+					.loadClass("org.cdc.framework.builder." + version + ".DataListBuilder");
+			instance = (DataListBuilder) class1.getConstructor(new Class[] { File.class }).newInstance(rootPath);
+		} catch (ClassNotFoundException ignored) {
 
-    public void createApis(String apiName){
-        createFolder("apis");
-        try {
-            Files.copy(new ByteArrayInputStream(("name: "+apiName).getBytes(StandardCharsets.UTF_8)), Path.of(rootPath.getPath(),"apis",apiName+".yaml"));
-        } catch (IOException ignored) {
-        }
-    }
+		} catch (InvocationTargetException | InstantiationException | IllegalAccessException |
+				 NoSuchMethodException e) {
+			throw new RuntimeException(e);
+		}
+		return instance.setName(name);
+	}
 
-    public ProcedureBuilder createProcedureCategory(){
-        return BuilderUtils.createProcedureCategory(this,null);
-    }
+	public TriggerBuilder createTrigger() {
+		return createTrigger(null);
+	}
 
-    public ProcedureBuilder createAITaskCategory(){
-        return BuilderUtils.createAITaskCategory(this,null);
-    }
+	public TriggerBuilder createTrigger(String name) {
+		createFolder("triggers");
+		TriggerBuilder instance = new TriggerBuilder(rootPath);
+		try {
+			var class1 = this.getClass().getClassLoader()
+					.loadClass("org.cdc.framework.builder." + version + ".TriggerBuilder");
+			instance = (TriggerBuilder) class1.getConstructor(new Class[] { File.class }).newInstance(rootPath);
+		} catch (ClassNotFoundException ignored) {
 
-    public File rootPath() {
-        return rootPath;
-    }
+		} catch (InvocationTargetException | InstantiationException | IllegalAccessException |
+				 NoSuchMethodException e) {
+			throw new RuntimeException(e);
+		}
+		return instance.setName(name);
+	}
 
-    public String getCurrentInit() {
-        return currentInit;
-    }
+	public void createApis(String apiName) {
+		createFolder("apis");
+		try {
+			Files.copy(new ByteArrayInputStream(("name: " + apiName).getBytes(StandardCharsets.UTF_8)),
+					Path.of(rootPath.getPath(), "apis", apiName + ".yaml"));
+		} catch (IOException ignored) {
+		}
+	}
 
-    public ToolKit getToolKit(){
-        return toolkit;
-    }
+	public ProcedureBuilder createProcedureCategory(String name) {
+		return BuilderUtils.createProcedureCategory(this, name);
+	}
 
-    public class ToolKit{
-        private ToolKit(){
-        }
+	public ProcedureBuilder createAITaskCategory(String name) {
+		return BuilderUtils.createAITaskCategory(this, name);
+	}
 
-        public ProcedureBuilder createInputProcedure(String name){
-            return BuilderUtils.createCommonProcedure(MCreatorPluginFactory.this, name);
-        }
+	public File rootPath() {
+		return rootPath;
+	}
 
-        public ProcedureBuilder createOutputProcedure(String name,String output){
-            return BuilderUtils.createOutputProcedure(MCreatorPluginFactory.this,name,output);
-        }
+	public String getCurrentInit() {
+		return currentInit;
+	}
 
-        public ProcedureBuilder createOutputProcedure(String name,IVariableType output){
-            return BuilderUtils.createOutputProcedure(MCreatorPluginFactory.this,name,output);
-        }
+	public ToolKit getToolKit() {
+		return toolkit;
+	}
 
-        public String getCurrentInitGenerator(){
-            return MCreatorPluginFactory.this.currentInit;
-        }
+	public class ToolKit {
 
-        public void clearGenerator(String generatorName){
-            var generator = new File(rootPath, generatorName);
-            FileUtils.deleteEmptyDirectoryInDirectory(generator);
-        }
+		private ToolKit() {
+		}
 
-        public void clearPlugin(){
-            FileUtils.deleteEmptyDirectoryInDirectory(rootPath);
-        }
-    }
+		public ProcedureBuilder createInputProcedure(String name) {
+			return BuilderUtils.createCommonProcedure(MCreatorPluginFactory.this, name);
+		}
+
+		public ProcedureBuilder createOutputProcedure(String name, String output) {
+			return BuilderUtils.createOutputProcedure(MCreatorPluginFactory.this, name, output);
+		}
+
+		public ProcedureBuilder createOutputProcedure(String name, IVariableType output) {
+			return BuilderUtils.createOutputProcedure(MCreatorPluginFactory.this, name, output);
+		}
+
+		public String getCurrentInitGenerator() {
+			return MCreatorPluginFactory.this.currentInit;
+		}
+
+		public void clearGenerator(String generatorName) {
+			FileUtils.deleteEmptyDirectoryInDirectory(new File(rootPath, generatorName));
+		}
+
+		public void clearPlugin() {
+			FileUtils.deleteEmptyDirectoryInDirectory(rootPath);
+		}
+	}
 }

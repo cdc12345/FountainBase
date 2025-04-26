@@ -8,6 +8,7 @@ import org.cdc.framework.MCreatorPluginFactory;
 import org.cdc.framework.interfaces.IGeneratorInit;
 import org.cdc.framework.utils.BuilderUtils;
 import org.cdc.framework.utils.ColorUtils;
+import org.cdc.framework.utils.FileUtils;
 
 import javax.management.DescriptorKey;
 import java.awt.*;
@@ -26,7 +27,7 @@ public class VariableBuilder extends JsonBuilder implements IGeneratorInit {
     }
 
     public VariableBuilder setName(String name){
-        this.fileName = name;
+        this.fileName = FileUtils.filterSpace(name);
         return this;
     }
 

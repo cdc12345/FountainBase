@@ -7,6 +7,7 @@ import org.cdc.framework.MCreatorPluginFactory;
 import org.cdc.framework.interfaces.IGeneratorInit;
 import org.cdc.framework.interfaces.IVariableType;
 import org.cdc.framework.utils.BuilderUtils;
+import org.cdc.framework.utils.FileUtils;
 import org.cdc.framework.utils.Side;
 
 import java.io.ByteArrayInputStream;
@@ -34,7 +35,7 @@ public class TriggerBuilder extends JsonBuilder implements IGeneratorInit {
     }
 
     public TriggerBuilder setName(String name) {
-        this.fileName = name;
+        this.fileName = FileUtils.filterSpace(name);
         return this;
     }
 

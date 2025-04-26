@@ -1,6 +1,8 @@
 package org.cdc.framework.builder;
 
 
+import org.cdc.framework.utils.FileUtils;
+
 import java.io.File;
 
 public abstract class FileOutputBuilder<T> {
@@ -16,7 +18,7 @@ public abstract class FileOutputBuilder<T> {
     }
 
     protected String getFileFullName(){
-        return fileName + "." +fileExtension;
+        return FileUtils.filterSpace(fileName) + "." +fileExtension;
     }
 
     public abstract T build();

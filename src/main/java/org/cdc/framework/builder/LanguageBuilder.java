@@ -90,7 +90,7 @@ public class LanguageBuilder extends FileOutputBuilder<Properties> {
     @Override
     public Properties buildAndOutput() {
         try {
-            this.result.store(new FileWriter(new File(targetPath,fileName+"."+fileExtension), StandardCharsets.UTF_8),"Auto-Generated");
+            this.result.store(new FileWriter(new File(targetPath,getFileFullName()), StandardCharsets.UTF_8),"Auto-Generated");
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

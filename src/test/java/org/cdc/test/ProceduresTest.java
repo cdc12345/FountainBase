@@ -21,7 +21,10 @@ public class ProceduresTest {
     @Test
     public void typeTest(){
         MCreatorPluginFactory mcr = new MCreatorPluginFactory(new File(pluginPath));
-        mcr.createProcedure().setName("helloworld").markType().setColor(Color.RED).buildAndOutput();
+        mcr.createProcedureCategory("helloworld").markType().setColor(Color.RED).buildAndOutput();
+        mcr.createProcedure().markType().setName("testtype1").setParentCategory("helloworld").setColor(Color.BLUE).buildAndOutput();
+
+        mcr.createAITaskCategory("helloai").setColor(Color.RED).buildAndOutput();
     }
 
     @Test
@@ -42,8 +45,8 @@ public class ProceduresTest {
     public void procedureTest(){
         MCreatorPluginFactory mcr = new MCreatorPluginFactory(new File(pluginPath));
         mcr.createProcedure().setName("hey_set").setColor(Color.RED).setPreviousStatement(null)
-                .setNextStatement(null).setGroup("name").setToolBoxId(BuiltInToolBoxId.Procedure.CUSTOM_VARIABLES)
-                .setInputsInline(true).appendArgs0InputValue("hello", BuiltInTypes.Number.getLowerName())
+                .setNextStatement(null)
+                .appendArgs0InputValue("hello", BuiltInTypes.Number.getLowerName())
                 .appendArgs0InputValue("hello1",(String) null).appendRequiredApi("helloworld").toolBoxInitBuilder().setName("hello").appendConstantNumber(1).buildAndReturn().initGenerator().buildAndOutput();
         Assertions.assertThrows(RuntimeException.class, ()-> mcr.createProcedure().buildAndOutput());
 

@@ -20,4 +20,9 @@ public class UtilsTest {
         System.out.println(FileUtils.tryGenerateVariableCode(new File("src/test/resources/atomicitemstack.json")));
         System.out.println(FileUtils.tryGenerateTrigger(new File("src/test/resources/effect_applicable.json")));
     }
+
+    @Test
+    public void testFileName(){
+        Assertions.assertEquals(FileUtils.filterSpace("hello world"),"hello_world");
+    }
 }

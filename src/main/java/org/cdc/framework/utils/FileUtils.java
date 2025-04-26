@@ -55,6 +55,13 @@ public class FileUtils {
 		return gson.fromJson(js.get("mcreator").getAsJsonObject().get("inputs"), JsonArray.class);
 	}
 
+	public static String filterSpace(String name){
+		if (name == null) {
+			return null;
+		}
+		return name.replace(" ","_");
+	}
+
 	/**
 	 * generate code
 	 * @param fl file

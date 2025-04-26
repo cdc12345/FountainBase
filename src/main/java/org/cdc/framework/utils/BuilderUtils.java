@@ -29,19 +29,23 @@ public class BuilderUtils {
     }
 
     public static ProcedureBuilder createProcedureCategory(MCreatorPluginFactory mCreatorPluginFactory, IProcedureCategory category) {
+        return createProcedureCategory(mCreatorPluginFactory, category.getName());
+    }
+
+    public static ProcedureBuilder createProcedureCategory(MCreatorPluginFactory mCreatorPluginFactory, String name) {
         var aitaskscat = mCreatorPluginFactory.createProcedure();
-        aitaskscat.markType();
-        if (category != null) {
-            aitaskscat.setName(category.getName());
+        if (name != null) {
+            aitaskscat.setName(name);
         }
+        aitaskscat.markType();
         return aitaskscat;
     }
 
-    public static ProcedureBuilder createAITaskCategory(MCreatorPluginFactory mCreatorPluginFactory, IProcedureCategory category) {
+    public static ProcedureBuilder createAITaskCategory(MCreatorPluginFactory mCreatorPluginFactory, String category) {
         var pro = mCreatorPluginFactory.createAITask();
         pro.markType();
         if (category != null) {
-            pro.setName(category.getName());
+            pro.setName(category);
         }
         return pro;
     }
@@ -54,11 +58,11 @@ public class BuilderUtils {
         return inputs.asList().stream().map(a -> "${input$" + a.getAsString() + "}").collect(Collectors.joining(",", "<#-", "->"));
     }
 
-    public static String generateStatementsComment(JsonArray statements){
+    public static String generateStatementsComment(JsonArray statements) {
         return statements.asList().stream().map(a -> "${statement$" + a.getAsString() + "}").collect(Collectors.joining(",", "<#-", "->"));
     }
 
-    public static String generateFieldsComment(JsonArray fields){
+    public static String generateFieldsComment(JsonArray fields) {
         return fields.asList().stream().map(a -> "${field$" + a.getAsString() + "}").collect(Collectors.joining(",", "<#-", "->"));
     }
 }
