@@ -73,6 +73,10 @@ public class VariableBuilder extends JsonBuilder implements IGeneratorInit {
 
     @Override
     public JsonElement build() {
+        JsonObject resul = result.getAsJsonObject();
+        if (!resul.has("nullable")){
+            setNullable(false);
+        }
         return result;
     }
 

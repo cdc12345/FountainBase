@@ -13,10 +13,22 @@
         </option>
       </GradleProjectSettings>
       <GradleProjectSettings>
-        <option name="externalProjectPath" value="$PROJECT_DIR$/../ParchmentMC-MCreator" />
+        <option name="externalProjectPath" value="$PROJECT_DIR$/../MyTools" />
         <option name="modules">
           <set>
             <option value="$PROJECT_DIR$" />
+            <option value="$PROJECT_DIR$/../MCreator2025" />
+            <option value="$PROJECT_DIR$/../MyTools" />
+            <option value="$PROJECT_DIR$/../MyTools/ConvenientTransfer" />
+            <option value="$PROJECT_DIR$/../MyTools/DataGen" />
+            <option value="$PROJECT_DIR$/../MyTools/TempPlugin" />
+          </set>
+        </option>
+      </GradleProjectSettings>
+      <GradleProjectSettings>
+        <option name="externalProjectPath" value="$PROJECT_DIR$/../ParchmentMC-MCreator" />
+        <option name="modules">
+          <set>
             <option value="$PROJECT_DIR$/../MCreator" />
             <option value="$PROJECT_DIR$/../ParchmentMC-MCreator" />
             <option value="$PROJECT_DIR$/../ParchmentMC-MCreator/ConvenientTransfer" />

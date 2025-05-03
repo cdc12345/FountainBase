@@ -15,9 +15,11 @@ public class FileUtils {
 		try {
 			File[] files = directory.listFiles();
 
-			for (File file : files) {
-				if (!file.delete()){
-					deleteNonEmptyDirector(file);
+			if (files != null) {
+				for (File file : files) {
+					if (!file.delete()){
+						deleteNonEmptyDirector(file);
+					}
 				}
 			}
 			directory.delete();
@@ -31,9 +33,11 @@ public class FileUtils {
 		try {
 			File[] files = directory.listFiles();
 
-			for (File file : files) {
-				if (file.isDirectory())
-					file.delete();
+			if (files != null) {
+				for (File file : files) {
+					if (file.isDirectory())
+						file.delete();
+				}
 			}
 
 		} catch (Exception e) {

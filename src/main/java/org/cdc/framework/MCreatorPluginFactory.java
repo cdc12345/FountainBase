@@ -30,7 +30,7 @@ public class MCreatorPluginFactory {
 	private final File rootPath;
 	private String version;
 
-	private ToolKit toolkit;
+	private final ToolKit toolkit;
 
 	public MCreatorPluginFactory(File rootPath) {
 		this.rootPath = rootPath;
@@ -40,7 +40,9 @@ public class MCreatorPluginFactory {
 
 	public void createFolder(String name) {
 		var file = new File(rootPath, name);
-		file.mkdirs();
+		if (file.mkdirs()){
+			System.out.println(file.getPath());
+		}
 	}
 
 	public void setVersion(String version) {
@@ -58,37 +60,49 @@ public class MCreatorPluginFactory {
 		if (replace) {
 			FileUtils.deleteNonEmptyDirector(file);
 		}
-		file.mkdirs();
+		if (file.mkdirs()){
+			System.out.println(file.getPath());
+		}
 
 		file = new File(generator1, "mappings");
 		if (replace) {
 			FileUtils.deleteNonEmptyDirector(file);
 		}
-		file.mkdirs();
+		if (file.mkdirs()){
+			System.out.println(file.getPath());
+		}
 
 		file = new File(generator1, "procedures");
 		if (replace) {
 			FileUtils.deleteNonEmptyDirector(file);
 		}
-		file.mkdirs();
+		if (file.mkdirs()){
+			System.out.println(file.getPath());
+		}
 
 		file = new File(generator1, "triggers");
 		if (replace) {
 			FileUtils.deleteNonEmptyDirector(file);
 		}
-		file.mkdirs();
+		if (file.mkdirs()){
+			System.out.println(file.getPath());
+		}
 
 		file = new File(generator1, "variables");
 		if (replace) {
 			FileUtils.deleteNonEmptyDirector(file);
 		}
-		file.mkdirs();
+		if (file.mkdirs()){
+			System.out.println(file.getPath());
+		}
 
 		file = new File(generator1, "templates");
 		if (replace) {
 			FileUtils.deleteNonEmptyDirector(file);
 		}
-		file.mkdirs();
+		if (file.mkdirs()){
+			System.out.println(file.getPath());
+		}
 
 		currentInit = generator;
 		generatorInits.forEach(a -> {

@@ -82,6 +82,10 @@ public class TriggerBuilder extends JsonBuilder implements IGeneratorInit {
         return this;
     }
 
+    public TriggerBuilder setLocalizedName(LanguageBuilder languageBuilder,String name){
+        return setLanguage(languageBuilder,name);
+    }
+
     public TriggerBuilder setLanguage(LanguageBuilder languageBuilder, String content) {
         languageBuilder.appendTrigger(fileName, content);
         return this;
