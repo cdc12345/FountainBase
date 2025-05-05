@@ -29,7 +29,9 @@ public abstract class JsonBuilder extends FileOutputBuilder<JsonElement>{
         if (targetPath != null) {
             try {
                 Gson gson = new GsonBuilder().setPrettyPrinting().disableHtmlEscaping().serializeNulls().create();
-                Files.copy(new ByteArrayInputStream(gson.toJson(json).getBytes(StandardCharsets.UTF_8)),new File(targetPath,getFileFullName()).toPath(), StandardCopyOption.REPLACE_EXISTING);
+                var file = new File(targetPath,getFileFullName());
+                System.out.println(file.getPath());
+                Files.copy(new ByteArrayInputStream(gson.toJson(json).getBytes(StandardCharsets.UTF_8)),file.toPath(), StandardCopyOption.REPLACE_EXISTING);
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }

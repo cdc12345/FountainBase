@@ -25,7 +25,7 @@ public class BuilderUtils {
      * .createProcedure(name).setGroup("name").setPreviousStatement(null).setNextStatement(null).setInputsInline(true)
      */
     public static ProcedureBuilder createCommonProcedure(MCreatorPluginFactory mCreatorPluginFactory, String name) {
-        return mCreatorPluginFactory.createProcedure(name).setGroup("name").setPreviousStatement(null).setNextStatement(null).setInputsInline(true);
+        return mCreatorPluginFactory.createProcedure(name).setGroup("name").setColor(60).setPreviousStatement(null).setNextStatement(null).setInputsInline(true);
     }
 
     public static ProcedureBuilder createProcedureCategory(MCreatorPluginFactory mCreatorPluginFactory, IProcedureCategory category) {
@@ -51,7 +51,7 @@ public class BuilderUtils {
     }
 
     public static boolean isSupportProcedure(String generatorName) {
-        return generatorName.startsWith("forge") || generatorName.startsWith("neoforge") || generatorName.startsWith("fabric");
+        return generatorName.startsWith("forge") || generatorName.startsWith("neoforge") || generatorName.startsWith("fabric") || generatorName.startsWith("spigot");
     }
 
     public static String generateInputsComment(JsonArray inputs) {
