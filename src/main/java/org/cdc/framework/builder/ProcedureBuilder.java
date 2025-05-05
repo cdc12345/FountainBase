@@ -510,7 +510,7 @@ public class ProcedureBuilder extends JsonBuilder implements IGeneratorInit {
 		return this;
 	}
 
-	public void initGenerator0(String generatorName) {
+	public void initGenerator0(String generatorName,boolean replace) {
 		if (isType) {
 			return;
 		}

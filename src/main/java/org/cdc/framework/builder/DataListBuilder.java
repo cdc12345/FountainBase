@@ -65,7 +65,7 @@ public class DataListBuilder extends FileOutputBuilder<Map<String,String>> imple
     }
 
     @Override
-    public void initGenerator0(String generatorName) {
+    public void initGenerator0(String generatorName ,boolean replace) {
         if (fileName == null){
             return;
         }
@@ -73,13 +73,16 @@ public class DataListBuilder extends FileOutputBuilder<Map<String,String>> imple
         for (Map.Entry<String,String> entry:result.entrySet()){
             if (entry.getKey().contains(": ")){
                 hashMap.put(entry.getKey().substring(0,entry.getKey().indexOf(':')),entry.getValue());
+            } else {
+                hashMap.put(entry.getKey(),entry.getValue());
             }
         }
         var generator1 = Paths.get(rootPath.getPath(),generatorName,"mappings",getFileFullName());
         try {
+            System.out.println(generator1);
             Files.copy(new ByteArrayInputStream(hashMap.toString().replace("{","").
                     replace("}","").replace("=",": ").
-                    replace(", ",System.lineSeparator()).getBytes(StandardCharsets.UTF_8)),generator1);
+                    replace(", ",System.lineSeparator()).getBytes(StandardCharsets.UTF_8)),generator1,(replace)?StandardCopyOption.REPLACE_EXISTING:StandardCopyOption.ATOMIC_MOVE);
         } catch (IOException ignored) {}
     }
 

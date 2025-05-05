@@ -105,7 +105,7 @@ public class TriggerBuilder extends JsonBuilder implements IGeneratorInit {
     }
 
     @Override
-    public void initGenerator0(String generatorName) {
+    public void initGenerator0(String generatorName,boolean replace) {
         var generator1 = Paths.get(rootPath.getPath(),generatorName,"triggers",fileName + ".java.ftl");
         System.out.println(generator1);
         StringBuilder builder = new StringBuilder();
