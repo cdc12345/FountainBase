@@ -66,41 +66,26 @@ public class MCreatorPluginFactory {
 		}
 
 		file = new File(generator1, "mappings");
-		if (replace) {
-			FileUtils.deleteNonEmptyDirector(file);
-		}
 		if (file.mkdirs()){
 			System.out.println(file.getPath());
 		}
 
 		file = new File(generator1, "procedures");
-		if (replace) {
-			FileUtils.deleteNonEmptyDirector(file);
-		}
 		if (file.mkdirs()){
 			System.out.println(file.getPath());
 		}
 
 		file = new File(generator1, "triggers");
-		if (replace) {
-			FileUtils.deleteNonEmptyDirector(file);
-		}
 		if (file.mkdirs()){
 			System.out.println(file.getPath());
 		}
 
 		file = new File(generator1, "variables");
-		if (replace) {
-			FileUtils.deleteNonEmptyDirector(file);
-		}
 		if (file.mkdirs()){
 			System.out.println(file.getPath());
 		}
 
 		file = new File(generator1, "templates");
-		if (replace) {
-			FileUtils.deleteNonEmptyDirector(file);
-		}
 		if (file.mkdirs()){
 			System.out.println(file.getPath());
 		}

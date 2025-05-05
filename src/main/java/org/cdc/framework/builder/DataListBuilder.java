@@ -11,14 +11,17 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.TreeMap;
 
 public class DataListBuilder extends FileOutputBuilder<Map<String,String>> implements IGeneratorInit {
+    private final String DEFAULT_KEY = "_default";
+
     private final Map<String,String> result;
     public DataListBuilder(File rootPath) {
         super(rootPath, new File(rootPath,"datalists"));
-        result = new HashMap<>();
+        result = new LinkedHashMap<>();
         this.fileExtension = "yaml";
     }
 
@@ -36,6 +39,16 @@ public class DataListBuilder extends FileOutputBuilder<Map<String,String>> imple
         return this;
     }
 
+    public DataListBuilder setDefault(){
+        setDefault(result.values().stream().findFirst().get());
+        return this;
+    }
+
+    public DataListBuilder setDefault(String defaultMapping){
+        appendElement(DEFAULT_KEY,defaultMapping);
+        return this;
+    }
+
     @Override
     public Map<String,String> build() {
         return result;
@@ -48,7 +61,7 @@ public class DataListBuilder extends FileOutputBuilder<Map<String,String>> imple
         }
         var build1 = build();
         try {
-            var build = build1.keySet().stream().toList();
+            var build = build1.keySet().stream().filter(a->!a.equals(DEFAULT_KEY)).toList();
             StringBuilder stringBuilder = new StringBuilder();
             stringBuilder.append("- ").append(build.getFirst());
             build.stream().skip(1).forEach(a-> stringBuilder.append(System.lineSeparator()).append("- ").append(a));
@@ -69,7 +82,7 @@ public class DataListBuilder extends FileOutputBuilder<Map<String,String>> imple
         if (fileName == null){
             return;
         }
-        HashMap<String, String> hashMap = new HashMap<>();
+        TreeMap<String, String> hashMap = new TreeMap<>();
         for (Map.Entry<String,String> entry:result.entrySet()){
             if (entry.getKey().contains(": ")){
                 hashMap.put(entry.getKey().substring(0,entry.getKey().indexOf(':')),entry.getValue());
