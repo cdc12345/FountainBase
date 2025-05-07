@@ -21,6 +21,7 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.regex.Pattern;
 
@@ -330,6 +331,14 @@ public class ProcedureBuilder extends JsonBuilder implements IGeneratorInit {
 		jsonObject.addProperty("width", width);
 		jsonObject.addProperty("height", height);
 		return appendArgs0Element(jsonObject);
+	}
+
+	public ProcedureBuilder appendArgs0FieldDropDown(String name,String... map){
+		LinkedHashMap<String,String> linkedHashMap = new LinkedHashMap<>();
+		for (int index = 0; index < (map.length /2) ;index++){
+			linkedHashMap.put(map[index * 2],map[index * 2 + 1]);
+		}
+		return appendArgs0FieldDropDown(name,linkedHashMap);
 	}
 
 	public ProcedureBuilder appendArgs0FieldDropDown(String name, Map<String, String> options) {
