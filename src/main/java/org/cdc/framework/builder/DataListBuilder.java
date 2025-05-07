@@ -18,7 +18,7 @@ import java.util.TreeMap;
 public class DataListBuilder extends FileOutputBuilder<Map<String,String>> implements IGeneratorInit {
     private final String DEFAULT_KEY = "_default";
 
-    private final Map<String,String> result;
+	private final Map<String,String> result;
     public DataListBuilder(File rootPath) {
         super(rootPath, new File(rootPath,"datalists"));
         result = new LinkedHashMap<>();
@@ -40,13 +40,16 @@ public class DataListBuilder extends FileOutputBuilder<Map<String,String>> imple
     }
 
     public DataListBuilder setDefault(){
-        setDefault(result.values().stream().findFirst().get());
-        return this;
+        return setDefault(result.values().stream().findFirst().orElse(null));
     }
 
     public DataListBuilder setDefault(String defaultMapping){
-        appendElement(DEFAULT_KEY,defaultMapping);
-        return this;
+        return appendElement(DEFAULT_KEY,defaultMapping);
+    }
+
+    public DataListBuilder setMapTemplate(String mapTemplate){
+		String MAP_TEMPLATE = "_mcreator_map_template";
+		return appendElement(MAP_TEMPLATE,mapTemplate);
     }
 
     @Override
