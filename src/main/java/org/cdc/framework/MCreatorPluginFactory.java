@@ -19,6 +19,7 @@ import java.util.Locale;
 
 public class MCreatorPluginFactory {
 
+	//generator need to be inited
 	public static final ArrayList<IGeneratorInit> generatorInits = new ArrayList<>();
 
 	public static MCreatorPluginFactory createFactory(String folder) {
@@ -40,7 +41,7 @@ public class MCreatorPluginFactory {
 
 	public void createFolder(String name) {
 		var file = new File(rootPath, name);
-		if (file.mkdirs()){
+		if (file.mkdirs()) {
 			System.out.println(file.getPath());
 		}
 	}
@@ -57,43 +58,43 @@ public class MCreatorPluginFactory {
 		createFolder(generator);
 		var generator1 = new File(rootPath, generator);
 		var file = new File(generator1, "aitasks");
-//		if (replace) {
-//			FileUtils.deleteNonEmptyDirector(file);
-//		}
+		//		if (replace) {
+		//			FileUtils.deleteNonEmptyDirector(file);
+		//		}
 		//FUCK!!!!!!!!!!!!!!!!
-		if (file.mkdirs()){
+		if (file.mkdirs()) {
 			System.out.println(file.getPath());
 		}
 
 		file = new File(generator1, "mappings");
-		if (file.mkdirs()){
+		if (file.mkdirs()) {
 			System.out.println(file.getPath());
 		}
 
 		file = new File(generator1, "procedures");
-		if (file.mkdirs()){
+		if (file.mkdirs()) {
 			System.out.println(file.getPath());
 		}
 
 		file = new File(generator1, "triggers");
-		if (file.mkdirs()){
+		if (file.mkdirs()) {
 			System.out.println(file.getPath());
 		}
 
 		file = new File(generator1, "variables");
-		if (file.mkdirs()){
+		if (file.mkdirs()) {
 			System.out.println(file.getPath());
 		}
 
 		file = new File(generator1, "templates");
-		if (file.mkdirs()){
+		if (file.mkdirs()) {
 			System.out.println(file.getPath());
 		}
 
 		currentInit = generator;
 		generatorInits.forEach(a -> {
 			if (a.isSupported(this)) {
-				a.initGenerator0(generator,replace);
+				a.initGenerator0(generator, replace);
 			}
 		});
 		currentInit = null;
