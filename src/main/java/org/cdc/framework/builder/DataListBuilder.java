@@ -63,7 +63,7 @@ public class DataListBuilder extends FileOutputBuilder<Map<String, String>> impl
 		}
 		var build1 = build();
 		try {
-			var build = build1.keySet().stream().filter(a -> !a.equals(DEFAULT_KEY)).toList();
+			var build = build1.keySet().stream().filter(a -> !a.startsWith("_")).toList();
 			StringBuilder stringBuilder = new StringBuilder();
 			stringBuilder.append("- ").append(build.getFirst());
 			build.stream().skip(1).forEach(a -> stringBuilder.append(System.lineSeparator()).append("- ").append(a));
