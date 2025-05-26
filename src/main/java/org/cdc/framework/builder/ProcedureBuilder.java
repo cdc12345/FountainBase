@@ -26,19 +26,19 @@ import java.util.Map;
 import java.util.regex.Pattern;
 
 public class ProcedureBuilder extends JsonBuilder implements IGeneratorInit {
-	private boolean isType;
+	protected boolean isType;
 
-	private String colorKey;
+	protected String colorKey;
 
-	private final JsonObject mcreator;
-	private final JsonArray inputs;
-	private final JsonArray fields;
-	private final JsonArray statements;
-	private final JsonArray args0;
-	private final JsonArray dependencies;
-	private final JsonArray requiredApis;
-	private final JsonArray extensions;
-	private final JsonArray warnings;
+	protected final JsonObject mcreator;
+	protected final JsonArray inputs;
+	protected final JsonArray fields;
+	protected final JsonArray statements;
+	protected final JsonArray args0;
+	protected final JsonArray dependencies;
+	protected final JsonArray requiredApis;
+	protected final JsonArray extensions;
+	protected final JsonArray warnings;
 
 	public ProcedureBuilder(File rootPath) {
 		this(rootPath, "procedures");
@@ -537,7 +537,6 @@ public class ProcedureBuilder extends JsonBuilder implements IGeneratorInit {
 		} catch (IOException e) {
 			System.out.println(e.getMessage());
 		}
-
 	}
 
 	@Override public boolean isSupported(MCreatorPluginFactory mCreatorPluginFactory) {
@@ -594,7 +593,7 @@ public class ProcedureBuilder extends JsonBuilder implements IGeneratorInit {
 
 	public class StatementBuilder extends JsonBuilder {
 
-		private final JsonArray provides;
+		protected final JsonArray provides;
 
 		protected StatementBuilder() {
 			super(null, null);
@@ -639,8 +638,8 @@ public class ProcedureBuilder extends JsonBuilder implements IGeneratorInit {
 	}
 
 	public class ToolBoxInitBuilder {
-		private final String placeholder = "﨎";
-		private String result = placeholder;
+		protected final String placeholder = "﨎";
+		protected String result = placeholder;
 
 		protected ToolBoxInitBuilder appendElement(String element) {
 			result = result.replace(placeholder, element);
