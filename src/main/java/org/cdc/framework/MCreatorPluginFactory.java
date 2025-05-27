@@ -58,10 +58,6 @@ public class MCreatorPluginFactory {
 		createFolder(generator);
 		var generator1 = new File(rootPath, generator);
 		var file = new File(generator1, "aitasks");
-		//		if (replace) {
-		//			FileUtils.deleteNonEmptyDirector(file);
-		//		}
-		//FUCK!!!!!!!!!!!!!!!!
 		if (file.mkdirs()) {
 			System.out.println(file.getPath());
 		}

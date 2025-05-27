@@ -6,6 +6,7 @@ import org.cdc.framework.builder.ProcedureBuilder;
 import org.cdc.framework.interfaces.IProcedureCategory;
 import org.cdc.framework.interfaces.IVariableType;
 
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 public class BuilderUtils {
@@ -48,6 +49,16 @@ public class BuilderUtils {
             pro.setName(category);
         }
         return pro;
+    }
+
+    public static int countLanguageParameterCount(String text){
+        Pattern var = Pattern.compile("%\\d");
+        var ma = var.matcher(text);
+        int count = 0;
+        while (ma.find()) {
+            count++;
+        }
+        return count;
     }
 
     public static boolean isSupportProcedure(String generatorName) {

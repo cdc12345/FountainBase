@@ -21,6 +21,7 @@
             <option value="$PROJECT_DIR$/../MyTools" />
             <option value="$PROJECT_DIR$/../MyTools/ConvenientTransfer" />
             <option value="$PROJECT_DIR$/../MyTools/DataGen" />
+            <option value="$PROJECT_DIR$/../MyTools/JDKVendor" />
             <option value="$PROJECT_DIR$/../MyTools/TempPlugin" />
           </set>
         </option>

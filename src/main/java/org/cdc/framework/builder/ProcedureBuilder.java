@@ -80,8 +80,20 @@ public class ProcedureBuilder extends JsonBuilder implements IGeneratorInit {
 		return this;
 	}
 
+	/**
+	 * should be first
+	 * @return this
+	 */
 	public ProcedureBuilder markType() {
-		colorKey = "color";
+		String colorValue = "";
+		if (result.getAsJsonObject().has(colorKey)){
+			colorValue = result.getAsJsonObject().get(colorKey).getAsString();
+			result.getAsJsonObject().remove(colorKey);
+			colorKey = "color";
+			result.getAsJsonObject().add(colorKey,new JsonPrimitive(colorValue));
+		} else {
+			colorKey = "color";
+		}
 		isType = true;
 		result.getAsJsonObject().remove("mcreator");
 		result.getAsJsonObject().remove("args0");
@@ -130,7 +142,7 @@ public class ProcedureBuilder extends JsonBuilder implements IGeneratorInit {
 	/**
 	 * "output": "Boolean"
 	 *
-	 * @param higherName 输出类型,必须第一个字母大写
+	 * @param higherName outputType the first letter should be uppercase
 	 * @return this
 	 */
 	public ProcedureBuilder setOutput(String higherName) {
@@ -143,9 +155,10 @@ public class ProcedureBuilder extends JsonBuilder implements IGeneratorInit {
 	}
 
 	/**
-	 * 会把第一个参数作为返回值 "output": ["Boolean","String"]
+	 * "output": ["Boolean","String"]
+	 *  the first of the Array is the main outputType
 	 *
-	 * @param higherNames 输出类型,必须第一个字母大写
+	 * @param higherNames outputType the first letter should be uppercase
 	 * @return this
 	 */
 	public ProcedureBuilder setOutput(String... higherNames) {
@@ -219,10 +232,6 @@ public class ProcedureBuilder extends JsonBuilder implements IGeneratorInit {
 	/**
 	 * { "type": "input_value", "name": "entity", "check": "Entity" }
 	 *
-	 * @param name        名字
-	 * @param higherName  这个是检查类型,必须是Object这样的
-	 * @param addToInputs 是否自动添加到inputs
-	 * @return this
 	 */
 	public ProcedureBuilder appendArgs0InputValue(String name, String higherName, boolean addToInputs) {
 		JsonObject jsonObject = new JsonObject();
@@ -245,9 +254,8 @@ public class ProcedureBuilder extends JsonBuilder implements IGeneratorInit {
 	}
 
 	/**
-	 * 添加语句
 	 *
-	 * @param name 语句名称
+	 * @param name name
 	 * @return this
 	 */
 	public ProcedureBuilder appendArgs0StatementInput(String name) {
@@ -317,7 +325,6 @@ public class ProcedureBuilder extends JsonBuilder implements IGeneratorInit {
 	}
 
 	/**
-	 * 比如服务器图标啥的(
 	 *
 	 * @param src    resource url
 	 * @param width  width
@@ -406,8 +413,8 @@ public class ProcedureBuilder extends JsonBuilder implements IGeneratorInit {
 	 * "supported_mcitems": "allblocks"
 	 * },
 	 *
-	 * @param name
-	 * @return
+	 * @param name name
+	 * @return this
 	 */
 	public ProcedureBuilder appendArgs0FieldMCItemSelector(String name, String supported) {
 		JsonObject jsonObject = new JsonObject();
@@ -451,8 +458,8 @@ public class ProcedureBuilder extends JsonBuilder implements IGeneratorInit {
 	/**
 	 * "dependencies": [ { "name": "world", "type": "world" } ]
 	 *
-	 * @param name      名称
-	 * @param lowerName 类型,比如全部小写
+	 * @param name      name
+	 * @param lowerName type , should be lowerCase
 	 * @return this
 	 */
 	public ProcedureBuilder appendDependency(String name, String lowerName) {
@@ -492,15 +499,9 @@ public class ProcedureBuilder extends JsonBuilder implements IGeneratorInit {
 		if (isType)
 			languageBuilder.appendProcedureCategory(fileName.substring(1), value);
 		else {
-			Pattern var = Pattern.compile("%\\d");
-			var ma = var.matcher(value);
-			int count = 0;
-			while (ma.find()) {
-				count++;
-			}
-			if (count != args0.size()) {
+			if (BuilderUtils.countLanguageParameterCount(value) != args0.size()) {
 				throw new RuntimeException(
-						"\" " + value + " \"is not a regular content because we need parameter count: " + args0.size());
+						"\" " + value + " \"is a irregular content because we need parameter count: " + args0.size());
 			}
 			languageBuilder.appendProcedure(fileName, value);
 		}
