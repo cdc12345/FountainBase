@@ -40,6 +40,10 @@ public class DataListBuilder extends FileOutputBuilder<Map<String, String>> impl
 		return this;
 	}
 
+	public DataListBuilder appendStringElement(String element, String defaultMapping) {
+		return appendElement(element, "\"" + defaultMapping + "\"");
+	}
+
 	public DataListBuilder setDefault() {
 		return setDefault(result.values().stream().findFirst().orElse(null));
 	}
