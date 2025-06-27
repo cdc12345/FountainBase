@@ -96,6 +96,10 @@ public class MCreatorPluginFactory {
 		currentInit = null;
 	}
 
+	public PluginInfoBuilder createInfo(){
+		return new PluginInfoBuilder(rootPath);
+	}
+
 	public ProcedureBuilder createProcedure() {
 		return createProcedure(null);
 	}

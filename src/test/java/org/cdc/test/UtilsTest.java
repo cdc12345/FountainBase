@@ -2,6 +2,7 @@ package org.cdc.test;
 
 import org.cdc.framework.utils.ColorUtils;
 import org.cdc.framework.utils.FileUtils;
+import org.cdc.framework.utils.MCreatorVersions;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -24,5 +25,11 @@ public class UtilsTest {
     @Test
     public void testFileName(){
         Assertions.assertEquals(FileUtils.filterSpace("hello world"),"hello_world");
+    }
+
+    @Test
+    public void testVersions(){
+        Assertions.assertEquals("2025001", MCreatorVersions.toFormattedVersion(MCreatorVersions.V_2025_1));
+        Assertions.assertEquals("202500199999",MCreatorVersions.toFormattedVersion(MCreatorVersions.V_2025_1_9999));
     }
 }
