@@ -23,7 +23,6 @@ import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.Map;
-import java.util.regex.Pattern;
 
 public class ProcedureBuilder extends JsonBuilder implements IGeneratorInit {
 	protected boolean isType;
@@ -392,12 +391,14 @@ public class ProcedureBuilder extends JsonBuilder implements IGeneratorInit {
 		jsonObject.addProperty("name", name);
 		JsonArray options1 = new JsonArray();
 		for (JsonElement jsonElement : options) {
+			//如果只是普通的原始类型，则给他双倍后加入
 			if (jsonElement instanceof JsonPrimitive jsonPrimitive) {
 				JsonArray jsonElements = new JsonArray();
 				jsonElements.add(jsonPrimitive);
 				jsonElements.add(jsonPrimitive);
 				options1.add(jsonElements);
 			} else {
+				//其他的加进去就行了（
 				options1.add(jsonElement);
 			}
 		}
