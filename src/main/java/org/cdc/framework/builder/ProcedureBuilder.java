@@ -23,7 +23,6 @@ import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.Map;
-import java.util.regex.Pattern;
 
 public class ProcedureBuilder extends JsonBuilder implements IGeneratorInit {
 	protected boolean isType;
@@ -221,8 +220,14 @@ public class ProcedureBuilder extends JsonBuilder implements IGeneratorInit {
 		return appendArgs0InputValue(name, higherName, true);
 	}
 
+	/**
+	 *
+	 * @param name if name starts with "_" , default addToInputs is false
+	 * @param type type
+	 * @return this
+	 */
 	public ProcedureBuilder appendArgs0InputValue(String name, IVariableType type) {
-		return appendArgs0InputValue(name, type, true);
+		return appendArgs0InputValue(name, type, name.charAt(0) != '_');
 	}
 
 	public ProcedureBuilder appendArgs0InputValue(String name, IVariableType type, boolean addToInputs) {
@@ -665,6 +670,18 @@ public class ProcedureBuilder extends JsonBuilder implements IGeneratorInit {
 
 		public ToolBoxInitBuilder appendConstantString(String str) {
 			return appendElement("<block type=\"text\"><field name=\"TEXT\">" + str + "</field></block>");
+		}
+
+		public ToolBoxInitBuilder appendReferenceBlock(String type){
+			return appendElement("<block type=\""+type+"\"></block>");
+		}
+
+		public ToolBoxInitBuilder appendPlaceHolder(String name){
+			return appendElement("<block deletable=\"false\" movable=\"false\" enabled=\"false\" type=\""+name+"\"></block>");
+		}
+
+		public ToolBoxInitBuilder appendEntityIterator(){
+			return appendPlaceHolder("entity_iterator");
 		}
 
 		public ProcedureBuilder buildAndReturn() {
