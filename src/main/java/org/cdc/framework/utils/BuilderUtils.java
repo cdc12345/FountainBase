@@ -51,6 +51,15 @@ public class BuilderUtils {
         return pro;
     }
 
+    public static ProcedureBuilder createProcedureWithStatement(MCreatorPluginFactory mCreatorPluginFactory,
+            String name, String statementName, IVariableType placeHolderType, String statementProviderName,
+            IVariableType statementProviderType) {
+        return mCreatorPluginFactory.createProcedure(name).appendArgs0StatementInput(statementName)
+                .appendArgs0InputValue("_placeholder", placeHolderType).setGroup("name").setPreviousStatement(null)
+                .setNextStatement(null).statementBuilder().setName(statementName)
+                .appendProvide(statementProviderName, statementProviderType).buildAndReturn().setToolBoxId(BuiltInToolBoxId.Procedure.ADVANCED);
+    }
+
     public static int countLanguageParameterCount(String text){
         Pattern var = Pattern.compile("%\\d");
         var ma = var.matcher(text);
