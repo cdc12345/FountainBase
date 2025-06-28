@@ -26,7 +26,7 @@ public class BuilderUtils {
      * .createProcedure(name).setGroup("name").setPreviousStatement(null).setNextStatement(null).setInputsInline(true)
      */
     public static ProcedureBuilder createCommonProcedure(MCreatorPluginFactory mCreatorPluginFactory, String name) {
-        return mCreatorPluginFactory.createProcedure(name).setGroup("name").setColor(60).setPreviousStatement(null).setNextStatement(null).setInputsInline(true);
+        return mCreatorPluginFactory.createProcedure(name).setGroup("name").setPreviousStatement(null).setNextStatement(null).setInputsInline(true);
     }
 
     public static ProcedureBuilder createProcedureCategory(MCreatorPluginFactory mCreatorPluginFactory, IProcedureCategory category) {

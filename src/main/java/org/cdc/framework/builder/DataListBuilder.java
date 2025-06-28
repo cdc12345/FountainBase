@@ -12,6 +12,7 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -37,6 +38,12 @@ public class DataListBuilder extends FileOutputBuilder<Map<String, String>> impl
 
 	public DataListBuilder appendElement(String element, String defaultMapping) {
 		result.put(element, defaultMapping);
+		return this;
+	}
+
+	public DataListBuilder appendElement(String element,List<String> map){
+		var addition1 = map.toString();
+		result.put(element,System.lineSeparator()+"- "+addition1.substring(1,addition1.length() - 1).replace(",",System.lineSeparator()+"-"));
 		return this;
 	}
 

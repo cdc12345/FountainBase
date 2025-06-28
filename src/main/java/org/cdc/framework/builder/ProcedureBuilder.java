@@ -26,6 +26,7 @@ import java.util.Map;
 
 public class ProcedureBuilder extends JsonBuilder implements IGeneratorInit {
 	public static Object color = "35";
+	public static String category = null;
 
 	protected final JsonObject mcreator;
 	protected final JsonArray inputs;
@@ -82,15 +83,16 @@ public class ProcedureBuilder extends JsonBuilder implements IGeneratorInit {
 
 	/**
 	 * should be first
+	 *
 	 * @return this
 	 */
 	public ProcedureBuilder markType() {
 		String colorValue = "";
-		if (result.getAsJsonObject().has(colorKey)){
+		if (result.getAsJsonObject().has(colorKey)) {
 			colorValue = result.getAsJsonObject().get(colorKey).getAsString();
 			result.getAsJsonObject().remove(colorKey);
 			colorKey = "color";
-			result.getAsJsonObject().add(colorKey,new JsonPrimitive(colorValue));
+			result.getAsJsonObject().add(colorKey, new JsonPrimitive(colorValue));
 		} else {
 			colorKey = "color";
 		}
@@ -158,7 +160,7 @@ public class ProcedureBuilder extends JsonBuilder implements IGeneratorInit {
 
 	/**
 	 * "output": ["Boolean","String"]
-	 *  the first of the Array is the main outputType
+	 * the first of the Array is the main outputType
 	 *
 	 * @param higherNames outputType the first letter should be uppercase
 	 * @return this
@@ -188,6 +190,7 @@ public class ProcedureBuilder extends JsonBuilder implements IGeneratorInit {
 
 	public ProcedureBuilder setToolBoxId(String toolBoxId) {
 		mcreator.addProperty("toolbox_id", toolBoxId);
+		category = toolBoxId;
 		return this;
 	}
 
@@ -233,7 +236,6 @@ public class ProcedureBuilder extends JsonBuilder implements IGeneratorInit {
 
 	/**
 	 * { "type": "input_value", "name": "entity", "check": "Entity" }
-	 *
 	 */
 	public ProcedureBuilder appendArgs0InputValue(String name, String higherName, boolean addToInputs) {
 		JsonObject jsonObject = new JsonObject();
@@ -256,7 +258,6 @@ public class ProcedureBuilder extends JsonBuilder implements IGeneratorInit {
 	}
 
 	/**
-	 *
 	 * @param name name
 	 * @return this
 	 */
@@ -327,7 +328,6 @@ public class ProcedureBuilder extends JsonBuilder implements IGeneratorInit {
 	}
 
 	/**
-	 *
 	 * @param src    resource url
 	 * @param width  width
 	 * @param height height
@@ -342,12 +342,12 @@ public class ProcedureBuilder extends JsonBuilder implements IGeneratorInit {
 		return appendArgs0Element(jsonObject);
 	}
 
-	public ProcedureBuilder appendArgs0FieldDropDown(String name,String... map){
-		LinkedHashMap<String,String> linkedHashMap = new LinkedHashMap<>();
-		for (int index = 0; index < (map.length /2) ;index++){
-			linkedHashMap.put(map[index * 2],map[index * 2 + 1]);
+	public ProcedureBuilder appendArgs0FieldDropDown(String name, String... map) {
+		LinkedHashMap<String, String> linkedHashMap = new LinkedHashMap<>();
+		for (int index = 0; index < (map.length / 2); index++) {
+			linkedHashMap.put(map[index * 2], map[index * 2 + 1]);
 		}
-		return appendArgs0FieldDropDown(name,linkedHashMap);
+		return appendArgs0FieldDropDown(name, linkedHashMap);
 	}
 
 	public ProcedureBuilder appendArgs0FieldDropDown(String name, Map<String, String> options) {
@@ -525,7 +525,7 @@ public class ProcedureBuilder extends JsonBuilder implements IGeneratorInit {
 		return this;
 	}
 
-	public void initGenerator0(String generatorName,boolean replace) {
+	public void initGenerator0(String generatorName, boolean replace) {
 		if (isType) {
 			return;
 		}
@@ -551,21 +551,31 @@ public class ProcedureBuilder extends JsonBuilder implements IGeneratorInit {
 	}
 
 	@Override public JsonElement build() {
-		if (isType){
+		if (isType) {
 			return this.result;
 		}
 
-		if (!result.getAsJsonObject().has("inputsInline")){
+		if (!result.getAsJsonObject().has("inputsInline")) {
 			setInputsInline(true);
 		}
-		if (!result.getAsJsonObject().has(colorKey)){
+		//default color
+		if (!result.getAsJsonObject().has(colorKey)) {
 			setColor(ProcedureBuilder.color.toString());
 		}
-		if (!mcreator.has("group")){
+		if (!mcreator.has("group")) {
 			setGroup("name");
 		}
-		if (!mcreator.has("toolbox_id")){
-			setToolBoxId(BuiltInToolBoxId.Procedure.OTHER);
+		if (!mcreator.has("toolbox_id")) {
+			if (category == null) {
+				setToolBoxId(BuiltInToolBoxId.Procedure.OTHER);
+			} else {
+				setToolBoxId(category);
+			}
+		}
+		if (mcreator.has("toolbox_id")) {
+			if (mcreator.get("toolbox_id").getAsString().equals(BuiltInToolBoxId.Procedure.OTHER)) {
+				System.err.println("The " + fileName + " belong to others");
+			}
 		}
 		// root
 		if (extensions.isEmpty()) {
@@ -601,8 +611,8 @@ public class ProcedureBuilder extends JsonBuilder implements IGeneratorInit {
 	}
 
 	@Override public JsonElement buildAndOutput() {
-		if (!flagToSetLang){
-			System.err.println("You should know the lang of "+fileName+" is not generated");
+		if (!flagToSetLang) {
+			System.err.println("You should know the lang of " + fileName + " is not generated");
 		}
 		return super.buildAndOutput();
 	}
@@ -686,7 +696,7 @@ public class ProcedureBuilder extends JsonBuilder implements IGeneratorInit {
 		}
 
 		public ProcedureBuilder buildAndReturn() {
-			if(!flagToSetName){
+			if (!flagToSetName) {
 				System.err.println("Empty name of toolboxinit");
 			}
 			result = result.replace(placeholder, "");

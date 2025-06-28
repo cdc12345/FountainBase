@@ -55,6 +55,7 @@ public class MCreatorPluginFactory {
 	}
 
 	public void initGenerator(String generator, boolean replace) {
+		getToolKit().lastGenerator = generator;
 		createFolder(generator);
 		var generator1 = new File(rootPath, generator);
 		var file = new File(generator1, "aitasks");
@@ -268,6 +269,8 @@ public class MCreatorPluginFactory {
 
 	public class ToolKit {
 
+		private String lastGenerator;
+
 		private ToolKit() {
 		}
 
@@ -289,6 +292,12 @@ public class MCreatorPluginFactory {
 
 		public void clearGenerator(String generatorName) {
 			FileUtils.deleteEmptyDirectoryInDirectory(new File(rootPath, generatorName));
+		}
+
+		public void clearGenerator(){
+			if (lastGenerator != null){
+				clearGenerator(lastGenerator);
+			}
 		}
 
 		public void clearPlugin() {
