@@ -1,10 +1,7 @@
 package org.cdc.test;
 
 import org.cdc.framework.MCreatorPluginFactory;
-import org.cdc.framework.utils.BuiltInToolBoxId;
-import org.cdc.framework.utils.BuiltInTypes;
-import org.cdc.framework.utils.Generators;
-import org.cdc.framework.utils.Side;
+import org.cdc.framework.utils.*;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -39,6 +36,8 @@ public class ProceduresTest {
         MCreatorPluginFactory mcr = new MCreatorPluginFactory(new File(pluginPath));
         mcr.initGenerator(Generators.FORGE1201);
         Assertions.assertTrue(Files.exists(Path.of(mcr.rootPath().getPath(), "forge-1.20.1")));
+
+        mcr.createInfo().setId("test").setAuthor("cdc12345").addSupportedVersion(MCreatorVersions.V_2025_1).setName("test");
     }
 
     @Test

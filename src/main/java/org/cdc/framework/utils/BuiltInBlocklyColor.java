@@ -9,7 +9,7 @@ public enum BuiltInBlocklyColor {
      * @return color
      */
     public String toString(int hue){
-        return ColorUtils.colorHue(name().toUpperCase(),hue);
+        return ColorUtils.colorHue(name().toUpperCase(),Math.clamp(hue,0,360));
     }
 
     public String toString(){

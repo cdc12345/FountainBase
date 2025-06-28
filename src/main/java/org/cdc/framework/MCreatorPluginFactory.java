@@ -4,6 +4,7 @@ import org.cdc.framework.builder.*;
 import org.cdc.framework.interfaces.IGeneratorInit;
 import org.cdc.framework.interfaces.IVariableType;
 import org.cdc.framework.utils.BuilderUtils;
+import org.cdc.framework.utils.BuiltInTypes;
 import org.cdc.framework.utils.FileUtils;
 import org.cdc.framework.utils.MCreatorVersions;
 
@@ -95,6 +96,10 @@ public class MCreatorPluginFactory {
 			}
 		});
 		currentInit = null;
+	}
+
+	public PluginInfoBuilder createInfo(){
+		return new PluginInfoBuilder(rootPath);
 	}
 
 	public ProcedureBuilder createProcedure() {
@@ -284,6 +289,15 @@ public class MCreatorPluginFactory {
 
 		public ProcedureBuilder createOutputProcedure(String name, IVariableType output) {
 			return BuilderUtils.createOutputProcedure(MCreatorPluginFactory.this, name, output);
+		}
+
+		public ProcedureBuilder createProcedureWithStatement(String name,String statementName,IVariableType placeholdertype,String statementProviderName,IVariableType statementProviderType){
+			return BuilderUtils.createProcedureWithStatement(MCreatorPluginFactory.this,name,statementName,placeholdertype,statementProviderName,statementProviderType);
+		}
+
+		public ProcedureBuilder createProcedureWithEntityIterator(String name,String statementName){
+			return BuilderUtils.createProcedureWithStatement(MCreatorPluginFactory.this,name,statementName,
+					BuiltInTypes.Entity,"entityiterator",BuiltInTypes.Entity);
 		}
 
 		public String getCurrentInitGenerator() {
