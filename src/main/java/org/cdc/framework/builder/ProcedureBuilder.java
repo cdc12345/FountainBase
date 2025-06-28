@@ -25,9 +25,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 public class ProcedureBuilder extends JsonBuilder implements IGeneratorInit {
-	protected boolean isType;
-
-	protected String colorKey;
+	public static Object color = "35";
 
 	protected final JsonObject mcreator;
 	protected final JsonArray inputs;
@@ -38,6 +36,9 @@ public class ProcedureBuilder extends JsonBuilder implements IGeneratorInit {
 	protected final JsonArray requiredApis;
 	protected final JsonArray extensions;
 	protected final JsonArray warnings;
+	protected boolean isType;
+	protected String colorKey;
+	private boolean flagToSetLang;
 
 	public ProcedureBuilder(File rootPath) {
 		this(rootPath, "procedures");
@@ -104,11 +105,13 @@ public class ProcedureBuilder extends JsonBuilder implements IGeneratorInit {
 	}
 
 	public ProcedureBuilder setColor(int color) {
+		ProcedureBuilder.color = color;
 		result.getAsJsonObject().add(colorKey, new JsonPrimitive(color));
 		return this;
 	}
 
 	public ProcedureBuilder setColor(String color) {
+		ProcedureBuilder.color = color;
 		result.getAsJsonObject().add(colorKey, new JsonPrimitive(color));
 		return this;
 	}
@@ -497,6 +500,7 @@ public class ProcedureBuilder extends JsonBuilder implements IGeneratorInit {
 	}
 
 	@CanIgnoreReturnValue public ProcedureBuilder setLanguage(LanguageBuilder languageBuilder, String value) {
+		flagToSetLang = true;
 		if (isType)
 			languageBuilder.appendProcedureCategory(fileName.substring(1), value);
 		else {
@@ -554,6 +558,9 @@ public class ProcedureBuilder extends JsonBuilder implements IGeneratorInit {
 		if (!result.getAsJsonObject().has("inputsInline")){
 			setInputsInline(true);
 		}
+		if (!result.getAsJsonObject().has(colorKey)){
+			setColor(ProcedureBuilder.color.toString());
+		}
 		if (!mcreator.has("group")){
 			setGroup("name");
 		}
@@ -591,6 +598,13 @@ public class ProcedureBuilder extends JsonBuilder implements IGeneratorInit {
 			this.result.getAsJsonObject().add("mcreator", mcreator);
 		}
 		return result;
+	}
+
+	@Override public JsonElement buildAndOutput() {
+		if (!flagToSetLang){
+			System.err.println("You should know the lang of "+fileName+" is not generated");
+		}
+		return super.buildAndOutput();
 	}
 
 	public class StatementBuilder extends JsonBuilder {
@@ -643,12 +657,15 @@ public class ProcedureBuilder extends JsonBuilder implements IGeneratorInit {
 		protected final String placeholder = "﨎";
 		protected String result = placeholder;
 
+		private boolean flagToSetName;
+
 		protected ToolBoxInitBuilder appendElement(String element) {
 			result = result.replace(placeholder, element);
 			return this;
 		}
 
 		public ToolBoxInitBuilder setName(String name) {
+			flagToSetName = true;
 			return appendElement("<value name=\"" + name + "\">" + placeholder + "</value>");
 		}
 
@@ -669,6 +686,9 @@ public class ProcedureBuilder extends JsonBuilder implements IGeneratorInit {
 		}
 
 		public ProcedureBuilder buildAndReturn() {
+			if(!flagToSetName){
+				System.err.println("Empty name of toolboxinit");
+			}
 			result = result.replace(placeholder, "");
 			return ProcedureBuilder.this.appendToolBoxInit(result);
 		}

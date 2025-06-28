@@ -13,6 +13,7 @@ import java.util.Properties;
 public class LanguageBuilder extends FileOutputBuilder<Properties> {
 
 	private final Properties result;
+	private boolean flagToOutput;
 
 	public LanguageBuilder(File rootPath, String fileName) {
 		super(rootPath, new File(rootPath, "lang"));
@@ -20,6 +21,12 @@ public class LanguageBuilder extends FileOutputBuilder<Properties> {
 
 		this.fileName = fileName;
 		this.fileExtension = "properties";
+
+		Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+			if (!flagToOutput){
+				System.err.println("Attention, Your language do not output!! This may crash your mcreator");
+			}
+		}));
 
 		load();
 	}
@@ -89,6 +96,7 @@ public class LanguageBuilder extends FileOutputBuilder<Properties> {
 
 	@Override public Properties buildAndOutput() {
 		try {
+			flagToOutput = true;
 			this.result.store(new FileWriter(new File(targetPath, getFileFullName()), StandardCharsets.UTF_8),
 					"Auto-Generated");
 		} catch (IOException e) {

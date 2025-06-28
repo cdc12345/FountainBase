@@ -89,7 +89,7 @@ public class VariableBuilder extends JsonBuilder implements IGeneratorInit {
     @Override
     public void initGenerator0(String generatorName,boolean replace) {
     	
-    	System.err.println("Before output, please edit the file. Or you will crash your mcreator!");
+    	System.out.println("Before output, please edit the file. Or you will crash your mcreator!");
     	
         var generator1 = Paths.get(rootPath.getPath(),generatorName,targetPath.getName(),fileName + ".yaml");
         try {

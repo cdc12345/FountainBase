@@ -99,9 +99,15 @@ public class DataListBuilder extends FileOutputBuilder<Map<String, String>> impl
 		var generator1 = Paths.get(rootPath.getPath(), generatorName, "mappings", getFileFullName());
 		try {
 			System.out.println(generator1);
-			Files.copy(new ByteArrayInputStream(hashMap.toString().replace("{", "").replace("}", "").replace("=", ": ")
-							.replace(", ", System.lineSeparator()).getBytes(StandardCharsets.UTF_8)), generator1,
-					(replace) ? StandardCopyOption.REPLACE_EXISTING : StandardCopyOption.ATOMIC_MOVE);
+			var source = new ByteArrayInputStream(
+					hashMap.toString().replace("{", "").replace("}", "").replace("=", ": ")
+							.replace(", ", System.lineSeparator()).getBytes(StandardCharsets.UTF_8));
+			if (replace) {
+				Files.copy(source, generator1,
+						StandardCopyOption.REPLACE_EXISTING);
+			} else {
+				Files.copy(source,generator1);
+			}
 		} catch (IOException ignored) {
 		}
 	}
