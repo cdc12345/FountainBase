@@ -30,6 +30,8 @@ public class ProcedureBuilder extends JsonBuilder implements IGeneratorInit {
 	public static Object color = "35";
 	public static String category = null;
 
+	private final ArrayList<String> quence = new ArrayList<>();
+
 	protected final JsonObject mcreator;
 	protected final JsonArray inputs;
 	protected final JsonArray fields;
@@ -259,6 +261,7 @@ public class ProcedureBuilder extends JsonBuilder implements IGeneratorInit {
 		}
 		if (addToInputs)
 			inputs.add(name);
+		quence.add(name);
 		return appendArgs0Element(jsonObject);
 	}
 
@@ -267,6 +270,7 @@ public class ProcedureBuilder extends JsonBuilder implements IGeneratorInit {
 		jsonObject.addProperty("type", "field_input");
 		jsonObject.addProperty("name", name);
 		fields.add(name);
+		quence.add(name);
 		return appendArgs0Element(jsonObject);
 	}
 
@@ -278,6 +282,7 @@ public class ProcedureBuilder extends JsonBuilder implements IGeneratorInit {
 		JsonObject jsonObject = new JsonObject();
 		jsonObject.addProperty("type", "input_statement");
 		jsonObject.addProperty("name", name);
+		quence.add(name);
 		return appendArgs0Element(jsonObject);
 	}
 
@@ -293,6 +298,7 @@ public class ProcedureBuilder extends JsonBuilder implements IGeneratorInit {
 		jsonObject.addProperty("checked", checked);
 		appendArgs0Element(jsonObject);
 		fields.add(name);
+		quence.add(name);
 		return this;
 	}
 
@@ -310,6 +316,7 @@ public class ProcedureBuilder extends JsonBuilder implements IGeneratorInit {
 		jsonObject.addProperty("testValue", testValue);
 		appendArgs0Element(jsonObject);
 		fields.add(name);
+		quence.add(name);
 		return this;
 	}
 
@@ -324,6 +331,7 @@ public class ProcedureBuilder extends JsonBuilder implements IGeneratorInit {
 		jsonObject.addProperty("type", "field_ai_condition_selector");
 		jsonObject.addProperty("name", name);
 		fields.add(name);
+		quence.add(name);
 		return appendArgs0Element(jsonObject);
 	}
 
@@ -337,6 +345,7 @@ public class ProcedureBuilder extends JsonBuilder implements IGeneratorInit {
 		JsonObject jsonObject = new JsonObject();
 		jsonObject.addProperty("type", "input_dummy");
 		jsonObject.addProperty("name", name);
+		quence.add(name);
 		return appendArgs0Element(jsonObject);
 	}
 
@@ -360,6 +369,7 @@ public class ProcedureBuilder extends JsonBuilder implements IGeneratorInit {
 		for (int index = 0; index < (map.length / 2); index++) {
 			linkedHashMap.put(map[index * 2], map[index * 2 + 1]);
 		}
+		quence.add(name);
 		return appendArgs0FieldDropDown(name, linkedHashMap);
 	}
 
@@ -419,6 +429,7 @@ public class ProcedureBuilder extends JsonBuilder implements IGeneratorInit {
 		}
 		jsonObject.add("options", options1);
 		fields.add(name);
+		quence.add(name);
 		return appendArgs0Element(jsonObject);
 	}
 
@@ -438,6 +449,7 @@ public class ProcedureBuilder extends JsonBuilder implements IGeneratorInit {
 		jsonObject.addProperty("name", name);
 		jsonObject.addProperty("field_mcitem_selector", supported);
 		fields.add(name);
+		quence.add(name);
 		return this;
 	}
 
@@ -509,6 +521,16 @@ public class ProcedureBuilder extends JsonBuilder implements IGeneratorInit {
 		warnings.add(key);
 		languageBuilder.appendWarning(key, value);
 		return this;
+	}
+
+	public ProcedureBuilder setPlaceHolderLanguage(LanguageBuilder languageBuilder,final String formmatted){
+		String result = formmatted;
+		System.out.println(quence);
+		for (int index=0;index<quence.size();index++){
+			var name = quence.get(index);
+			result = result.replaceAll("%"+name,"%"+(index+1));
+		}
+		return setLanguage(languageBuilder,result);
 	}
 
 	@CanIgnoreReturnValue public ProcedureBuilder setLanguage(LanguageBuilder languageBuilder, String value) {
