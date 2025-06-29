@@ -20,6 +20,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -541,11 +542,32 @@ public class ProcedureBuilder extends JsonBuilder implements IGeneratorInit {
 			procedures.mkdirs();
 		}
 		try {
-			String builder = BuilderUtils.generateInputsComment(inputs) + System.lineSeparator()
-					+ BuilderUtils.generateStatementsComment(statements) + System.lineSeparator()
-					+ BuilderUtils.generateFieldsComment(fields);
-			Files.copy(new ByteArrayInputStream(builder.getBytes(StandardCharsets.UTF_8)),
-					new File(procedures, fileName + ".java.ftl").toPath());
+			Path template = new File(procedures, fileName + ".java.ftl").toPath();
+			if (Files.exists(template)) {
+				String string = Files.readString(template);
+				inputs.asList().stream().map(a -> BuilderUtils.getInputPlaceHolder(a.getAsString())).forEach(a -> {
+					if (!string.contains(a)) {
+						System.err.println(template + ":" + a + " is missing.");
+					}
+				});
+				statements.asList().stream()
+						.map(a -> BuilderUtils.getStatementPlaceHolder(a.getAsJsonObject().get("name").getAsString()))
+						.forEach(a -> {
+							if (!string.contains(a)) {
+								System.err.println(template + ":" + a + " is missing.");
+							}
+						});
+				fields.asList().stream().map(a -> BuilderUtils.getFieldPlaceHolder(a.getAsString())).forEach(a -> {
+					if (!string.contains(a)) {
+						System.err.println(template + ":" + a + " is missing.");
+					}
+				});
+			} else {
+				String builder = BuilderUtils.generateInputsComment(inputs) + System.lineSeparator()
+						+ BuilderUtils.generateStatementsComment(statements) + System.lineSeparator()
+						+ BuilderUtils.generateFieldsComment(fields);
+				Files.copy(new ByteArrayInputStream(builder.getBytes(StandardCharsets.UTF_8)), template);
+			}
 		} catch (IOException e) {
 			System.out.println(e.getMessage());
 		}
