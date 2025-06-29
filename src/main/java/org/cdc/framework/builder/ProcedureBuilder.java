@@ -24,6 +24,7 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Objects;
 
 public class ProcedureBuilder extends JsonBuilder implements IGeneratorInit {
 	public static Object color = "35";
@@ -40,7 +41,11 @@ public class ProcedureBuilder extends JsonBuilder implements IGeneratorInit {
 	protected final JsonArray warnings;
 	protected boolean isType;
 	protected String colorKey;
-	private boolean flagToSetLang;
+	private final Flags flags;
+
+	private static class Flags {
+		private boolean flagToSetLang;
+	}
 
 	public ProcedureBuilder(File rootPath) {
 		this(rootPath, "procedures");
@@ -49,6 +54,7 @@ public class ProcedureBuilder extends JsonBuilder implements IGeneratorInit {
 	public ProcedureBuilder(File rootPath, String child) {
 		super(rootPath, new File(rootPath, child));
 
+		this.flags = new Flags();
 		this.colorKey = "colour";
 
 		this.result = new JsonObject();
@@ -88,7 +94,7 @@ public class ProcedureBuilder extends JsonBuilder implements IGeneratorInit {
 	 * @return this
 	 */
 	public ProcedureBuilder markType() {
-		String colorValue = "";
+		String colorValue;
 		if (result.getAsJsonObject().has(colorKey)) {
 			colorValue = result.getAsJsonObject().get(colorKey).getAsString();
 			result.getAsJsonObject().remove(colorKey);
@@ -507,7 +513,7 @@ public class ProcedureBuilder extends JsonBuilder implements IGeneratorInit {
 	}
 
 	@CanIgnoreReturnValue public ProcedureBuilder setLanguage(LanguageBuilder languageBuilder, String value) {
-		flagToSetLang = true;
+		flags.flagToSetLang = true;
 		if (isType)
 			languageBuilder.appendProcedureCategory(fileName.substring(1), value);
 		else {
@@ -594,11 +600,7 @@ public class ProcedureBuilder extends JsonBuilder implements IGeneratorInit {
 			setGroup("name");
 		}
 		if (!mcreator.has("toolbox_id")) {
-			if (category == null) {
-				setToolBoxId(BuiltInToolBoxId.Procedure.OTHER);
-			} else {
-				setToolBoxId(category);
-			}
+			setToolBoxId(Objects.requireNonNullElse(category, BuiltInToolBoxId.Procedure.OTHER));
 		}
 		if (mcreator.has("toolbox_id")) {
 			if (mcreator.get("toolbox_id").getAsString().equals(BuiltInToolBoxId.Procedure.OTHER)) {
@@ -639,7 +641,7 @@ public class ProcedureBuilder extends JsonBuilder implements IGeneratorInit {
 	}
 
 	@Override public JsonElement buildAndOutput() {
-		if (!flagToSetLang) {
+		if (!flags.flagToSetLang) {
 			System.err.println("You should know the lang of " + fileName + " is not generated");
 		}
 		return super.buildAndOutput();

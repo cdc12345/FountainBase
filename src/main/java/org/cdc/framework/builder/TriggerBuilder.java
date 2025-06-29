@@ -20,12 +20,17 @@ import java.util.stream.Collectors;
 
 public class TriggerBuilder extends JsonBuilder implements IGeneratorInit {
 
-    private final JsonArray dependencies;
-    private final JsonArray requiredApis;
+    protected final JsonArray dependencies;
+    protected final JsonArray requiredApis;
+    protected final Flags flags;
+    protected static class Flags{
+        protected boolean flagToSetLang;
+    }
 
     public TriggerBuilder(File rootPath) {
         super(rootPath, new File(rootPath, "triggers"));
 
+        this.flags = new Flags();
         this.result = new JsonObject();
         this.dependencies = new JsonArray();
         this.requiredApis = new JsonArray();
@@ -87,6 +92,7 @@ public class TriggerBuilder extends JsonBuilder implements IGeneratorInit {
     }
 
     public TriggerBuilder setLanguage(LanguageBuilder languageBuilder, String content) {
+        flags.flagToSetLang = true;
         languageBuilder.appendTrigger(fileName, content);
         return this;
     }
@@ -122,5 +128,12 @@ public class TriggerBuilder extends JsonBuilder implements IGeneratorInit {
     @Override
     public boolean isSupported(MCreatorPluginFactory mCreatorPluginFactory) {
         return mCreatorPluginFactory.rootPath().equals(rootPath) && BuilderUtils.isSupportProcedure(mCreatorPluginFactory.getCurrentInit());
+    }
+
+    @Override public JsonElement buildAndOutput() {
+        if (!flags.flagToSetLang) {
+            System.err.println("You should know the lang of " + fileName + " is not generated");
+        }
+        return super.buildAndOutput();
     }
 }
