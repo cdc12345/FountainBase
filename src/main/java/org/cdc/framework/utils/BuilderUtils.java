@@ -71,19 +71,35 @@ public class BuilderUtils {
         return count;
     }
 
+    public static String getInputPlaceHolder(String name){
+        return "${input$" + name + "}";
+    }
+
+    public static String getStatementPlaceHolder(String name){
+        return "${statement$" + name + "}";
+    }
+
+    public static String getFieldPlaceHolder(String name){
+        return "${field$" + name + "}";
+    }
+
     public static boolean isSupportProcedure(String generatorName) {
         return generatorName.startsWith("forge") || generatorName.startsWith("neoforge") || generatorName.startsWith("fabric") || generatorName.startsWith("spigot");
     }
 
     public static String generateInputsComment(JsonArray inputs) {
-        return inputs.asList().stream().map(a -> "${input$" + a.getAsString() + "}").collect(Collectors.joining(",", "<#- ", " ->"));
+        return inputs.asList().stream().map(a -> getInputPlaceHolder(a.getAsString()))
+                .collect(Collectors.joining(",", "<#- ", " ->"));
     }
 
     public static String generateStatementsComment(JsonArray statements) {
-        return statements.asList().stream().map(a -> "${statement$" + a.getAsString() + "}").collect(Collectors.joining(",", "<#- ", " ->"));
+        return statements.asList().stream()
+                .map(a -> getStatementPlaceHolder(a.getAsJsonObject().get("name").getAsString()))
+                .collect(Collectors.joining(",", "<#- ", " ->"));
     }
 
     public static String generateFieldsComment(JsonArray fields) {
-        return fields.asList().stream().map(a -> "${field$" + a.getAsString() + "}").collect(Collectors.joining(",", "<#- ", " ->"));
+        return fields.asList().stream().map(a -> getFieldPlaceHolder(a.getAsString()))
+                .collect(Collectors.joining(",", "<#- ", " ->"));
     }
 }
