@@ -398,8 +398,7 @@ public class ProcedureBuilder extends JsonBuilder implements IGeneratorInit {
 	 * ]
 	 * },
 	 *
-	 * @param name
-	 * @return
+	 * @return this;
 	 */
 	public ProcedureBuilder appendArgs0FieldDropDown(String name, JsonElement... options) {
 		JsonObject jsonObject = new JsonObject();
@@ -553,19 +552,19 @@ public class ProcedureBuilder extends JsonBuilder implements IGeneratorInit {
 				String string = Files.readString(template);
 				inputs.asList().stream().map(a -> BuilderUtils.getInputPlaceHolder(a.getAsString())).forEach(a -> {
 					if (!string.contains(a)) {
-						System.err.println(template + ":" + a + " is missing.");
+						System.err.println(template.toUri() + " :" + a + " is missing.");
 					}
 				});
 				statements.asList().stream()
 						.map(a -> BuilderUtils.getStatementPlaceHolder(a.getAsJsonObject().get("name").getAsString()))
 						.forEach(a -> {
 							if (!string.contains(a)) {
-								System.err.println(template + ":" + a + " is missing.");
+								System.err.println(template.toUri() + " :" + a + " is missing.");
 							}
 						});
 				fields.asList().stream().map(a -> BuilderUtils.getFieldPlaceHolder(a.getAsString())).forEach(a -> {
 					if (!string.contains(a)) {
-						System.err.println(template + ":" + a + " is missing.");
+						System.err.println(template.toUri() + " :" + a + " is missing.");
 					}
 				});
 			} else {
