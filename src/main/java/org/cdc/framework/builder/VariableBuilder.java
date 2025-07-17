@@ -88,9 +88,6 @@ public class VariableBuilder extends JsonBuilder implements IGeneratorInit {
 
     @Override
     public void initGenerator0(String generatorName,boolean replace) {
-    	
-
-    	
         var generator1 = Paths.get(rootPath.getPath(),generatorName,targetPath.getName(),fileName + ".yaml");
         try {
             if (!Files.exists(generator1)) {

@@ -89,17 +89,17 @@ public class BuilderUtils {
 
     public static String generateInputsComment(JsonArray inputs) {
         return inputs.asList().stream().map(a -> getInputPlaceHolder(a.getAsString()))
-                .collect(Collectors.joining(",", "<#- ", " ->"));
+                .collect(Collectors.joining(",", "<#-- ", " -->"));
     }
 
     public static String generateStatementsComment(JsonArray statements) {
         return statements.asList().stream()
                 .map(a -> getStatementPlaceHolder(a.getAsJsonObject().get("name").getAsString()))
-                .collect(Collectors.joining(",", "<#- ", " ->"));
+                .collect(Collectors.joining(",", "<#-- ", " -->"));
     }
 
     public static String generateFieldsComment(JsonArray fields) {
         return fields.asList().stream().map(a -> getFieldPlaceHolder(a.getAsString()))
-                .collect(Collectors.joining(",", "<#- ", " ->"));
+                .collect(Collectors.joining(",", "<#-- ", " -->"));
     }
 }

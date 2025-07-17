@@ -67,19 +67,19 @@ public class LanguageBuilder extends FileOutputBuilder<Properties> {
 	 * @return this
 	 */
 	public LanguageBuilder appendProcedure(String proName, String value) {
-		return appendLocalization("blockly.block." + proName, value);
+		return appendLocalization("blockly.block." + proName, value.trim());
 	}
 
 	public LanguageBuilder appendTrigger(String triggerName, String value) {
-		return appendLocalization("trigger." + triggerName, value);
+		return appendLocalization("trigger." + triggerName, value.trim());
 	}
 
 	public LanguageBuilder appendProcedureToolTip(String proName, String value) {
-		return appendLocalization("blockly.block." + proName + ".tooltip", value);
+		return appendLocalization("blockly.block." + proName + ".tooltip", value.trim());
 	}
 
 	public LanguageBuilder appendProcedureCategory(String category, String value) {
-		return appendLocalization("blockly.category." + category, value);
+		return appendLocalization("blockly.category." + category, value.trim());
 	}
 
 	@CanIgnoreReturnValue public LanguageBuilder appendWarning(String warningKey, String value) {
@@ -90,10 +90,18 @@ public class LanguageBuilder extends FileOutputBuilder<Properties> {
 		return appendLocalization("blockly.block.custom_dependency_" + variable.getVariableType(), value);
 	}
 
+	public LanguageBuilder appendDataListMessage(String datalistName,String value){
+		return appendLocalization("dialog.selector."+datalistName+".message",value);
+	}
+
 	@Override public Properties build() {
 		return null;
 	}
 
+	/**
+	 * 在所有语言文件设置完成后调用
+	 * @return result
+	 */
 	@Override public Properties buildAndOutput() {
 		try {
 			flagToOutput = true;

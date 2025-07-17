@@ -43,7 +43,7 @@ public class DataListBuilder extends FileOutputBuilder<Map<String, String>> impl
 
 	public DataListBuilder appendElement(String element,List<String> map){
 		var addition1 = map.toString();
-		result.put(element,System.lineSeparator()+"- "+addition1.substring(1,addition1.length() - 1).replace(",",System.lineSeparator()+"-"));
+		result.put(element,System.lineSeparator()+" - "+addition1.substring(1,addition1.length() - 1).replace(",",System.lineSeparator()+"-"));
 		return this;
 	}
 
@@ -84,6 +84,11 @@ public class DataListBuilder extends FileOutputBuilder<Map<String, String>> impl
 			throw new RuntimeException(e);
 		}
 		return build1;
+	}
+
+	public DataListBuilder setMessageLocalization(LanguageBuilder languageBuilder,String value){
+		languageBuilder.appendDataListMessage(this.fileName,value);
+		return this;
 	}
 
 	public DataListBuilder initGenerator() {

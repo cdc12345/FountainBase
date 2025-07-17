@@ -197,14 +197,14 @@ public class ProcedureBuilder extends JsonBuilder implements IGeneratorInit {
 		return this;
 	}
 
+	public ProcedureBuilder setToolBoxId(IProcedureCategory category) {
+		return setToolBoxId(category.getName());
+	}
+
 	public ProcedureBuilder setToolBoxId(String toolBoxId) {
 		mcreator.addProperty("toolbox_id", toolBoxId);
 		category = toolBoxId;
 		return this;
-	}
-
-	public ProcedureBuilder setToolBoxId(IProcedureCategory category) {
-		return setToolBoxId(category.getName());
 	}
 
 	public ProcedureBuilder appendToolBoxInit(String init) {
@@ -525,7 +525,6 @@ public class ProcedureBuilder extends JsonBuilder implements IGeneratorInit {
 
 	public ProcedureBuilder setPlaceHolderLanguage(LanguageBuilder languageBuilder,final String formmatted){
 		String result = formmatted;
-		System.out.println(quence);
 		for (int index=0;index<quence.size();index++){
 			var name = quence.get(index);
 			result = result.replaceAll("%"+name,"%"+(index+1));
@@ -615,7 +614,7 @@ public class ProcedureBuilder extends JsonBuilder implements IGeneratorInit {
 		}
 		//default color
 		if (!result.getAsJsonObject().has(colorKey)) {
-			setColor(ProcedureBuilder.color.toString());
+			setColor(ColorUtils.getSuggestColor(category));
 		}
 		if (!mcreator.has("group")) {
 			setGroup("name");
