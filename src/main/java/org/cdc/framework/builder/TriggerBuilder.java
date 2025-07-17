@@ -115,7 +115,7 @@ public class TriggerBuilder extends JsonBuilder implements IGeneratorInit {
         var generator1 = Paths.get(rootPath.getPath(),generatorName,"triggers",fileName + ".java.ftl");
         System.out.println(generator1);
         StringBuilder builder = new StringBuilder();
-        builder.append(dependencies.asList().stream().filter(JsonElement::isJsonObject).map(a -> "${parameter$" + a.getAsJsonObject().get("name").getAsString() + "}").collect(Collectors.joining(",", "<#-", "->")));
+        builder.append(dependencies.asList().stream().filter(JsonElement::isJsonObject).map(a -> "${parameter$" + a.getAsJsonObject().get("name").getAsString() + "}").collect(Collectors.joining(",", "<#-- ", " -->")));
         builder.append(System.lineSeparator());
         builder.append("<#include \"procedures.java.ftl\">");
         try {

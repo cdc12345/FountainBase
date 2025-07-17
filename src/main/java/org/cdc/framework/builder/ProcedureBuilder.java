@@ -719,7 +719,7 @@ public class ProcedureBuilder extends JsonBuilder implements IGeneratorInit {
 
 		private boolean flagToSetName;
 
-		protected ToolBoxInitBuilder appendElement(String element) {
+		public ToolBoxInitBuilder appendElement(String element) {
 			result = result.replace(placeholder, element);
 			return this;
 		}
@@ -741,12 +741,16 @@ public class ProcedureBuilder extends JsonBuilder implements IGeneratorInit {
 			return appendElement("<block type=\"math_number\"><field name=\"NUM\">" + num + "</field></block>");
 		}
 
+		public ToolBoxInitBuilder appendNumberField(int num){
+			return appendElement("<field name=\"NUM\">" + num + "</field>");
+		}
+
 		public ToolBoxInitBuilder appendConstantString(String str) {
 			return appendElement("<block type=\"text\"><field name=\"TEXT\">" + str + "</field></block>");
 		}
 
 		public ToolBoxInitBuilder appendReferenceBlock(String type){
-			return appendElement("<block type=\""+type+"\"></block>");
+			return appendElement("<block type=\""+type+"\">﨎</block>");
 		}
 
 		public ToolBoxInitBuilder appendPlaceHolder(String name){
