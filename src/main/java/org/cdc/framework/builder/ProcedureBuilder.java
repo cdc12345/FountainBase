@@ -753,6 +753,11 @@ public class ProcedureBuilder extends JsonBuilder implements IGeneratorInit {
 			return appendElement("<block type=\""+type+"\">﨎</block>");
 		}
 
+		public ToolBoxInitBuilder appendConstantBoolean(boolean bool){
+			var str = String.valueOf(bool).toUpperCase();
+			return appendElement("<block type=\"logic_boolean\"><field name=\"BOOL\">"+str+"</field></block>");
+		}
+
 		public ToolBoxInitBuilder appendPlaceHolder(String name){
 			return appendElement("<block deletable=\"false\" movable=\"false\" enabled=\"false\" type=\""+name+"\"></block>");
 		}

@@ -3,6 +3,9 @@ package org.cdc.framework.utils;
 public enum BuiltInBlocklyColor {
     LOGIC,MATH,TEXTS;
 
+    public static final String ENTITY_COLOR = "195";
+    public static final String ITEMSTACK_COLOR = "250";
+
     /**
      *
      * @param hue 0,360
