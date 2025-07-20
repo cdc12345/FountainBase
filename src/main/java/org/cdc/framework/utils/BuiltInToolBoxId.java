@@ -1,5 +1,7 @@
 package org.cdc.framework.utils;
 
+import org.cdc.framework.interfaces.IProcedureCategory;
+
 public class BuiltInToolBoxId {
 	public static class AITasks {
 		public static final String COMBAT_TASKS = "combattasks";
@@ -11,7 +13,8 @@ public class BuiltInToolBoxId {
 		public static final String VILLAGE_TASKS = "villagetasks";
 	}
 
-	public static class Procedure {
+	public static enum Procedure implements IProcedureCategory {
+		ENTITY_DATA("entitydata",BuiltInBlocklyColor.ENTITY_COLOR),ENTITY_MANAGEMENT("entitymanagement",BuiltInBlocklyColor.ENTITY_COLOR);
 		public static final String OTHER = "other";
 		public static final String APIS = "apis";
 		public static final String MC_ELEMENTS = "mcelements";
@@ -22,8 +25,6 @@ public class BuiltInToolBoxId {
 		public static final String TEXT = "text";
 		public static final String ADVANCED = "advanced";
 		public static final String CUSTOM_VARIABLES = "customvariables";
-		public static final String ENTITY_DATA = "entitydata";
-		public static final String ENTITY_MANAGEMENT = "entitymanagement";
 		public static final String ENTITY_PROCEDURES = "entityprocedures";
 		public static final String BLOCK_ACTIONS = "blockactions";
 		public static final String BLOCK_DATA = "blockdata";
@@ -37,5 +38,21 @@ public class BuiltInToolBoxId {
 		public static final String ITEM_DATA = "itemdata";
 		public static final String ITEM_MANAGEMENT = "itemmanagement";
 		public static final String ITEM_PROCEDURES = "itemprocedures";
+
+		private final String name;
+		private final String defaultColor;
+
+		Procedure(String name,String defaultColor){
+			this.name = name;
+			this.defaultColor = defaultColor;
+		}
+
+		@Override public String getName() {
+			return name;
+		}
+
+		@Override public String getDefaultColor() {
+			return defaultColor;
+		}
 	}
 }

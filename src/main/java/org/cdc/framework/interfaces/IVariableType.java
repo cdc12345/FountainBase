@@ -1,5 +1,7 @@
 package org.cdc.framework.interfaces;
 
+import org.cdc.framework.builder.ProcedureBuilder;
+
 public interface IVariableType {
 
 	/**
@@ -13,4 +15,7 @@ public interface IVariableType {
      * @return name
      */
     String getVariableType();
+
+	default void initDefaultToolBox(ProcedureBuilder procedureBuilder,String name){
+	}
 }

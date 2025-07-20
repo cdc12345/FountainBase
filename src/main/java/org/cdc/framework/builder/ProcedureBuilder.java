@@ -122,6 +122,9 @@ public class ProcedureBuilder extends JsonBuilder implements IGeneratorInit {
 	}
 
 	public ProcedureBuilder setColor(String color) {
+		if (color == null){
+			return this;
+		}
 		ProcedureBuilder.color = color;
 		result.getAsJsonObject().add(colorKey, new JsonPrimitive(color));
 		return this;
@@ -198,7 +201,7 @@ public class ProcedureBuilder extends JsonBuilder implements IGeneratorInit {
 	}
 
 	public ProcedureBuilder setToolBoxId(IProcedureCategory category) {
-		return setToolBoxId(category.getName());
+		return setColor(category.getDefaultColor()).setToolBoxId(category.getName());
 	}
 
 	public ProcedureBuilder setToolBoxId(String toolBoxId) {
@@ -243,6 +246,12 @@ public class ProcedureBuilder extends JsonBuilder implements IGeneratorInit {
 	 */
 	public ProcedureBuilder appendArgs0InputValue(String name, IVariableType type) {
 		return appendArgs0InputValue(name, type, name.charAt(0) != '_');
+	}
+
+	public ProcedureBuilder appendArgs0InputValueWithDefaultToolboxInit(String name,IVariableType type){
+		appendArgs0InputValue(name,type);
+		type.initDefaultToolBox(this,name);
+		return this;
 	}
 
 	public ProcedureBuilder appendArgs0InputValue(String name, IVariableType type, boolean addToInputs) {
