@@ -47,6 +47,7 @@ public class ProcedureBuilder extends JsonBuilder implements IGeneratorInit {
 
 	private static class Flags {
 		private boolean flagToSetLang;
+		private boolean flagToSetColor;
 	}
 
 	public ProcedureBuilder(File rootPath) {
@@ -116,6 +117,7 @@ public class ProcedureBuilder extends JsonBuilder implements IGeneratorInit {
 	}
 
 	public ProcedureBuilder setColor(int color) {
+		flags.flagToSetColor = true;
 		ProcedureBuilder.color = color;
 		result.getAsJsonObject().add(colorKey, new JsonPrimitive(color));
 		return this;
@@ -126,6 +128,7 @@ public class ProcedureBuilder extends JsonBuilder implements IGeneratorInit {
 			return this;
 		}
 		ProcedureBuilder.color = color;
+		flags.flagToSetColor = true;
 		result.getAsJsonObject().add(colorKey, new JsonPrimitive(color));
 		return this;
 	}
@@ -201,7 +204,10 @@ public class ProcedureBuilder extends JsonBuilder implements IGeneratorInit {
 	}
 
 	public ProcedureBuilder setToolBoxId(IProcedureCategory category) {
-		return setColor(category.getDefaultColor()).setToolBoxId(category.getName());
+		if (!flags.flagToSetColor) {
+			setColor(category.getDefaultColor());
+		}
+		return setToolBoxId(category.getName());
 	}
 
 	public ProcedureBuilder setToolBoxId(String toolBoxId) {
