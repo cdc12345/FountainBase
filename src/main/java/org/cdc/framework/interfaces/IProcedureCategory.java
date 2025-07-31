@@ -6,4 +6,8 @@ public interface IProcedureCategory {
     default String getDefaultColor(){
         return null;
     }
+
+    default String getParent(){
+        return null;
+    }
 }

@@ -21,10 +21,7 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 
 public class ProcedureBuilder extends JsonBuilder implements IGeneratorInit {
 	public static Object color = "35";
@@ -289,6 +286,16 @@ public class ProcedureBuilder extends JsonBuilder implements IGeneratorInit {
 		return appendArgs0Element(jsonObject);
 	}
 
+	public ProcedureBuilder appendArgs0FieldInput(String name,String text) {
+		JsonObject jsonObject = new JsonObject();
+		jsonObject.addProperty("type", "field_input");
+		jsonObject.addProperty("name", name);
+		jsonObject.addProperty("text",text);
+		fields.add(name);
+		quence.add(name);
+		return appendArgs0Element(jsonObject);
+	}
+
 	/**
 	 * @param name name
 	 * @return this
@@ -540,9 +547,10 @@ public class ProcedureBuilder extends JsonBuilder implements IGeneratorInit {
 
 	public ProcedureBuilder setPlaceHolderLanguage(LanguageBuilder languageBuilder,final String formmatted){
 		String result = formmatted;
-		for (int index=0;index<quence.size();index++){
-			var name = quence.get(index);
-			result = result.replaceAll("%"+name,"%"+(index+1));
+		var list = quence.stream().sorted(Comparator.comparingInt(String::length)).toList().reversed();
+		for (int index=0;index<list.size();index++){
+			var name = list.get(index);
+			result = result.replaceAll("%"+name,"%"+(quence.indexOf(name) +1));
 		}
 		return setLanguage(languageBuilder,result);
 	}
@@ -586,23 +594,23 @@ public class ProcedureBuilder extends JsonBuilder implements IGeneratorInit {
 			Path template = new File(procedures, fileName + ".java.ftl").toPath();
 			if (Files.exists(template)) {
 				String string = Files.readString(template);
-				inputs.asList().stream().map(a -> BuilderUtils.getInputPlaceHolder(a.getAsString())).forEach(a -> {
-					if (!string.contains(a)) {
-						System.err.println(template.toUri() + " :" + a + " is missing.");
-					}
-				});
-				statements.asList().stream()
-						.map(a -> BuilderUtils.getStatementPlaceHolder(a.getAsJsonObject().get("name").getAsString()))
-						.forEach(a -> {
-							if (!string.contains(a)) {
-								System.err.println(template.toUri() + " :" + a + " is missing.");
-							}
-						});
-				fields.asList().stream().map(a -> BuilderUtils.getFieldPlaceHolder(a.getAsString())).forEach(a -> {
-					if (!string.contains(a)) {
-						System.err.println(template.toUri() + " :" + a + " is missing.");
-					}
-				});
+				if (!string.startsWith("<#-- unchecked -->")) {
+					inputs.asList().stream().map(a -> BuilderUtils.getInputPlaceHolder(a.getAsString())).forEach(a -> {
+						if (!string.contains(a)) {
+							System.err.println(template.toUri() + " :" + a + " is missing.");
+						}
+					}); statements.asList().stream().map(a -> BuilderUtils.getStatementPlaceHolder(
+							a.getAsJsonObject().get("name").getAsString())).forEach(a -> {
+						if (!string.contains(a)) {
+							System.err.println(template.toUri() + " :" + a + " is missing.");
+						}
+					});
+					fields.asList().stream().map(a -> BuilderUtils.getFieldPlaceHolder(a.getAsString())).forEach(a -> {
+						if (!string.contains(a)) {
+							System.err.println(template.toUri() + " :" + a + " is missing.");
+						}
+					});
+				}
 			} else {
 				String builder = BuilderUtils.generateInputsComment(inputs) + System.lineSeparator()
 						+ BuilderUtils.generateStatementsComment(statements) + System.lineSeparator()
@@ -777,7 +785,7 @@ public class ProcedureBuilder extends JsonBuilder implements IGeneratorInit {
 			return appendElement("<block deletable=\"false\" movable=\"false\" enabled=\"false\" type=\""+name+"\"></block>");
 		}
 
-		public ToolBoxInitBuilder appendEntityIterator(){
+		public ToolBoxInitBuilder appendEntityIterator() {
 			return appendPlaceHolder("entity_iterator");
 		}
 

@@ -60,6 +60,31 @@ public class VariableBuilder extends JsonBuilder implements IGeneratorInit {
         return this;
     }
 
+    public VariableBuilder setGetterText(LanguageBuilder languageBuilder,String text){
+        languageBuilder.appendLocalization("blockly.block.get_var_"+this.fileName,text);
+        return this;
+    }
+
+    public VariableBuilder setSetterText(LanguageBuilder languageBuilder,String text){
+        languageBuilder.appendLocalization("blockly.block.set_var_"+this.fileName,text);
+        return this;
+    }
+
+    public VariableBuilder setReturnText(LanguageBuilder languageBuilder,String text){
+        languageBuilder.appendLocalization("blockly.block.return_"+this.fileName,text);
+        return this;
+    }
+
+    public VariableBuilder setCustomDependency(LanguageBuilder languageBuilder,String text){
+        languageBuilder.appendLocalization("blockly.block.custom_dependency_"+this.fileName,text);
+        return this;
+    }
+
+    public VariableBuilder setCallProcedureRetval(LanguageBuilder languageBuilder,String text){
+        languageBuilder.appendLocalization("blockly.block.procedure_retval_"+this.fileName,text);
+        return this;
+    }
+
     /**
      * this is not implement in 2025.1
      *

@@ -14,15 +14,16 @@ public class BuiltInToolBoxId {
 	}
 
 	public static enum Procedure implements IProcedureCategory {
-		ENTITY_DATA("entitydata",BuiltInBlocklyColor.ENTITY_COLOR),ENTITY_MANAGEMENT("entitymanagement",BuiltInBlocklyColor.ENTITY_COLOR);
+		ENTITY_DATA("entitydata", BuiltInBlocklyColor.ENTITY_COLOR), ENTITY_MANAGEMENT("entitymanagement",
+				BuiltInBlocklyColor.ENTITY_COLOR), MATH("math", BuiltInBlocklyColor.MATH.toString()), TEXT("text",
+				BuiltInBlocklyColor.TEXTS.toString()), ITEM_MANAGEMENT("itemmanagement",
+				BuiltInBlocklyColor.ITEMSTACK_COLOR), ITEM_DATA("itemdata", BuiltInBlocklyColor.ITEMSTACK_COLOR);
 		public static final String OTHER = "other";
 		public static final String APIS = "apis";
 		public static final String MC_ELEMENTS = "mcelements";
 		public static final String MC_VARIABLES = "mcvariables";
 		public static final String LOGIC_LOOP = "logicloops";
 		public static final String LOGIC_OPERATION = "logicoperations";
-		public static final String MATH = "math";
-		public static final String TEXT = "text";
 		public static final String ADVANCED = "advanced";
 		public static final String CUSTOM_VARIABLES = "customvariables";
 		public static final String ENTITY_PROCEDURES = "entityprocedures";
@@ -35,14 +36,12 @@ public class BuiltInToolBoxId {
 		public static final String PLAYER_DATA = "playerdata";
 		public static final String PLAYER_MANAGEMENT = "playermanagement";
 		public static final String PLAYER_PROCEDURES = "playerprocedures";
-		public static final String ITEM_DATA = "itemdata";
-		public static final String ITEM_MANAGEMENT = "itemmanagement";
 		public static final String ITEM_PROCEDURES = "itemprocedures";
 
 		private final String name;
 		private final String defaultColor;
 
-		Procedure(String name,String defaultColor){
+		Procedure(String name, String defaultColor) {
 			this.name = name;
 			this.defaultColor = defaultColor;
 		}
