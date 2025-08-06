@@ -308,6 +308,19 @@ public class ProcedureBuilder extends JsonBuilder implements IGeneratorInit {
 		return appendArgs0Element(jsonObject);
 	}
 
+	public ProcedureBuilder appendArgs0StatementInput(String name,String... checksHigherName) {
+		JsonObject jsonObject = new JsonObject();
+		jsonObject.addProperty("type", "input_statement");
+		jsonObject.addProperty("name", name);
+		var array = new JsonArray();
+		for (String check : checksHigherName) {
+			array.add(check);
+		}
+		jsonObject.add("check",array);
+		quence.add(name);
+		return appendArgs0Element(jsonObject);
+	}
+
 	/**
 	 * { "type": "field_checkbox", "name": "insight", "checked": false },
 	 *
