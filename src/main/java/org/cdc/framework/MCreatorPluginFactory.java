@@ -47,6 +47,10 @@ public class MCreatorPluginFactory {
 		}
 	}
 
+	public void createProcedureTemplateFolder(){
+		createFolder("templates/ptpl");
+	}
+
 	public void setVersion(String version) {
 		this.version = version;
 	}
@@ -281,6 +285,10 @@ public class MCreatorPluginFactory {
 
 		public ProcedureBuilder createInputProcedure(String name) {
 			return BuilderUtils.createCommonProcedure(MCreatorPluginFactory.this, name);
+		}
+
+		public ProcedureBuilder createEndProcedure(String name){
+			return BuilderUtils.createEndProcedure(MCreatorPluginFactory.this,name);
 		}
 
 		public ProcedureBuilder createOutputProcedure(String name, String output) {

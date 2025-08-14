@@ -29,6 +29,10 @@ public class BuilderUtils {
         return mCreatorPluginFactory.createProcedure(name).setGroup("name").setPreviousStatement(null).setNextStatement(null).setInputsInline(true);
     }
 
+	public static ProcedureBuilder createEndProcedure(MCreatorPluginFactory mCreatorPluginFactory,String name){
+		return mCreatorPluginFactory.createProcedure(name).setGroup("name").setPreviousStatement(null).setInputsInline(true);
+	}
+
     public static ProcedureBuilder createProcedureCategory(MCreatorPluginFactory mCreatorPluginFactory, IProcedureCategory category) {
         return createProcedureCategory(mCreatorPluginFactory, category.getName());
     }
