@@ -23,17 +23,27 @@ public class LanguageBuilder extends FileOutputBuilder<Properties> {
 		this.fileExtension = "properties";
 
 		Runtime.getRuntime().addShutdownHook(new Thread(() -> {
-			if (!flagToOutput){
+			if (!flagToOutput) {
 				System.err.println("Attention, Your language do not output!! This may crash your mcreator");
 			}
 		}));
 
-		load();
+		loadModifier();
 	}
 
+	public LanguageBuilder loadModifier(){
+		load();
+		return this;
+	}
+
+	/**
+	 * 表意不明，不建议使用
+	 * @return this
+	 */
+	@Deprecated
 	public LanguageBuilder load() {
 		try {
-			var file = new File(targetPath, fileName + "." + fileExtension);
+			var file = new File(targetPath, fileName + "." + fileExtension + ".modifier");
 			if (file.exists())
 				this.result.load(new FileReader(file));
 		} catch (IOException e) {
@@ -90,8 +100,8 @@ public class LanguageBuilder extends FileOutputBuilder<Properties> {
 		return appendLocalization("blockly.block.custom_dependency_" + variable.getVariableType(), value);
 	}
 
-	public LanguageBuilder appendDataListMessage(String datalistName,String value){
-		return appendLocalization("dialog.selector."+datalistName+".message",value);
+	public LanguageBuilder appendDataListMessage(String datalistName, String value) {
+		return appendLocalization("dialog.selector." + datalistName + ".message", value);
 	}
 
 	@Override public Properties build() {
@@ -100,6 +110,7 @@ public class LanguageBuilder extends FileOutputBuilder<Properties> {
 
 	/**
 	 * 在所有语言文件设置完成后调用
+	 *
 	 * @return result
 	 */
 	@Override public Properties buildAndOutput() {

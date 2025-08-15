@@ -41,14 +41,20 @@ public class DataListBuilder extends FileOutputBuilder<Map<String, String>> impl
 		return this;
 	}
 
-	public DataListBuilder appendElement(String element,List<String> map){
-		var addition1 = map.toString();
-		result.put(element,System.lineSeparator()+" - "+addition1.substring(1,addition1.length() - 1).replace(",",System.lineSeparator()+" -"));
-		return this;
+	public DataListBuilder appendElement(String element, List<String> map) {
+		return appendElement(element,element,map);
 	}
 
 	public DataListBuilder appendStringElement(String element, String defaultMapping) {
 		return appendElement(element, "\"" + defaultMapping + "\"");
+	}
+
+	public DataListBuilder appendElement(String element, String readableName, List<String> map){
+		var addition1 = map.toString();
+		var elementResult = element + ':' + System.lineSeparator() + "  readable_name: \""+readableName + "\"";
+		appendElement(elementResult, System.lineSeparator() + " - " + addition1.substring(1, addition1.length() - 1)
+				.replace(",", System.lineSeparator() + " -"));
+		return this;
 	}
 
 	public DataListBuilder setDefault() {
@@ -86,8 +92,8 @@ public class DataListBuilder extends FileOutputBuilder<Map<String, String>> impl
 		return build1;
 	}
 
-	public DataListBuilder setMessageLocalization(LanguageBuilder languageBuilder,String value){
-		languageBuilder.appendDataListMessage(this.fileName,value);
+	public DataListBuilder setMessageLocalization(LanguageBuilder languageBuilder, String value) {
+		languageBuilder.appendDataListMessage(this.fileName, value);
 		return this;
 	}
 
@@ -115,10 +121,9 @@ public class DataListBuilder extends FileOutputBuilder<Map<String, String>> impl
 					hashMap.toString().replace("{", "").replace("}", "").replace("=", ": ")
 							.replace(", ", System.lineSeparator()).getBytes(StandardCharsets.UTF_8));
 			if (replace) {
-				Files.copy(source, generator1,
-						StandardCopyOption.REPLACE_EXISTING);
+				Files.copy(source, generator1, StandardCopyOption.REPLACE_EXISTING);
 			} else {
-				Files.copy(source,generator1);
+				Files.copy(source, generator1);
 			}
 		} catch (IOException ignored) {
 		}

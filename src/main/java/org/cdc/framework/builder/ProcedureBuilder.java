@@ -625,9 +625,16 @@ public class ProcedureBuilder extends JsonBuilder implements IGeneratorInit {
 					});
 				}
 			} else {
+				String below2025 = """
+				<#-- support 2025.1 below -->
+				<#if addTemplate??>
+				<#-- 2025.1 code -->
+				<#else>
+				</#if>
+				""";
 				String builder = BuilderUtils.generateInputsComment(inputs) + System.lineSeparator()
 						+ BuilderUtils.generateStatementsComment(statements) + System.lineSeparator()
-						+ BuilderUtils.generateFieldsComment(fields);
+						+ BuilderUtils.generateFieldsComment(fields) + System.lineSeparator() +below2025;
 				Files.copy(new ByteArrayInputStream(builder.getBytes(StandardCharsets.UTF_8)), template);
 			}
 		} catch (IOException e) {
