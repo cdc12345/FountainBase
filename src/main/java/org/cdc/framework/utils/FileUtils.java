@@ -1,14 +1,14 @@
 package org.cdc.framework.utils;
 
-import java.io.File;
-import java.io.IOException;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+
+import java.io.File;
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 
 public class FileUtils {
 	public static void deleteNonEmptyDirector(File directory) {
@@ -75,7 +75,7 @@ public class FileUtils {
 		Gson gson = new Gson();
 		var file = gson.fromJson(loadStringFromFile(fl), JsonObject.class);
 		StringBuilder builder = new StringBuilder();
-		builder.append("mcr.createProcedure(\"").append(getFileName(fl)).append("\")");
+		builder.append("pluginFactory.createProcedure(\"").append(getFileName(fl)).append("\")");
 		if (fl.getName().startsWith("$")){
 			builder.append(".markType()");
 		}
@@ -151,7 +151,7 @@ public class FileUtils {
 	public static String tryGenerateVariableCode(File fl) {
 		Gson gson = new Gson();
 		var file = gson.fromJson(loadStringFromFile(fl), JsonObject.class);
-		StringBuilder builder = new StringBuilder("mcr.createVariable().setName(\"" + getFileName(fl) + "\")");
+		StringBuilder builder = new StringBuilder("pluginFactory.createVariable().setName(\"" + getFileName(fl) + "\")");
 		if (file.has("color")) {
 			builder.append(".setColor(").append(file.get("color")).append(")");
 		}
@@ -176,7 +176,7 @@ public class FileUtils {
 	public static String tryGenerateTrigger(File fl) {
 		Gson gson = new Gson();
 		var file = gson.fromJson(loadStringFromFile(fl), JsonObject.class);
-		StringBuilder builder = new StringBuilder("mcr.createTrigger().setName(\"" + getFileName(fl) + "\")");
+		StringBuilder builder = new StringBuilder("pluginFactory.createTrigger().setName(\"" + getFileName(fl) + "\")");
 		if (file.has("side")) {
 			builder.append(".setSide(Side.").append(Side.getSide(file.get("side").getAsString()).name()).append(")");
 		}
