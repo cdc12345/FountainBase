@@ -12,7 +12,7 @@ public class FountainBaseMain {
 	public static void main(String[] args) {
 		ArrayList<MCreatorPluginFactory> mCreatorPluginFactoryArrayList = new ArrayList<>();
 		if (args.length >= 1) {
-			mCreatorPluginFactoryArrayList.addAll(Stream.of(args).map(a->new MCreatorPluginFactory(new File(a))).toList());
+			Stream.of(args).forEach(a->mCreatorPluginFactoryArrayList.add(MCreatorPluginFactory.createFactory(a)));
 		}
 
 		var iterator = mCreatorPluginFactoryArrayList.iterator();
