@@ -23,6 +23,8 @@ public class FountainBaseMain {
 				if (a.get().getClass().isAnnotationPresent(DefaultPluginFolder.class)) {
 					mCreatorPluginFactory1 = new MCreatorPluginFactory(new File(a.get().getClass().getAnnotation(
 							DefaultPluginFolder.class).value()));
+				} else {
+					mCreatorPluginFactory1 = mCreatorPluginFactoryArrayList.getLast();
 				}
 			} else {
 				mCreatorPluginFactory1 = iterator.next();
