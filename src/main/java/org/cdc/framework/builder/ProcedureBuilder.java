@@ -121,7 +121,7 @@ public class ProcedureBuilder extends JsonBuilder implements IGeneratorInit {
 	}
 
 	public ProcedureBuilder setColor(String color) {
-		if (color == null){
+		if (color == null) {
 			return this;
 		}
 		ProcedureBuilder.color = color;
@@ -251,9 +251,9 @@ public class ProcedureBuilder extends JsonBuilder implements IGeneratorInit {
 		return appendArgs0InputValue(name, type, name.charAt(0) != '_');
 	}
 
-	public ProcedureBuilder appendArgs0InputValueWithDefaultToolboxInit(String name,IVariableType type){
-		appendArgs0InputValue(name,type);
-		type.initDefaultToolBox(this,name);
+	public ProcedureBuilder appendArgs0InputValueWithDefaultToolboxInit(String name, IVariableType type) {
+		appendArgs0InputValue(name, type);
+		type.initDefaultToolBox(this, name);
 		return this;
 	}
 
@@ -286,11 +286,11 @@ public class ProcedureBuilder extends JsonBuilder implements IGeneratorInit {
 		return appendArgs0Element(jsonObject);
 	}
 
-	public ProcedureBuilder appendArgs0FieldInput(String name,String text) {
+	public ProcedureBuilder appendArgs0FieldInput(String name, String text) {
 		JsonObject jsonObject = new JsonObject();
 		jsonObject.addProperty("type", "field_input");
 		jsonObject.addProperty("name", name);
-		jsonObject.addProperty("text",text);
+		jsonObject.addProperty("text", text);
 		fields.add(name);
 		quence.add(name);
 		return appendArgs0Element(jsonObject);
@@ -308,7 +308,7 @@ public class ProcedureBuilder extends JsonBuilder implements IGeneratorInit {
 		return appendArgs0Element(jsonObject);
 	}
 
-	public ProcedureBuilder appendArgs0StatementInput(String name,String... checksHigherName) {
+	public ProcedureBuilder appendArgs0StatementInput(String name, String... checksHigherName) {
 		JsonObject jsonObject = new JsonObject();
 		jsonObject.addProperty("type", "input_statement");
 		jsonObject.addProperty("name", name);
@@ -316,7 +316,7 @@ public class ProcedureBuilder extends JsonBuilder implements IGeneratorInit {
 		for (String check : checksHigherName) {
 			array.add(check);
 		}
-		jsonObject.add("check",array);
+		jsonObject.add("check", array);
 		quence.add(name);
 		return appendArgs0Element(jsonObject);
 	}
@@ -558,14 +558,14 @@ public class ProcedureBuilder extends JsonBuilder implements IGeneratorInit {
 		return this;
 	}
 
-	public ProcedureBuilder setPlaceHolderLanguage(LanguageBuilder languageBuilder,final String formmatted){
+	public ProcedureBuilder setPlaceHolderLanguage(LanguageBuilder languageBuilder, final String formmatted) {
 		String result = formmatted;
 		var list = quence.stream().sorted(Comparator.comparingInt(String::length)).toList().reversed();
-		for (int index=0;index<list.size();index++){
+		for (int index = 0; index < list.size(); index++) {
 			var name = list.get(index);
-			result = result.replaceAll("%"+name,"%"+(quence.indexOf(name) +1));
+			result = result.replaceAll("%" + name, "%" + (quence.indexOf(name) + 1));
 		}
-		return setLanguage(languageBuilder,result);
+		return setLanguage(languageBuilder, result);
 	}
 
 	@CanIgnoreReturnValue public ProcedureBuilder setLanguage(LanguageBuilder languageBuilder, String value) {
@@ -609,32 +609,37 @@ public class ProcedureBuilder extends JsonBuilder implements IGeneratorInit {
 				String string = Files.readString(template);
 				if (!string.startsWith("<#-- unchecked -->")) {
 					inputs.asList().stream().map(a -> BuilderUtils.getInputPlaceHolder(a.getAsString())).forEach(a -> {
-						if (!string.contains(a)) {
+						if (!string.contains(a) && !string.contains(a.substring(2, a.length() - 1))) {
 							System.err.println(template.toUri() + " :" + a + " is missing.");
 						}
-					}); statements.asList().stream().map(a -> BuilderUtils.getStatementPlaceHolder(
+					});
+					statements.asList().stream().map(a -> BuilderUtils.getStatementPlaceHolder(
 							a.getAsJsonObject().get("name").getAsString())).forEach(a -> {
-						if (!string.contains(a)) {
+						if (!string.contains(a) && !string.contains(a.substring(2, a.length() - 1))) {
 							System.err.println(template.toUri() + " :" + a + " is missing.");
 						}
 					});
 					fields.asList().stream().map(a -> BuilderUtils.getFieldPlaceHolder(a.getAsString())).forEach(a -> {
-						if (!string.contains(a)) {
+						if (!string.contains(a) && !string.contains(a.substring(2, a.length() - 1))) {
 							System.err.println(template.toUri() + " :" + a + " is missing.");
 						}
 					});
 				}
+				if (!string.contains("addTemplate??") && string.contains("@addTemplate file")) {
+					System.err.println(
+							template.toUri() + " : it will not compatible with 2024.4 because the addTemplate");
+				}
 			} else {
 				String below2025 = """
-				<#-- support 2025.1 below -->
-				<#if addTemplate??>
-				<#-- 2025.1 code -->
-				<#else>
-				</#if>
-				""";
+						<#-- support 2025.1 below -->
+						<#if addTemplate??>
+						<#-- 2025.1 code -->
+						<#else>
+						</#if>
+						""";
 				String builder = BuilderUtils.generateInputsComment(inputs) + System.lineSeparator()
 						+ BuilderUtils.generateStatementsComment(statements) + System.lineSeparator()
-						+ BuilderUtils.generateFieldsComment(fields) + System.lineSeparator() +below2025;
+						+ BuilderUtils.generateFieldsComment(fields) + System.lineSeparator() + below2025;
 				Files.copy(new ByteArrayInputStream(builder.getBytes(StandardCharsets.UTF_8)), template);
 			}
 		} catch (IOException e) {
@@ -784,7 +789,7 @@ public class ProcedureBuilder extends JsonBuilder implements IGeneratorInit {
 			return appendElement("<block type=\"math_number\"><field name=\"NUM\">" + num + "</field></block>");
 		}
 
-		public ToolBoxInitBuilder appendNumberField(int num){
+		public ToolBoxInitBuilder appendNumberField(int num) {
 			return appendElement("<field name=\"NUM\">" + num + "</field>");
 		}
 
@@ -792,17 +797,18 @@ public class ProcedureBuilder extends JsonBuilder implements IGeneratorInit {
 			return appendElement("<block type=\"text\"><field name=\"TEXT\">" + str + "</field></block>");
 		}
 
-		public ToolBoxInitBuilder appendReferenceBlock(String type){
-			return appendElement("<block type=\""+type+"\">﨎</block>");
+		public ToolBoxInitBuilder appendReferenceBlock(String type) {
+			return appendElement("<block type=\"" + type + "\">﨎</block>");
 		}
 
-		public ToolBoxInitBuilder appendConstantBoolean(boolean bool){
+		public ToolBoxInitBuilder appendConstantBoolean(boolean bool) {
 			var str = String.valueOf(bool).toUpperCase();
-			return appendElement("<block type=\"logic_boolean\"><field name=\"BOOL\">"+str+"</field></block>");
+			return appendElement("<block type=\"logic_boolean\"><field name=\"BOOL\">" + str + "</field></block>");
 		}
 
-		public ToolBoxInitBuilder appendPlaceHolder(String name){
-			return appendElement("<block deletable=\"false\" movable=\"false\" enabled=\"false\" type=\""+name+"\"></block>");
+		public ToolBoxInitBuilder appendPlaceHolder(String name) {
+			return appendElement(
+					"<block deletable=\"false\" movable=\"false\" enabled=\"false\" type=\"" + name + "\"></block>");
 		}
 
 		public ToolBoxInitBuilder appendEntityIterator() {

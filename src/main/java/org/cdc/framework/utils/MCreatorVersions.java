@@ -5,6 +5,7 @@ public class MCreatorVersions {
         public static final String V_2025_0 = "v_2025_0";
     }
 
+	public static final String V_2024_4 = "v_2024_4";
     public static final String V_2025_1 = "v_2025_1";
     public static final String V_2025_1_9999 = "v_2025_199999";
     public static final String V_2025_2 = "v_2025_2";
