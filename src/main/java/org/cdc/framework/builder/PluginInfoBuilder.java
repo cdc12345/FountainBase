@@ -13,11 +13,12 @@ public class PluginInfoBuilder extends JsonBuilder{
 	private JsonObject info;
 
 	public PluginInfoBuilder(File rootPath) {
-		super(rootPath, new File(rootPath,"plugin.json"));
+		super(rootPath, rootPath);
 
 		this.result = new JsonObject();
 		this.supportedVersion = new JsonArray();
 		this.info = new JsonObject();
+		this.fileName = "plugin";
 	}
 
 	public PluginInfoBuilder setId(String id){
