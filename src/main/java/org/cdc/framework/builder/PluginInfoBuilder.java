@@ -9,8 +9,8 @@ import java.io.File;
 
 public class PluginInfoBuilder extends JsonBuilder{
 
-	private JsonArray supportedVersion;
-	private JsonObject info;
+	private final JsonArray supportedVersion;
+	private final JsonObject info;
 
 	public PluginInfoBuilder(File rootPath) {
 		super(rootPath, rootPath);
