@@ -3,16 +3,25 @@ package org.cdc.framework;
 import org.cdc.framework.interfaces.IFountainMain;
 import org.cdc.framework.interfaces.annotation.DefaultPluginFolder;
 
-import java.io.File;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.ServiceLoader;
 import java.util.stream.Stream;
 
 public class FountainBaseMain {
 	public static void main(String[] args) {
 		ArrayList<MCreatorPluginFactory> mCreatorPluginFactoryArrayList = new ArrayList<>();
+		HashMap<String, MCreatorPluginFactory> pathToFactory = new HashMap<>();
 		if (args.length >= 1) {
-			Stream.of(args).forEach(a->mCreatorPluginFactoryArrayList.add(MCreatorPluginFactory.createFactory(a)));
+			Stream.of(args).forEach(a -> {
+				if (!pathToFactory.containsKey(a)) {
+					var factory = MCreatorPluginFactory.createFactory(a);
+					pathToFactory.put(a,factory);
+					mCreatorPluginFactoryArrayList.add(factory);
+				} else {
+					mCreatorPluginFactoryArrayList.add(pathToFactory.get(a));
+				}
+			});
 		}
 
 		var iterator = mCreatorPluginFactoryArrayList.iterator();
@@ -21,8 +30,13 @@ public class FountainBaseMain {
 			MCreatorPluginFactory mCreatorPluginFactory1 = null;
 			if (!iterator.hasNext()) {
 				if (a.get().getClass().isAnnotationPresent(DefaultPluginFolder.class)) {
-					mCreatorPluginFactory1 = new MCreatorPluginFactory(new File(a.get().getClass().getAnnotation(
-							DefaultPluginFolder.class).value()));
+					var target = a.get().getClass().getAnnotation(DefaultPluginFolder.class).value();
+
+					if (pathToFactory.containsKey(target)){
+						mCreatorPluginFactory1 = pathToFactory.get(target);
+					} else {
+						mCreatorPluginFactory1 = MCreatorPluginFactory.createFactory(target);
+					}
 				} else {
 					mCreatorPluginFactory1 = mCreatorPluginFactoryArrayList.getLast();
 				}
