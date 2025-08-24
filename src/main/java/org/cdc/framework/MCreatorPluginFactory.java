@@ -30,12 +30,14 @@ public class MCreatorPluginFactory {
 	private String currentInit;
 
 	private final File rootPath;
+	private final File buildPath;
 	private String version;
 
 	private final ToolKit toolkit;
 
 	public MCreatorPluginFactory(File rootPath) {
 		this.rootPath = rootPath;
+		this.buildPath = rootPath;
 		this.version = MCreatorVersions.V_2025_1;
 		this.toolkit = new ToolKit();
 	}

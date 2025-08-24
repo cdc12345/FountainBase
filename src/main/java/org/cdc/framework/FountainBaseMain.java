@@ -28,6 +28,7 @@ public class FountainBaseMain {
 		ServiceLoader<IFountainMain> serviceLoader = ServiceLoader.load(IFountainMain.class);
 		serviceLoader.stream().forEach(a -> {
 			MCreatorPluginFactory mCreatorPluginFactory1 = null;
+			//build the MCreatorPluginFactory
 			if (!iterator.hasNext()) {
 				if (a.get().getClass().isAnnotationPresent(DefaultPluginFolder.class)) {
 					var target = a.get().getClass().getAnnotation(DefaultPluginFolder.class).value();
