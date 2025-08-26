@@ -27,7 +27,7 @@ public class FountainBaseMain {
 		var iterator = mCreatorPluginFactoryArrayList.iterator();
 		ServiceLoader<IFountainMain> serviceLoader = ServiceLoader.load(IFountainMain.class);
 		serviceLoader.stream().forEach(a -> {
-			MCreatorPluginFactory mCreatorPluginFactory1 = null;
+			MCreatorPluginFactory mCreatorPluginFactory1;
 			//build the MCreatorPluginFactory
 			if (!iterator.hasNext()) {
 				if (a.get().getClass().isAnnotationPresent(DefaultPluginFolder.class)) {
@@ -44,6 +44,7 @@ public class FountainBaseMain {
 			} else {
 				mCreatorPluginFactory1 = iterator.next();
 			}
+			a.get().generatePluginInfo(mCreatorPluginFactory1.createInfo());
 			a.get().generatePlugin(mCreatorPluginFactory1);
 		});
 	}
