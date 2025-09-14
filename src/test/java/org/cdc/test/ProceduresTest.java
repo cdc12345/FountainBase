@@ -78,7 +78,7 @@ public class ProceduresTest {
                 external: 
                    readable_name: "Air"
                    type: block""", """
-                  
+                
                   - Blocks.AI
                   - "air"
                 """).initGenerator().buildAndOutput();

@@ -9,6 +9,7 @@ import org.cdc.framework.MCreatorPluginFactory;
 import org.cdc.framework.interfaces.IGeneratorInit;
 import org.cdc.framework.interfaces.IProcedureCategory;
 import org.cdc.framework.interfaces.IVariableType;
+import org.cdc.framework.interfaces.annotation.ProcedureCategoryLikeMethod;
 import org.cdc.framework.utils.BuilderUtils;
 import org.cdc.framework.utils.BuiltInToolBoxId;
 import org.cdc.framework.utils.ColorUtils;
@@ -79,6 +80,7 @@ public class ProcedureBuilder extends JsonBuilder implements IGeneratorInit {
 		return this;
 	}
 
+	@ProcedureCategoryLikeMethod
 	public ProcedureBuilder setName(String name) {
 		if (isType && !name.startsWith("$")) {
 			this.fileName = "$" + FileUtils.filterSpace(name);
@@ -93,6 +95,7 @@ public class ProcedureBuilder extends JsonBuilder implements IGeneratorInit {
 	 *
 	 * @return this
 	 */
+	@ProcedureCategoryLikeMethod
 	public ProcedureBuilder markType() {
 		String colorValue;
 		if (result.getAsJsonObject().has(colorKey)) {
@@ -113,6 +116,7 @@ public class ProcedureBuilder extends JsonBuilder implements IGeneratorInit {
 		return this;
 	}
 
+	@ProcedureCategoryLikeMethod
 	public ProcedureBuilder setColor(int color) {
 		flags.flagToSetColor = true;
 		ProcedureBuilder.color = color;
@@ -120,6 +124,7 @@ public class ProcedureBuilder extends JsonBuilder implements IGeneratorInit {
 		return this;
 	}
 
+	@ProcedureCategoryLikeMethod
 	public ProcedureBuilder setColor(String color) {
 		if (color == null) {
 			return this;
@@ -130,10 +135,12 @@ public class ProcedureBuilder extends JsonBuilder implements IGeneratorInit {
 		return this;
 	}
 
+	@ProcedureCategoryLikeMethod
 	public ProcedureBuilder setColor(Color color) {
 		return setColor(ColorUtils.toHex(color));
 	}
 
+	@ProcedureCategoryLikeMethod
 	public ProcedureBuilder setParentCategory(String parentCategory) {
 		if (isType)
 			result.getAsJsonObject().add("parent_category", new JsonPrimitive(parentCategory));
@@ -570,9 +577,9 @@ public class ProcedureBuilder extends JsonBuilder implements IGeneratorInit {
 
 	@CanIgnoreReturnValue public ProcedureBuilder setLanguage(LanguageBuilder languageBuilder, String value) {
 		flags.flagToSetLang = true;
-		if (isType)
+		if (isType) {
 			languageBuilder.appendProcedureCategory(fileName.substring(1), value);
-		else {
+		} else {
 			if (BuilderUtils.countLanguageParameterCount(value) != args0.size()) {
 				throw new RuntimeException(
 						"\" " + value + " \"is a irregular content because we need parameter count: " + args0.size());
