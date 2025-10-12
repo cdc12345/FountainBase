@@ -9,6 +9,8 @@ public class MCreatorVersions {
     public static final String V_2025_1 = "v_2025_1";
     public static final String V_2025_1_9999 = "v_2025_199999";
     public static final String V_2025_2 = "v_2025_2";
+	public static final String V_2025_3 = "v_2025_3";
+	public static final String V_2025_4 = "v_2025_4";
 
     public static String toFormattedVersion(String origin){
         if (origin.startsWith("v_")){
