@@ -18,4 +18,8 @@ public class MCreatorVersions {
         }
         return origin;
     }
+
+	public static String toDevelopingVersion(String origin){
+		return toFormattedVersion(origin)+"99999";
+	}
 }

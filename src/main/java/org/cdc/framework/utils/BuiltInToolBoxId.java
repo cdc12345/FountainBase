@@ -13,11 +13,28 @@ public class BuiltInToolBoxId {
 		public static final String VILLAGE_TASKS = "villagetasks";
 	}
 
-	public static enum Procedure implements IProcedureCategory {
+	public enum Procedure implements IProcedureCategory {
 		ENTITY_DATA("entitydata", BuiltInBlocklyColor.ENTITY_COLOR), ENTITY_MANAGEMENT("entitymanagement",
+				BuiltInBlocklyColor.ENTITY_COLOR), ENTITY_PROCEDURES("entityprocedures",
 				BuiltInBlocklyColor.ENTITY_COLOR), MATH("math", BuiltInBlocklyColor.MATH.toString()), TEXT("text",
 				BuiltInBlocklyColor.TEXTS.toString()), ITEM_MANAGEMENT("itemmanagement",
-				BuiltInBlocklyColor.ITEMSTACK_COLOR), ITEM_DATA("itemdata", BuiltInBlocklyColor.ITEMSTACK_COLOR);
+				BuiltInBlocklyColor.ITEMSTACK_COLOR), ITEM_DATA("itemdata",
+				BuiltInBlocklyColor.ITEMSTACK_COLOR), ITEM_PROCEDURES("itemprocedures",
+				BuiltInBlocklyColor.ITEMSTACK_COLOR), BLOCK_DATA("blockdata",
+				BuiltInBlocklyColor.BLOCK_COLOR), BLOCK_PROCEDURES("blockprocedures",
+				BuiltInBlocklyColor.BLOCK_COLOR), BLOCK_ACTIONS("blockactions",
+				BuiltInBlocklyColor.BLOCK_COLOR), WORLD_DATA("worlddata",
+				BuiltInBlocklyColor.WORLD_COLOR), WORLD_MANAGEMENT("worldmanagement",
+				BuiltInBlocklyColor.WORLD_COLOR), WORLD_PROCEDURES("worldprocedures",
+				BuiltInBlocklyColor.WORLD_COLOR), PLAYER_DATA("playerdata",
+				BuiltInBlocklyColor.PLAYER_COLOR), PLAYER_MANAGEMENT("playermanagement",
+				BuiltInBlocklyColor.PLAYER_COLOR), PLAYER_PROCEDURES("playerprocedures",
+				BuiltInBlocklyColor.PLAYER_COLOR), DIRECTION_ACTIONS("directionactions",
+				BuiltInBlocklyColor.DIRECTION_ACTION_COLOR), GUI_MANAGEMENT("guimanagement",
+				BuiltInBlocklyColor.GUI_MANAGEMENT_COLOR), DAMAGE_SOURCES("damagesources",
+				BuiltInBlocklyColor.DAMAGE_SOURCE_COLOR), ENERGY_AND_FLUID("energyandfluid",
+				BuiltInBlocklyColor.ENERGY_FLUID_COLOR), PROJECTILE_MANAGEMENT("projectilemanagement",
+				BuiltInBlocklyColor.PROJECTILE_COLOR);
 		public static final String OTHER = "other";
 		public static final String APIS = "apis";
 		public static final String MC_ELEMENTS = "mcelements";
@@ -26,17 +43,6 @@ public class BuiltInToolBoxId {
 		public static final String LOGIC_OPERATION = "logicoperations";
 		public static final String ADVANCED = "advanced";
 		public static final String CUSTOM_VARIABLES = "customvariables";
-		public static final String ENTITY_PROCEDURES = "entityprocedures";
-		public static final String BLOCK_ACTIONS = "blockactions";
-		public static final String BLOCK_DATA = "blockdata";
-		public static final String BLOCK_PROCEDURES = "blockprocedures";
-		public static final String WORLD_DATA = "worlddata";
-		public static final String WORLD_MANAGEMENT = "worldmanagement";
-		public static final String WORLD_PROCEDURES = "worldprocedures";
-		public static final String PLAYER_DATA = "playerdata";
-		public static final String PLAYER_MANAGEMENT = "playermanagement";
-		public static final String PLAYER_PROCEDURES = "playerprocedures";
-		public static final String ITEM_PROCEDURES = "itemprocedures";
 
 		private final String name;
 		private final String defaultColor;

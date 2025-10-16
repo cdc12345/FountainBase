@@ -784,6 +784,18 @@ public class ProcedureBuilder extends JsonBuilder implements IGeneratorInit {
 			return appendElement("<value name=\"" + name + "\">" + placeholder + "</value>");
 		}
 
+		public ToolBoxInitBuilder appendDependencyDirection(){
+			return appendElement("<block type=\"direction_from_deps\"/>");
+		}
+
+		public ToolBoxInitBuilder appendDependencyBlockState(){
+			return appendElement("<block type=\"blockstate_from_deps\"/>");
+		}
+
+		public ToolBoxInitBuilder appendDependencyDamageSource(){
+			return appendElement("<block type=\"damagesource_from_deps\"/>");
+		}
+
 		public ToolBoxInitBuilder appendDefaultEntity() {
 			return appendElement("<block type=\"entity_from_deps\">" + placeholder + "</block>");
 		}

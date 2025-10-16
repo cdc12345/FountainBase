@@ -8,7 +8,7 @@ import java.util.Map;
 
 public class ColorUtils {
 
-    private static Map<String,String> colorMap = new HashMap<>();
+    private static final Map<String,String> colorMap = new HashMap<>();
 
     public static String getSuggestColor(String category){
         return colorMap.getOrDefault(category, ProcedureBuilder.color.toString());

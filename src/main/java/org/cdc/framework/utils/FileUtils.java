@@ -9,6 +9,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
+import java.nio.file.Path;
 
 public class FileUtils {
 	public static void deleteNonEmptyDirector(File directory) {
@@ -17,7 +18,7 @@ public class FileUtils {
 
 			if (files != null) {
 				for (File file : files) {
-					if (!file.delete()){
+					if (!file.delete()) {
 						deleteNonEmptyDirector(file);
 					}
 				}
@@ -29,7 +30,7 @@ public class FileUtils {
 		}
 	}
 
-	public static void deleteEmptyDirectoryInDirectory(File directory){
+	public static void deleteEmptyDirectoryInDirectory(File directory) {
 		try {
 			File[] files = directory.listFiles();
 
@@ -45,39 +46,62 @@ public class FileUtils {
 		}
 	}
 
-	public static String loadStringFromFile(File file) {
+	public static String loadStringFromFile(Path file) {
 		try {
-			return Files.readString(file.toPath(), StandardCharsets.UTF_8);
+			return Files.readString(file, StandardCharsets.UTF_8);
 		} catch (IOException e) {
 			throw new RuntimeException(e);
 		}
 	}
 
-	public static JsonArray loadInputsFromFile(File file) {
+	public static JsonArray loadInputsFromFile(Path file) {
 		Gson gson = new Gson();
 		var js = gson.fromJson(loadStringFromFile(file), JsonObject.class);
 		return gson.fromJson(js.get("mcreator").getAsJsonObject().get("inputs"), JsonArray.class);
 	}
 
-	public static String filterSpace(String name){
+	public static String filterSpace(String name) {
 		if (name == null) {
 			return null;
 		}
-		return name.replace(" ","_");
+		return name.replace(" ", "_");
 	}
 
 	/**
 	 * generate code
+	 *
 	 * @param fl file
 	 * @return generatedCode
 	 */
-	public static String tryGenerateProcedureBuilderCode(File fl) {
+	public static String tryGenerateProcedureBuilderCode(Path fl) {
 		Gson gson = new Gson();
 		var file = gson.fromJson(loadStringFromFile(fl), JsonObject.class);
 		StringBuilder builder = new StringBuilder();
 		builder.append("pluginFactory.createProcedure(\"").append(getFileName(fl)).append("\")");
-		if (fl.getName().startsWith("$")){
+		if (fl.toFile().getName().startsWith("$")) {
 			builder.append(".markType()");
+		}
+		if (file.has("args0")) {
+			JsonArray args0 = file.getAsJsonArray("args0");
+			for (JsonElement jsonElement : args0) {
+				var arg = jsonElement.getAsJsonObject();
+				var type = arg.get("type").getAsString();
+				var name = arg.get("name").getAsString();
+				switch (type){
+					case "input_value"-> {
+						builder.append(".appendArgs0InputValue(\"").append(name).append("\"");
+						if (arg.has("check")){
+							var check = arg.get("check").getAsString();
+							builder.append(", \"").append(check).append("\")");
+						} else {
+							builder.append(")");
+						}
+					}
+					case "input_statement"->{
+						builder.append(".appendArgs0StatementInput(\"").append(name).append("\")");
+					}
+				}
+			}
 		}
 		if (file.has("extensions")) {
 			JsonArray jsonArray = file.getAsJsonArray("extensions");
@@ -124,6 +148,12 @@ public class FileUtils {
 			if (mcreator.has("toolbox_id")) {
 				builder.append(".setToolBoxId(").append(mcreator.get("toolbox_id")).append(")");
 			}
+			if (mcreator.has("toolbox_init")){
+				var inits = mcreator.getAsJsonArray("toolbox_init");
+				inits.forEach(jsonElement -> {
+					builder.append(".appendToolBoxInit(\"").append(jsonElement.getAsString().replace("\"", "\\\"")).append("\")");
+				});
+			}
 			if (mcreator.has("dependencies")) {
 				JsonArray dependencies = mcreator.getAsJsonArray("dependencies");
 				for (JsonElement jsonElement : dependencies) {
@@ -148,10 +178,11 @@ public class FileUtils {
 		return builder.toString();
 	}
 
-	public static String tryGenerateVariableCode(File fl) {
+	public static String tryGenerateVariableCode(Path fl) {
 		Gson gson = new Gson();
 		var file = gson.fromJson(loadStringFromFile(fl), JsonObject.class);
-		StringBuilder builder = new StringBuilder("pluginFactory.createVariable().setName(\"" + getFileName(fl) + "\")");
+		StringBuilder builder = new StringBuilder(
+				"pluginFactory.createVariable().setName(\"" + getFileName(fl) + "\")");
 		if (file.has("color")) {
 			builder.append(".setColor(").append(file.get("color")).append(")");
 		}
@@ -173,7 +204,7 @@ public class FileUtils {
 		return builder.toString();
 	}
 
-	public static String tryGenerateTrigger(File fl) {
+	public static String tryGenerateTrigger(Path fl) {
 		Gson gson = new Gson();
 		var file = gson.fromJson(loadStringFromFile(fl), JsonObject.class);
 		StringBuilder builder = new StringBuilder("pluginFactory.createTrigger().setName(\"" + getFileName(fl) + "\")");
@@ -208,7 +239,7 @@ public class FileUtils {
 		return builder.toString();
 	}
 
-	public static String getFileName(File file) {
-		return file.getName().split("\\.")[0];
+	public static String getFileName(Path file) {
+		return file.toFile().getName().split("\\.")[0];
 	}
 }

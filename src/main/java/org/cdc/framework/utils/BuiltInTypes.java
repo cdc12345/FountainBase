@@ -44,18 +44,15 @@ public enum BuiltInTypes implements IVariableType {
 
 	@Override public void initDefaultToolBox(ProcedureBuilder procedureBuilder, String name) {
 		switch (this) {
-		case Number -> {
-			procedureBuilder.toolBoxInitBuilder().setName(name).appendConstantNumber(0).buildAndReturn();
-		}
-		case Entity -> {
-			procedureBuilder.toolBoxInitBuilder().setName(name).appendDefaultEntity().buildAndReturn();
-		}
-		case String -> {
-			procedureBuilder.toolBoxInitBuilder().setName(name).appendConstantString(name).buildAndReturn();
-		}
-		case Boolean -> {
-			procedureBuilder.toolBoxInitBuilder().setName(name).appendConstantBoolean(true).buildAndReturn();
-		}
+		case Number -> procedureBuilder.toolBoxInitBuilder().setName(name).appendConstantNumber(0).buildAndReturn();
+		case Entity -> procedureBuilder.toolBoxInitBuilder().setName(name).appendDefaultEntity().buildAndReturn();
+		case String -> procedureBuilder.toolBoxInitBuilder().setName(name).appendConstantString(name).buildAndReturn();
+		case Boolean ->
+				procedureBuilder.toolBoxInitBuilder().setName(name).appendConstantBoolean(true).buildAndReturn();
+		case Direction -> procedureBuilder.toolBoxInitBuilder().setName(name).appendDependencyDirection().buildAndReturn();
+		case BlockState -> procedureBuilder.toolBoxInitBuilder().setName(name).appendDependencyBlockState().buildAndReturn();
+		case ItemStack -> procedureBuilder.toolBoxInitBuilder().setName(name).appendDefaultItem().buildAndReturn();
+		case DamageSource -> procedureBuilder.toolBoxInitBuilder().setName(name).appendDependencyDamageSource().buildAndReturn();
 		}
 	}
 }
