@@ -5,10 +5,12 @@ Fountain is a simple project to enjoy the autocomplete or datagen system in MCre
 In this project, you can create a procedure quickly: 
 
 ```Java
-mcr.createProcedure().setName("hey_set").setColor(Color.RED).setPreviousStatement(null)
-                .setNextStatement(null)
-                .appendArgs0InputValueWithDefaultToolboxInit("hello", BuiltInTypes.Number)
-                .appendArgs0InputValue("placeholder",(String) null).appendRequiredApi("helloworld").initGenerator().buildAndOutput();
+		mcr.createProcedure().setName("hey_set").setCategory(BuiltInToolBoxId.Procedure.ADVANCED).setColor(Color.RED)
+				.setPreviousStatement(null).setNextStatement(null)
+				.appendArgs0InputValueWithDefaultToolboxInit("hello", BuiltInTypes.Number)
+				.appendArgs0InputValue("placeholder", (String) null).appendArgs0StatementInput("statement")
+				.statementBuilder().appendProvide("test", BuiltInTypes.Number).buildAndReturn()
+				.appendRequiredApi("helloworld").initGenerator().buildAndOutput();
 ```
 
 you only need add these to your build.gradle:
