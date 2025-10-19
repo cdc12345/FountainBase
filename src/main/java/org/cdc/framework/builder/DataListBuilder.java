@@ -42,16 +42,22 @@ public class DataListBuilder extends FileOutputBuilder<Map<String, String>> impl
 	}
 
 	public DataListBuilder appendElement(String element, List<String> map) {
-		return appendElement(element,element,map);
+		return appendElement(element, element, map);
 	}
 
 	public DataListBuilder appendStringElement(String element, String defaultMapping) {
 		return appendElement(element, "\"" + defaultMapping + "\"");
 	}
 
-	public DataListBuilder appendElement(String element, String readableName, List<String> map){
+	public DataListBuilder appendElement(String element, String readableName, List<String> map) {
+		return appendElement(element, readableName, "", map);
+	}
+
+	public DataListBuilder appendElement(String element, String readableName, String external, List<String> map) {
 		var addition1 = map.toString();
-		var elementResult = element + (readableName!=null?':' + System.lineSeparator() + "  readable_name: \""+readableName + "\"":"");
+		var elementResult = element + (readableName != null ?
+				':' + System.lineSeparator() + "  readable_name: \"" + readableName + "\"" + external:
+				"");
 		appendElement(elementResult, System.lineSeparator() + " - " + addition1.substring(1, addition1.length() - 1)
 				.replace(",", System.lineSeparator() + " -"));
 		return this;
