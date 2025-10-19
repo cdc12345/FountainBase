@@ -46,8 +46,8 @@ public class ProceduresTest {
         MCreatorPluginFactory mcr = new MCreatorPluginFactory(new File(pluginPath));
         mcr.createProcedure().setName("hey_set").setColor(Color.RED).setPreviousStatement(null)
                 .setNextStatement(null)
-                .appendArgs0InputValue("hello", BuiltInTypes.Number.getLowerName())
-                .appendArgs0InputValue("hello1",(String) null).appendRequiredApi("helloworld").toolBoxInitBuilder().setName("hello").appendConstantNumber(1).buildAndReturn().initGenerator().buildAndOutput();
+                .appendArgs0InputValueWithDefaultToolboxInit("hello", BuiltInTypes.Number)
+                .appendArgs0InputValue("placeholder",(String) null).appendRequiredApi("helloworld").initGenerator().buildAndOutput();
         Assertions.assertThrows(RuntimeException.class, ()-> mcr.createProcedure().buildAndOutput());
 
         mcr.createProcedure("advancements_clearall").setInputsInline(true).setColor("251").setPreviousStatement(null).setNextStatement(null).setToolBoxId("unsafe").appendDependency("world",BuiltInTypes.World).buildAndOutput();
