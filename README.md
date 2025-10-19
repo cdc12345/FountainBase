@@ -5,7 +5,7 @@ Fountain is a simple project to enjoy the autocomplete or datagen system in MCre
 In this project, you can create a procedure quickly: 
 
 ```Java
-	@Test public void procedureTest() {
+@Test public void procedureTest() {
 	MCreatorPluginFactory mcr = new MCreatorPluginFactory(new File(pluginPath));
 	mcr.createProcedure().setName("hey_set").setCategory(BuiltInToolBoxId.Procedure.ADVANCED).setColor(Color.RED)
 			.setPreviousStatement(null).setNextStatement(null)
