@@ -2,6 +2,7 @@ package org.cdc.test;
 
 import com.github.javaparser.JavaParser;
 import com.github.javaparser.ParserConfiguration;
+import org.cdc.framework.utils.BuilderUtils;
 import org.cdc.framework.utils.ColorUtils;
 import org.cdc.framework.utils.FileUtils;
 import org.cdc.framework.utils.MCreatorVersions;
@@ -10,6 +11,7 @@ import org.junit.jupiter.api.Test;
 
 import java.net.URISyntaxException;
 import java.nio.file.Path;
+import java.util.Map;
 
 public class UtilsTest {
 	@Test public void testHueColor() {
@@ -36,5 +38,9 @@ public class UtilsTest {
 		Assertions.assertEquals("2025001", MCreatorVersions.toFormattedVersion(MCreatorVersions.V_2025_1));
 		Assertions.assertEquals("202500199999", MCreatorVersions.toFormattedVersion(MCreatorVersions.V_2025_1_9999));
 		Assertions.assertEquals("202500399999", MCreatorVersions.toDevelopingVersion(MCreatorVersions.V_2025_3));
+	}
+
+	@Test public void testTriggerCode(){
+		System.out.println(BuilderUtils.generateTriggerDependencies(Map.of("entity","event.getEntity()","arg0","event.getArg0()")));
 	}
 }

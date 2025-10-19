@@ -17,6 +17,7 @@ public class ProceduresTest {
 
     @Test
     public void typeTest(){
+		System.out.println(new File(pluginPath).getAbsolutePath());
         MCreatorPluginFactory mcr = new MCreatorPluginFactory(new File(pluginPath));
         mcr.createProcedureCategory("helloworld").markType().setColor(Color.RED).buildAndOutput();
         mcr.createProcedure().markType().setName("testtype1").setParentCategory("helloworld").setColor(Color.BLUE).buildAndOutput();

@@ -74,11 +74,16 @@ public class FileUtils {
 	 * @return generatedCode
 	 */
 	public static String tryGenerateProcedureBuilderCode(Path fl) {
+		return tryGenerateProcedureBuilderCode(loadStringFromFile(fl), getFileNameWithExtension(fl), "pluginFactory");
+	}
+
+	public static String tryGenerateProcedureBuilderCode(String json, String fileName,
+			String pluginFactoryVariableName) {
 		Gson gson = new Gson();
-		var file = gson.fromJson(loadStringFromFile(fl), JsonObject.class);
+		var file = gson.fromJson(json, JsonObject.class);
 		StringBuilder builder = new StringBuilder();
-		builder.append("pluginFactory.createProcedure(\"").append(getFileName(fl)).append("\")");
-		if (fl.toFile().getName().startsWith("$")) {
+		builder.append(pluginFactoryVariableName).append(".createProcedure(\"").append(fileName).append("\")");
+		if (fileName.startsWith("$")) {
 			builder.append(".markType()");
 		}
 		if (file.has("args0")) {
@@ -87,19 +92,19 @@ public class FileUtils {
 				var arg = jsonElement.getAsJsonObject();
 				var type = arg.get("type").getAsString();
 				var name = arg.get("name").getAsString();
-				switch (type){
-					case "input_value"-> {
-						builder.append(".appendArgs0InputValue(\"").append(name).append("\"");
-						if (arg.has("check")){
-							var check = arg.get("check").getAsString();
-							builder.append(", \"").append(check).append("\")");
-						} else {
-							builder.append(")");
-						}
+				switch (type) {
+				case "input_value" -> {
+					builder.append(".appendArgs0InputValue(\"").append(name).append("\"");
+					if (arg.has("check")) {
+						var check = arg.get("check").getAsString();
+						builder.append(", \"").append(check).append("\")");
+					} else {
+						builder.append(")");
 					}
-					case "input_statement"->{
-						builder.append(".appendArgs0StatementInput(\"").append(name).append("\")");
-					}
+				}
+				case "input_statement" -> {
+					builder.append(".appendArgs0StatementInput(\"").append(name).append("\")");
+				}
 				}
 			}
 		}
@@ -148,10 +153,11 @@ public class FileUtils {
 			if (mcreator.has("toolbox_id")) {
 				builder.append(".setToolBoxId(").append(mcreator.get("toolbox_id")).append(")");
 			}
-			if (mcreator.has("toolbox_init")){
+			if (mcreator.has("toolbox_init")) {
 				var inits = mcreator.getAsJsonArray("toolbox_init");
 				inits.forEach(jsonElement -> {
-					builder.append(".appendToolBoxInit(\"").append(jsonElement.getAsString().replace("\"", "\\\"")).append("\")");
+					builder.append(".appendToolBoxInit(\"").append(jsonElement.getAsString().replace("\"", "\\\""))
+							.append("\")");
 				});
 			}
 			if (mcreator.has("dependencies")) {
@@ -179,10 +185,13 @@ public class FileUtils {
 	}
 
 	public static String tryGenerateVariableCode(Path fl) {
+		return tryGenerateVariableCode(loadStringFromFile(fl), getFileNameWithExtension(fl));
+	}
+
+	public static String tryGenerateVariableCode(String json, String fileName) {
 		Gson gson = new Gson();
-		var file = gson.fromJson(loadStringFromFile(fl), JsonObject.class);
-		StringBuilder builder = new StringBuilder(
-				"pluginFactory.createVariable().setName(\"" + getFileName(fl) + "\")");
+		var file = gson.fromJson(json, JsonObject.class);
+		StringBuilder builder = new StringBuilder("pluginFactory.createVariable().setName(\"" + fileName + "\")");
 		if (file.has("color")) {
 			builder.append(".setColor(").append(file.get("color")).append(")");
 		}
@@ -205,9 +214,13 @@ public class FileUtils {
 	}
 
 	public static String tryGenerateTrigger(Path fl) {
+		return tryGenerateTrigger(loadStringFromFile(fl), getFileNameWithExtension(fl));
+	}
+
+	public static String tryGenerateTrigger(String json, String fileName) {
 		Gson gson = new Gson();
-		var file = gson.fromJson(loadStringFromFile(fl), JsonObject.class);
-		StringBuilder builder = new StringBuilder("pluginFactory.createTrigger().setName(\"" + getFileName(fl) + "\")");
+		var file = gson.fromJson(json, JsonObject.class);
+		StringBuilder builder = new StringBuilder("pluginFactory.createTrigger().setName(\"" + fileName + "\")");
 		if (file.has("side")) {
 			builder.append(".setSide(Side.").append(Side.getSide(file.get("side").getAsString()).name()).append(")");
 		}
@@ -239,7 +252,7 @@ public class FileUtils {
 		return builder.toString();
 	}
 
-	public static String getFileName(Path file) {
+	public static String getFileNameWithExtension(Path file) {
 		return file.toFile().getName().split("\\.")[0];
 	}
 }

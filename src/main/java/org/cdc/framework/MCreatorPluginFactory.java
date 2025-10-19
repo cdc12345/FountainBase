@@ -38,7 +38,7 @@ public class MCreatorPluginFactory {
 	public MCreatorPluginFactory(File rootPath) {
 		this.rootPath = rootPath;
 		this.buildPath = rootPath;
-		this.version = MCreatorVersions.V_2025_1;
+		this.version = MCreatorVersions.V_2025_2;
 		this.toolkit = new ToolKit();
 	}
 

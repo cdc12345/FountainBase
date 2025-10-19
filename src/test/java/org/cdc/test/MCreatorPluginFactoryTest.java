@@ -12,5 +12,6 @@ public class MCreatorPluginFactoryTest {
         mCreatorPluginFactory.setVersion(MCreatorVersions.Test.V_2025_0);
         var result = mCreatorPluginFactory.createDefaultLanguage().buildAndOutput();
         Assertions.assertNull(result);
+		//
     }
 }

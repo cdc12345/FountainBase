@@ -52,8 +52,8 @@ public class ProcedureBuilder extends JsonBuilder implements IGeneratorInit {
 		this(rootPath, "procedures");
 	}
 
-	public ProcedureBuilder(File rootPath, String child) {
-		super(rootPath, new File(rootPath, child));
+	public ProcedureBuilder(File rootPath, String childName) {
+		super(rootPath, new File(rootPath, childName));
 
 		this.flags = new Flags();
 		this.colorKey = "colour";
@@ -145,6 +145,11 @@ public class ProcedureBuilder extends JsonBuilder implements IGeneratorInit {
 		if (isType)
 			result.getAsJsonObject().add("parent_category", new JsonPrimitive(parentCategory));
 		return this;
+	}
+
+	@ProcedureCategoryLikeMethod
+	public ProcedureBuilder setParentCategory(IProcedureCategory procedureCategory){
+		return setParentCategory(procedureCategory.getName());
 	}
 
 	public ProcedureBuilder setInputsInline(boolean inputsInline) {

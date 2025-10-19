@@ -1,6 +1,7 @@
 package org.cdc.framework.builder;
 
 import com.google.errorprone.annotations.DoNotCall;
+import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
@@ -21,111 +22,115 @@ import java.nio.file.Paths;
 
 public class VariableBuilder extends JsonBuilder implements IGeneratorInit {
 
-    public VariableBuilder(File rootPath) {
-        super(rootPath, new File(rootPath,"variables"));
-        this.result = new JsonObject();
-    }
+	private final JsonArray requiredApis;
 
-    public VariableBuilder setName(String name){
-        this.fileName = FileUtils.filterSpace(name);
-        return this;
-    }
+	public VariableBuilder(File rootPath) {
+		super(rootPath, new File(rootPath, "variables"));
+		this.result = new JsonObject();
 
-    public VariableBuilder setColor(int color){
-        result.getAsJsonObject().add("color",new JsonPrimitive(color));
-        return this;
-    }
+		this.requiredApis = new JsonArray();
+	}
 
-    public VariableBuilder setColor(String color){
-        result.getAsJsonObject().add("color",new JsonPrimitive(color));
-        return this;
-    }
+	public VariableBuilder setName(String name) {
+		this.fileName = FileUtils.filterSpace(name);
+		return this;
+	}
 
-    public VariableBuilder setColor(Color color){
-        return setColor(ColorUtils.toHex(color));
-    }
+	public VariableBuilder setColor(int color) {
+		result.getAsJsonObject().add("color", new JsonPrimitive(color));
+		return this;
+	}
 
-    public VariableBuilder setBlocklyVariableType(String type){
-        result.getAsJsonObject().addProperty("blocklyVariableType",type);
-        return this;
-    }
+	public VariableBuilder setColor(String color) {
+		result.getAsJsonObject().add("color", new JsonPrimitive(color));
+		return this;
+	}
 
-    public VariableBuilder setNullable(boolean nullable){
-        result.getAsJsonObject().addProperty("nullable",nullable);
-        return this;
-    }
+	public VariableBuilder setColor(Color color) {
+		return setColor(ColorUtils.toHex(color));
+	}
 
-    public VariableBuilder setIgnoredByCoverage(boolean ignoredByCoverage){
-        result.getAsJsonObject().addProperty("ignoredByCoverage",ignoredByCoverage);
-        return this;
-    }
+	public VariableBuilder setBlocklyVariableType(String type) {
+		result.getAsJsonObject().addProperty("blocklyVariableType", type);
+		return this;
+	}
 
-    public VariableBuilder setGetterText(LanguageBuilder languageBuilder,String text){
-        languageBuilder.appendLocalization("blockly.block.get_var_"+this.fileName,text);
-        return this;
-    }
+	public VariableBuilder setNullable(boolean nullable) {
+		result.getAsJsonObject().addProperty("nullable", nullable);
+		return this;
+	}
 
-    public VariableBuilder setSetterText(LanguageBuilder languageBuilder,String text){
-        languageBuilder.appendLocalization("blockly.block.set_var_"+this.fileName,text);
-        return this;
-    }
+	public VariableBuilder setIgnoredByCoverage(boolean ignoredByCoverage) {
+		result.getAsJsonObject().addProperty("ignoredByCoverage", ignoredByCoverage);
+		return this;
+	}
 
-    public VariableBuilder setReturnText(LanguageBuilder languageBuilder,String text){
-        languageBuilder.appendLocalization("blockly.block.return_"+this.fileName,text);
-        return this;
-    }
+	public VariableBuilder setGetterText(LanguageBuilder languageBuilder, String text) {
+		languageBuilder.appendLocalization("blockly.block.get_var_" + this.fileName, text);
+		return this;
+	}
 
-    public VariableBuilder setCustomDependency(LanguageBuilder languageBuilder,String text){
-        languageBuilder.appendLocalization("blockly.block.custom_dependency_"+this.fileName,text);
-        return this;
-    }
+	public VariableBuilder setSetterText(LanguageBuilder languageBuilder, String text) {
+		languageBuilder.appendLocalization("blockly.block.set_var_" + this.fileName, text);
+		return this;
+	}
 
-    public VariableBuilder setCallProcedureRetval(LanguageBuilder languageBuilder,String text){
-        languageBuilder.appendLocalization("blockly.block.procedure_retval_"+this.fileName,text);
-        return this;
-    }
+	public VariableBuilder setReturnText(LanguageBuilder languageBuilder, String text) {
+		languageBuilder.appendLocalization("blockly.block.return_" + this.fileName, text);
+		return this;
+	}
 
-    /**
-     * this is not implement in 2025.1
-     *
-     * @param name name
-     * @return this
-     */
-    @DoNotCall("this version not supported")
-    public VariableBuilder appendRequiredApi(String name){
-        return this;
-    }
+	public VariableBuilder setCustomDependency(LanguageBuilder languageBuilder, String text) {
+		languageBuilder.appendLocalization("blockly.block.custom_dependency_" + this.fileName, text);
+		return this;
+	}
 
-    @Override
-    public JsonElement build() {
-        JsonObject resul = result.getAsJsonObject();
-        if (!resul.has("nullable")){
-            setNullable(false);
-        }
-        return result;
-    }
+	public VariableBuilder setCallProcedureRetval(LanguageBuilder languageBuilder, String text) {
+		languageBuilder.appendLocalization("blockly.block.procedure_retval_" + this.fileName, text);
+		return this;
+	}
 
-    @DescriptorKey("Must edit variable.yaml")
-    public VariableBuilder initGenerator(){
-        MCreatorPluginFactory.generatorInits.add(this);
-        return this;
-    }
+	/**
+	 * this is not implement in 2025.1
+	 *
+	 * @param name name
+	 * @return this
+	 */
+	@DoNotCall("this version not supported") public VariableBuilder appendRequiredApi(String name) {
+		requiredApis.add(name);
+		return this;
+	}
 
-    @Override
-    public void initGenerator0(String generatorName,boolean replace) {
-        var generator1 = Paths.get(rootPath.getPath(),generatorName,targetPath.getName(),fileName + ".yaml");
-        try {
-            if (!Files.exists(generator1)) {
-                System.out.println("Before output, please edit the file. Or you will crash your mcreator!");
-                Files.copy(new ByteArrayInputStream("#AutoGenerated".getBytes(StandardCharsets.UTF_8)), generator1);
-            }
-            System.out.println(generator1);
-        } catch (IOException ignored) {
-        }
-    }
+	@Override public JsonElement build() {
+		JsonObject resul = result.getAsJsonObject();
+		if (!resul.has("nullable")) {
+			setNullable(false);
+		}
+		if (!requiredApis.isEmpty()) {
+			this.result.getAsJsonObject().add("required_apis", requiredApis);
+		}
+		return result;
+	}
 
-    @Override
-    public boolean isSupported(MCreatorPluginFactory mCreatorPluginFactory) {
-        return mCreatorPluginFactory.rootPath().equals(rootPath) && BuilderUtils.isSupportProcedure(mCreatorPluginFactory.getCurrentInit());
-    }
+	@DescriptorKey("Must edit variable.yaml") public VariableBuilder initGenerator() {
+		MCreatorPluginFactory.generatorInits.add(this);
+		return this;
+	}
+
+	@Override public void initGenerator0(String generatorName, boolean replace) {
+		var generator1 = Paths.get(rootPath.getPath(), generatorName, targetPath.getName(), fileName + ".yaml");
+		try {
+			if (!Files.exists(generator1)) {
+				System.out.println("Before output, please edit the file. Or you will crash your mcreator!");
+				Files.copy(new ByteArrayInputStream("#AutoGenerated".getBytes(StandardCharsets.UTF_8)), generator1);
+			}
+			System.out.println(generator1);
+		} catch (IOException ignored) {
+		}
+	}
+
+	@Override public boolean isSupported(MCreatorPluginFactory mCreatorPluginFactory) {
+		return mCreatorPluginFactory.rootPath().equals(rootPath) && BuilderUtils.isSupportProcedure(
+				mCreatorPluginFactory.getCurrentInit());
+	}
 }

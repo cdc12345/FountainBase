@@ -13,9 +13,11 @@ import org.cdc.framework.utils.Side;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.HashMap;
 import java.util.stream.Collectors;
 
 public class TriggerBuilder extends JsonBuilder implements IGeneratorInit {
@@ -117,8 +119,27 @@ public class TriggerBuilder extends JsonBuilder implements IGeneratorInit {
         StringBuilder builder = new StringBuilder();
         builder.append(dependencies.asList().stream().filter(JsonElement::isJsonObject).map(a -> "${parameter$" + a.getAsJsonObject().get("name").getAsString() + "}").collect(Collectors.joining(",", "<#-- ", " -->")));
         builder.append(System.lineSeparator());
-        builder.append("<#include \"procedures.java.ftl\">");
-        try {
+		String loaderName = generatorName.split("-")[0];
+		String generatedDependencies = BuilderUtils.generateTriggerDependencies(new HashMap(){
+			{
+				dependencies.asList().forEach(a->{
+					put(a.getAsJsonObject().get("name").getAsString(),"");
+				});
+			}
+		});
+		try {
+			InputStream inputStream = getClass().getResourceAsStream("/templates/triggers/"+loaderName+".txt");
+			if (inputStream == null){
+				inputStream = Thread.currentThread().getContextClassLoader().getResourceAsStream("templates/triggers/default.txt");
+			}
+			builder.append(String.format(new String(inputStream.readAllBytes()),generatedDependencies));
+			inputStream.close();
+		} catch (Exception e) {
+			builder.append("<#-- ").append(e).append(" -->");
+			builder.append(System.lineSeparator());
+			builder.append(generatedDependencies);
+		}
+		try {
             Files.copy(new ByteArrayInputStream(builder.toString().getBytes(StandardCharsets.UTF_8)), generator1);
         } catch (IOException e) {
             System.out.println(e.getLocalizedMessage());
