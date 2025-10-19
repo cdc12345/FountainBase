@@ -80,8 +80,7 @@ public class ProcedureBuilder extends JsonBuilder implements IGeneratorInit {
 		return this;
 	}
 
-	@ProcedureCategoryLikeMethod
-	public ProcedureBuilder setName(String name) {
+	@ProcedureCategoryLikeMethod public ProcedureBuilder setName(String name) {
 		if (isType && !name.startsWith("$")) {
 			this.fileName = "$" + FileUtils.filterSpace(name);
 		} else {
@@ -95,8 +94,7 @@ public class ProcedureBuilder extends JsonBuilder implements IGeneratorInit {
 	 *
 	 * @return this
 	 */
-	@ProcedureCategoryLikeMethod
-	public ProcedureBuilder markType() {
+	@ProcedureCategoryLikeMethod public ProcedureBuilder markType() {
 		String colorValue;
 		if (result.getAsJsonObject().has(colorKey)) {
 			colorValue = result.getAsJsonObject().get(colorKey).getAsString();
@@ -116,16 +114,14 @@ public class ProcedureBuilder extends JsonBuilder implements IGeneratorInit {
 		return this;
 	}
 
-	@ProcedureCategoryLikeMethod
-	public ProcedureBuilder setColor(int color) {
+	@ProcedureCategoryLikeMethod public ProcedureBuilder setColor(int color) {
 		flags.flagToSetColor = true;
 		ProcedureBuilder.color = color;
 		result.getAsJsonObject().add(colorKey, new JsonPrimitive(color));
 		return this;
 	}
 
-	@ProcedureCategoryLikeMethod
-	public ProcedureBuilder setColor(String color) {
+	@ProcedureCategoryLikeMethod public ProcedureBuilder setColor(String color) {
 		if (color == null) {
 			return this;
 		}
@@ -135,20 +131,17 @@ public class ProcedureBuilder extends JsonBuilder implements IGeneratorInit {
 		return this;
 	}
 
-	@ProcedureCategoryLikeMethod
-	public ProcedureBuilder setColor(Color color) {
+	@ProcedureCategoryLikeMethod public ProcedureBuilder setColor(Color color) {
 		return setColor(ColorUtils.toHex(color));
 	}
 
-	@ProcedureCategoryLikeMethod
-	public ProcedureBuilder setParentCategory(String parentCategory) {
+	@ProcedureCategoryLikeMethod public ProcedureBuilder setParentCategory(String parentCategory) {
 		if (isType)
 			result.getAsJsonObject().add("parent_category", new JsonPrimitive(parentCategory));
 		return this;
 	}
 
-	@ProcedureCategoryLikeMethod
-	public ProcedureBuilder setParentCategory(IProcedureCategory procedureCategory){
+	@ProcedureCategoryLikeMethod public ProcedureBuilder setParentCategory(IProcedureCategory procedureCategory) {
 		return setParentCategory(procedureCategory.getName());
 	}
 
@@ -768,6 +761,9 @@ public class ProcedureBuilder extends JsonBuilder implements IGeneratorInit {
 		}
 
 		public ProcedureBuilder buildAndReturn() {
+			if (!this.result.getAsJsonObject().has("name")) {
+				throw new RuntimeException("You should set the name of statement");
+			}
 			ProcedureBuilder.this.appendStatement(build());
 			return ProcedureBuilder.this;
 		}
@@ -789,15 +785,15 @@ public class ProcedureBuilder extends JsonBuilder implements IGeneratorInit {
 			return appendElement("<value name=\"" + name + "\">" + placeholder + "</value>");
 		}
 
-		public ToolBoxInitBuilder appendDependencyDirection(){
+		public ToolBoxInitBuilder appendDependencyDirection() {
 			return appendElement("<block type=\"direction_from_deps\"/>");
 		}
 
-		public ToolBoxInitBuilder appendDependencyBlockState(){
+		public ToolBoxInitBuilder appendDependencyBlockState() {
 			return appendElement("<block type=\"blockstate_from_deps\"/>");
 		}
 
-		public ToolBoxInitBuilder appendDependencyDamageSource(){
+		public ToolBoxInitBuilder appendDependencyDamageSource() {
 			return appendElement("<block type=\"damagesource_from_deps\"/>");
 		}
 

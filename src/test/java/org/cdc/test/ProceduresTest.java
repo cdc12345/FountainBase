@@ -9,7 +9,9 @@ import java.awt.*;
 import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 public class ProceduresTest {
 
@@ -48,7 +50,7 @@ public class ProceduresTest {
 				.setPreviousStatement(null).setNextStatement(null)
 				.appendArgs0InputValueWithDefaultToolboxInit("hello", BuiltInTypes.Number)
 				.appendArgs0InputValue("placeholder", (String) null).appendArgs0StatementInput("statement")
-				.statementBuilder().appendProvide("test", BuiltInTypes.Number).buildAndReturn()
+				.statementBuilder().setName("statement").appendProvide("test", BuiltInTypes.Number).buildAndReturn()
 				.appendRequiredApi("helloworld").initGenerator().buildAndOutput();
 		Assertions.assertThrows(RuntimeException.class, () -> mcr.createProcedure().buildAndOutput());
 
@@ -91,6 +93,8 @@ public class ProceduresTest {
 				  - Blocks.AI
 				  - "air"
 				""").initGenerator().buildAndOutput();
+		mcr.createDataList("testexternal").appendElement("test1", "test", List.of("1"))
+				.appendElement("test2", Map.of("read", "book"), List.of()).initGenerator().buildAndOutput();
 		mcr.initGenerator(Generators.FORGE1201);
 	}
 

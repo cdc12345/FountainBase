@@ -11,7 +11,7 @@ In this project, you can create a procedure quickly:
 			.setPreviousStatement(null).setNextStatement(null)
 			.appendArgs0InputValueWithDefaultToolboxInit("hello", BuiltInTypes.Number)
 			.appendArgs0InputValue("placeholder", (String) null).appendArgs0StatementInput("statement")
-			.statementBuilder().appendProvide("test", BuiltInTypes.Number).buildAndReturn()
+			.statementBuilder().setName("statement").appendProvide("test", BuiltInTypes.Number).buildAndReturn()
 			.appendRequiredApi("helloworld").initGenerator().buildAndOutput();
 
 	mcr.createProcedure("advancements_clearall").setInputsInline(true).setColor("251").setPreviousStatement(null)

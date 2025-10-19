@@ -54,12 +54,14 @@ public class DataListBuilder extends FileOutputBuilder<Map<String, String>> impl
 	public DataListBuilder appendElement(String element, Map<String, String> external, List<String> map) {
 		var addition1 = map.toString();
 		var elementResult = element + (!external.isEmpty() ?
-				':' + System.lineSeparator() + external.entrySet().stream()
+				':' + System.lineSeparator() + "\t  " + external.entrySet().stream()
 						.map(entry -> entry.getKey() + ": \"" + entry.getValue() + "\"")
-						.collect(Collectors.joining(System.lineSeparator())) :
+						.collect(Collectors.joining(System.lineSeparator() + "\t  ")) :
 				"");
-		appendElement(elementResult, System.lineSeparator() + " - " + addition1.substring(1, addition1.length() - 1)
-				.replace(",", System.lineSeparator() + " -"));
+		appendElement(elementResult, map.size() <= 1 ?
+				map.getFirst() :
+				System.lineSeparator() + " - " + addition1.substring(1, addition1.length() - 1)
+						.replace(",", System.lineSeparator() + " -"));
 		return this;
 	}
 
