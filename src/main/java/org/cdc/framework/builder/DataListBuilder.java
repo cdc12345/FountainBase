@@ -11,10 +11,8 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class DataListBuilder extends FileOutputBuilder<Map<String, String>> implements IGeneratorInit {
 	private final String DEFAULT_KEY = "_default";
@@ -42,7 +40,7 @@ public class DataListBuilder extends FileOutputBuilder<Map<String, String>> impl
 	}
 
 	public DataListBuilder appendElement(String element, List<String> map) {
-		return appendElement(element, element, map);
+		return appendElement(element, Collections.emptyMap(), map);
 	}
 
 	public DataListBuilder appendStringElement(String element, String defaultMapping) {
@@ -50,13 +48,15 @@ public class DataListBuilder extends FileOutputBuilder<Map<String, String>> impl
 	}
 
 	public DataListBuilder appendElement(String element, String readableName, List<String> map) {
-		return appendElement(element, readableName, "", map);
+		return appendElement(element, Map.of("readable_name", readableName), map);
 	}
 
-	public DataListBuilder appendElement(String element, String readableName, String external, List<String> map) {
+	public DataListBuilder appendElement(String element, Map<String, String> external, List<String> map) {
 		var addition1 = map.toString();
-		var elementResult = element + (readableName != null ?
-				':' + System.lineSeparator() + "  readable_name: \"" + readableName + "\"" + external:
+		var elementResult = element + (!external.isEmpty() ?
+				':' + System.lineSeparator() + external.entrySet().stream()
+						.map(entry -> entry.getKey() + ": \"" + entry.getValue() + "\"")
+						.collect(Collectors.joining(System.lineSeparator())) :
 				"");
 		appendElement(elementResult, System.lineSeparator() + " - " + addition1.substring(1, addition1.length() - 1)
 				.replace(",", System.lineSeparator() + " -"));
