@@ -21,7 +21,7 @@ import java.util.Locale;
 public class MCreatorPluginFactory {
 
 	//generator need to be inited
-	public static final ArrayList<IGeneratorInit> generatorInits = new ArrayList<>();
+	private final ArrayList<IGeneratorInit> generatorInits = new ArrayList<>();
 
 	public static MCreatorPluginFactory createFactory(String folder) {
 		return new MCreatorPluginFactory(new File(folder));
@@ -30,14 +30,12 @@ public class MCreatorPluginFactory {
 	private String currentInit;
 
 	private final File rootPath;
-	private final File buildPath;
 	private String version;
 
 	private final ToolKit toolkit;
 
 	public MCreatorPluginFactory(File rootPath) {
 		this.rootPath = rootPath;
-		this.buildPath = rootPath;
 		this.version = MCreatorVersions.V_2025_2;
 		this.toolkit = new ToolKit();
 	}
@@ -49,7 +47,7 @@ public class MCreatorPluginFactory {
 		}
 	}
 
-	public void createProcedureTemplateFolder(){
+	public void createProcedureTemplateFolder() {
 		createFolder("templates/ptpl");
 	}
 
@@ -104,7 +102,7 @@ public class MCreatorPluginFactory {
 		currentInit = null;
 	}
 
-	public PluginInfoBuilder createInfo(){
+	public PluginInfoBuilder createInfo() {
 		return new PluginInfoBuilder(rootPath);
 	}
 
@@ -128,6 +126,7 @@ public class MCreatorPluginFactory {
 		if (name != null) {
 			builder.setName(name);
 		}
+		generatorInits.add(builder);
 		return builder;
 	}
 
@@ -137,11 +136,11 @@ public class MCreatorPluginFactory {
 
 	public AITasksBuilder createAITask(String name) {
 		createFolder("aitasks");
-		AITasksBuilder instance = new AITasksBuilder(rootPath);
+		AITasksBuilder builder = new AITasksBuilder(rootPath);
 		try {
 			var class1 = this.getClass().getClassLoader()
 					.loadClass("org.cdc.framework.builder." + version + ".AITasksBuilder");
-			instance = (AITasksBuilder) class1.getConstructor(new Class[] { File.class }).newInstance(rootPath);
+			builder = (AITasksBuilder) class1.getConstructor(new Class[] { File.class }).newInstance(rootPath);
 		} catch (ClassNotFoundException ignored) {
 
 		} catch (InvocationTargetException | InstantiationException | IllegalAccessException |
@@ -149,9 +148,10 @@ public class MCreatorPluginFactory {
 			throw new RuntimeException(e);
 		}
 		if (name != null) {
-			instance.setName(name);
+			builder.setName(name);
 		}
-		return instance;
+		generatorInits.add(builder);
+		return builder;
 	}
 
 	public VariableBuilder createVariable() {
@@ -174,6 +174,7 @@ public class MCreatorPluginFactory {
 		if (type != null) {
 			builder.setName(type.getVariableType()).setBlocklyVariableType(type.getBlocklyVariableType());
 		}
+		generatorInits.add(builder);
 		return builder;
 	}
 
@@ -215,18 +216,19 @@ public class MCreatorPluginFactory {
 
 	public DataListBuilder createDataList(String name) {
 		createFolder("datalists");
-		DataListBuilder instance = new DataListBuilder(rootPath);
+		DataListBuilder builder = new DataListBuilder(rootPath);
 		try {
 			var class1 = this.getClass().getClassLoader()
 					.loadClass("org.cdc.framework.builder." + version + ".DataListBuilder");
-			instance = (DataListBuilder) class1.getConstructor(new Class[] { File.class }).newInstance(rootPath);
+			builder = (DataListBuilder) class1.getConstructor(new Class[] { File.class }).newInstance(rootPath);
 		} catch (ClassNotFoundException ignored) {
 
 		} catch (InvocationTargetException | InstantiationException | IllegalAccessException |
 				 NoSuchMethodException e) {
 			throw new RuntimeException(e);
 		}
-		return instance.setName(name);
+		generatorInits.add(builder);
+		return builder.setName(name);
 	}
 
 	public TriggerBuilder createTrigger() {
@@ -235,18 +237,19 @@ public class MCreatorPluginFactory {
 
 	public TriggerBuilder createTrigger(String name) {
 		createFolder("triggers");
-		TriggerBuilder instance = new TriggerBuilder(rootPath);
+		TriggerBuilder builder = new TriggerBuilder(rootPath);
 		try {
 			var class1 = this.getClass().getClassLoader()
 					.loadClass("org.cdc.framework.builder." + version + ".TriggerBuilder");
-			instance = (TriggerBuilder) class1.getConstructor(new Class[] { File.class }).newInstance(rootPath);
+			builder = (TriggerBuilder) class1.getConstructor(new Class[] { File.class }).newInstance(rootPath);
 		} catch (ClassNotFoundException ignored) {
 
 		} catch (InvocationTargetException | InstantiationException | IllegalAccessException |
 				 NoSuchMethodException e) {
 			throw new RuntimeException(e);
 		}
-		return instance.setName(name);
+		generatorInits.add(builder);
+		return builder.setName(name);
 	}
 
 	public void createApis(String apiName) {
@@ -289,8 +292,8 @@ public class MCreatorPluginFactory {
 			return BuilderUtils.createCommonProcedure(MCreatorPluginFactory.this, name);
 		}
 
-		public ProcedureBuilder createEndProcedure(String name){
-			return BuilderUtils.createEndProcedure(MCreatorPluginFactory.this,name);
+		public ProcedureBuilder createEndProcedure(String name) {
+			return BuilderUtils.createEndProcedure(MCreatorPluginFactory.this, name);
 		}
 
 		public ProcedureBuilder createOutputProcedure(String name, String output) {
@@ -301,13 +304,15 @@ public class MCreatorPluginFactory {
 			return BuilderUtils.createOutputProcedure(MCreatorPluginFactory.this, name, output);
 		}
 
-		public ProcedureBuilder createProcedureWithStatement(String name,String statementName,IVariableType placeholdertype,String statementProviderName,IVariableType statementProviderType){
-			return BuilderUtils.createProcedureWithStatement(MCreatorPluginFactory.this,name,statementName,placeholdertype,statementProviderName,statementProviderType);
+		public ProcedureBuilder createProcedureWithStatement(String name, String statementName,
+				IVariableType placeholdertype, String statementProviderName, IVariableType statementProviderType) {
+			return BuilderUtils.createProcedureWithStatement(MCreatorPluginFactory.this, name, statementName,
+					placeholdertype, statementProviderName, statementProviderType);
 		}
 
-		public ProcedureBuilder createProcedureWithEntityIterator(String name,String statementName){
-			return BuilderUtils.createProcedureWithStatement(MCreatorPluginFactory.this,name,statementName,
-					BuiltInTypes.Entity,"entityiterator",BuiltInTypes.Entity);
+		public ProcedureBuilder createProcedureWithEntityIterator(String name, String statementName) {
+			return BuilderUtils.createProcedureWithStatement(MCreatorPluginFactory.this, name, statementName,
+					BuiltInTypes.Entity, "entityiterator", BuiltInTypes.Entity);
 		}
 
 		public String getCurrentInitGenerator() {
@@ -318,8 +323,8 @@ public class MCreatorPluginFactory {
 			FileUtils.deleteEmptyDirectoryInDirectory(new File(rootPath, generatorName));
 		}
 
-		public void clearGenerator(){
-			if (lastGenerator != null){
+		public void clearGenerator() {
+			if (lastGenerator != null) {
 				clearGenerator(lastGenerator);
 			}
 		}

@@ -19,6 +19,12 @@ public class DataListBuilder extends FileOutputBuilder<Map<String, String>> impl
 
 	private final Map<String, String> result;
 
+	private Flags flags = new Flags();
+
+	private static class Flags {
+		protected boolean flagToInitGenerator;
+	}
+
 	public DataListBuilder(File rootPath) {
 		super(rootPath, new File(rootPath, "datalists"));
 		result = new LinkedHashMap<>();
@@ -58,6 +64,10 @@ public class DataListBuilder extends FileOutputBuilder<Map<String, String>> impl
 						.map(entry -> entry.getKey() + ": \"" + entry.getValue() + "\"")
 						.collect(Collectors.joining(System.lineSeparator() + "\t  ")) :
 				"");
+		if (map.isEmpty()){
+			map = new ArrayList<>();
+			map.add("");
+		}
 		appendElement(elementResult, map.size() <= 1 ?
 				map.getFirst() :
 				System.lineSeparator() + " - " + addition1.substring(1, addition1.length() - 1)
@@ -106,7 +116,7 @@ public class DataListBuilder extends FileOutputBuilder<Map<String, String>> impl
 	}
 
 	public DataListBuilder initGenerator() {
-		MCreatorPluginFactory.generatorInits.add(this);
+		flags.flagToInitGenerator = true;
 		return this;
 	}
 
@@ -138,6 +148,6 @@ public class DataListBuilder extends FileOutputBuilder<Map<String, String>> impl
 	}
 
 	@Override public boolean isSupported(MCreatorPluginFactory mCreatorPluginFactory) {
-		return mCreatorPluginFactory.rootPath().equals(rootPath);
+		return flags.flagToInitGenerator && mCreatorPluginFactory.rootPath().equals(rootPath);
 	}
 }

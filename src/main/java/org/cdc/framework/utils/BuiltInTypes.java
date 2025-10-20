@@ -34,11 +34,11 @@ public enum BuiltInTypes implements IVariableType {
 		return lowerName;
 	}
 
-	@Override public java.lang.String getBlocklyVariableType() {
+	@Override public String getBlocklyVariableType() {
 		return getHigherName();
 	}
 
-	@Override public java.lang.String getVariableType() {
+	@Override public String getVariableType() {
 		return getLowerName();
 	}
 

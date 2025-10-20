@@ -46,6 +46,7 @@ public class ProcedureBuilder extends JsonBuilder implements IGeneratorInit {
 	private static class Flags {
 		private boolean flagToSetLang;
 		private boolean flagToSetColor;
+		private boolean flagToInitGenerator;
 	}
 
 	public ProcedureBuilder(File rootPath) {
@@ -595,7 +596,7 @@ public class ProcedureBuilder extends JsonBuilder implements IGeneratorInit {
 	}
 
 	public ProcedureBuilder initGenerator() {
-		MCreatorPluginFactory.generatorInits.add(this);
+		flags.flagToInitGenerator = true;
 		return this;
 	}
 
@@ -653,8 +654,8 @@ public class ProcedureBuilder extends JsonBuilder implements IGeneratorInit {
 	}
 
 	@Override public boolean isSupported(MCreatorPluginFactory mCreatorPluginFactory) {
-		return rootPath.equals(mCreatorPluginFactory.rootPath()) && BuilderUtils.isSupportProcedure(
-				mCreatorPluginFactory.getCurrentInit());
+		return flags.flagToInitGenerator && rootPath.equals(mCreatorPluginFactory.rootPath())
+				&& BuilderUtils.isSupportProcedure(mCreatorPluginFactory.getCurrentInit());
 	}
 
 	@Override public JsonElement build() {
@@ -731,6 +732,11 @@ public class ProcedureBuilder extends JsonBuilder implements IGeneratorInit {
 			this.provides = new JsonArray();
 		}
 
+		/**
+		 *
+		 * @param name this should be the statementinput's name
+		 * @return this
+		 */
 		public StatementBuilder setName(String name) {
 			result.getAsJsonObject().addProperty("name", name);
 			return this;
@@ -738,7 +744,7 @@ public class ProcedureBuilder extends JsonBuilder implements IGeneratorInit {
 
 		/**
 		 * @param name      名称
-		 * @param lowerName 类型,必须全部小写
+		 * @param lowerName 类型,必须全部小写 type, must be the lowercase
 		 * @return this
 		 */
 		public StatementBuilder appendProvide(String name, String lowerName) {

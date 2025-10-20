@@ -37,6 +37,7 @@ public class ProceduresTest {
 
 	@Test public void generatorTest() {
 		MCreatorPluginFactory mcr = new MCreatorPluginFactory(new File(pluginPath));
+		mcr.createVariable().setName("testVariable").setColor(Color.RED).setDefaultValue("empty").initGenerator().buildAndOutput();
 		mcr.initGenerator(Generators.FORGE1201);
 		Assertions.assertTrue(Files.exists(Path.of(mcr.rootPath().getPath(), "forge-1.20.1")));
 
@@ -48,9 +49,11 @@ public class ProceduresTest {
 		MCreatorPluginFactory mcr = new MCreatorPluginFactory(new File(pluginPath));
 		mcr.createProcedure().setName("hey_set").setCategory(BuiltInToolBoxId.Procedure.ADVANCED).setColor(Color.RED)
 				.setPreviousStatement(null).setNextStatement(null)
-				.appendArgs0InputValueWithDefaultToolboxInit("hello", BuiltInTypes.Number)
-				.appendArgs0InputValue("placeholder", (String) null).appendArgs0StatementInput("statement")
-				.statementBuilder().setName("statement").appendProvide("test", BuiltInTypes.Number).buildAndReturn()
+				.appendArgs0InputValueWithDefaultToolboxInit("hello", BuiltInTypes.Entity)
+				.appendArgs0InputValue("placeholder", (String) null)
+				.appendArgs0InputValue("iterator", BuiltInTypes.Entity).toolBoxInitBuilder().setName("iterator")
+				.appendEntityIterator().buildAndReturn().appendArgs0StatementInput("statement").statementBuilder()
+				.setName("statement").appendProvide("test", BuiltInTypes.Number).buildAndReturn()
 				.appendRequiredApi("helloworld").initGenerator().buildAndOutput();
 		Assertions.assertThrows(RuntimeException.class, () -> mcr.createProcedure().buildAndOutput());
 
