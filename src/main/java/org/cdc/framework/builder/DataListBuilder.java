@@ -65,9 +65,9 @@ public class DataListBuilder extends FileOutputBuilder<Map<String, String>> impl
 	public DataListBuilder appendElement(String element, Map<String, String> external, List<String> map) {
 		var addition1 = map.toString();
 		var elementResult = element + (!external.isEmpty() ?
-				':' + System.lineSeparator() + "\t  " + external.entrySet().stream()
+				':' + System.lineSeparator() + "  " + external.entrySet().stream()
 						.map(entry -> entry.getKey() + ": \"" + entry.getValue() + "\"")
-						.collect(Collectors.joining(System.lineSeparator() + "\t  ")) :
+						.collect(Collectors.joining(System.lineSeparator() + "  ")) :
 				"");
 		if (map.isEmpty()) {
 			map = new ArrayList<>();
