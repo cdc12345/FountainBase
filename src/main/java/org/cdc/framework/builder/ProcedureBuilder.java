@@ -23,6 +23,7 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.*;
+import java.util.function.Function;
 
 public class ProcedureBuilder extends JsonBuilder implements IGeneratorInit {
 	public static Object color = "35";
@@ -248,7 +249,6 @@ public class ProcedureBuilder extends JsonBuilder implements IGeneratorInit {
 	}
 
 	/**
-	 *
 	 * @param name if name starts with "_" , default addToInputs is false
 	 * @param type type
 	 * @return this
@@ -391,7 +391,7 @@ public class ProcedureBuilder extends JsonBuilder implements IGeneratorInit {
 	}
 
 	/**
-	 * @param src    resource url
+	 * @param src    resource url see {@link org.cdc.framework.utils.BuiltInImages}
 	 * @param width  width
 	 * @param height height
 	 * @return this
@@ -600,6 +600,13 @@ public class ProcedureBuilder extends JsonBuilder implements IGeneratorInit {
 		return this;
 	}
 
+	private Function<Path, Boolean> generatorListener = (a) -> false;
+
+	public ProcedureBuilder setGeneratorListener(Function<Path, Boolean> generatorListener) {
+		this.generatorListener = generatorListener;
+		return this;
+	}
+
 	public void initGenerator0(String generatorName, boolean replace) {
 		if (isType) {
 			return;
@@ -611,7 +618,7 @@ public class ProcedureBuilder extends JsonBuilder implements IGeneratorInit {
 		}
 		try {
 			Path template = new File(procedures, fileName + ".java.ftl").toPath();
-			if (Files.exists(template)) {
+			if (Files.exists(template) && !generatorListener.apply(template)) {
 				String string = Files.readString(template);
 				if (!string.startsWith("<#-- unchecked -->")) {
 					inputs.asList().stream().map(a -> BuilderUtils.getInputPlaceHolder(a.getAsString())).forEach(a -> {
@@ -733,7 +740,6 @@ public class ProcedureBuilder extends JsonBuilder implements IGeneratorInit {
 		}
 
 		/**
-		 *
 		 * @param name this should be the statementinput's name
 		 * @return this
 		 */

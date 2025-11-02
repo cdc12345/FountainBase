@@ -12,12 +12,15 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.*;
+import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 public class DataListBuilder extends FileOutputBuilder<Map<String, String>> implements IGeneratorInit {
 	private final String DEFAULT_KEY = "_default";
 
 	private final Map<String, String> result;
+
+	public Consumer<Void> redo;
 
 	private Flags flags = new Flags();
 
@@ -29,6 +32,7 @@ public class DataListBuilder extends FileOutputBuilder<Map<String, String>> impl
 		super(rootPath, new File(rootPath, "datalists"));
 		result = new LinkedHashMap<>();
 		this.fileExtension = "yaml";
+		this.redo = a -> {};
 	}
 
 	public DataListBuilder setName(String name) {
@@ -42,6 +46,7 @@ public class DataListBuilder extends FileOutputBuilder<Map<String, String>> impl
 
 	public DataListBuilder appendElement(String element, String defaultMapping) {
 		result.put(element, defaultMapping);
+		redo = a -> result.remove(element);
 		return this;
 	}
 
@@ -64,7 +69,7 @@ public class DataListBuilder extends FileOutputBuilder<Map<String, String>> impl
 						.map(entry -> entry.getKey() + ": \"" + entry.getValue() + "\"")
 						.collect(Collectors.joining(System.lineSeparator() + "\t  ")) :
 				"");
-		if (map.isEmpty()){
+		if (map.isEmpty()) {
 			map = new ArrayList<>();
 			map.add("");
 		}

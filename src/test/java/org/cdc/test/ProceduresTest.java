@@ -2,13 +2,18 @@ package org.cdc.test;
 
 import org.cdc.framework.MCreatorPluginFactory;
 import org.cdc.framework.utils.*;
+import org.cdc.framework.utils.parser.DefaultParameterConvertor;
+import org.cdc.framework.utils.parser.MethodParser;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import java.awt.*;
+import java.io.ByteArrayInputStream;
 import java.io.File;
+import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.StandardCopyOption;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -37,7 +42,8 @@ public class ProceduresTest {
 
 	@Test public void generatorTest() {
 		MCreatorPluginFactory mcr = new MCreatorPluginFactory(new File(pluginPath));
-		mcr.createVariable().setName("testVariable").setColor(Color.RED).setDefaultValue("empty").initGenerator().buildAndOutput();
+		mcr.createVariable().setName("testVariable").setColor(Color.RED).setDefaultValue("empty").initGenerator()
+				.buildAndOutput();
 		mcr.initGenerator(Generators.FORGE1201);
 		Assertions.assertTrue(Files.exists(Path.of(mcr.rootPath().getPath(), "forge-1.20.1")));
 
@@ -54,7 +60,19 @@ public class ProceduresTest {
 				.appendArgs0InputValue("iterator", BuiltInTypes.Entity).toolBoxInitBuilder().setName("iterator")
 				.appendEntityIterator().buildAndReturn().appendArgs0StatementInput("statement").statementBuilder()
 				.setName("statement").appendProvide("test", BuiltInTypes.Number).buildAndReturn()
-				.appendRequiredApi("helloworld").initGenerator().buildAndOutput();
+				.appendRequiredApi("helloworld").setGeneratorListener(a -> {
+					MethodParser methodParser = new MethodParser();
+					methodParser.setParameterStringFunction(new DefaultParameterConvertor());
+					try {
+						methodParser.parseClass(this.getClass().getResource("ParsedClass.java").openStream());
+						methodParser.parseMethod("hey_set");
+						Files.copy(new ByteArrayInputStream(methodParser.toFTLContent().getBytes()), a,
+								StandardCopyOption.REPLACE_EXISTING);
+					} catch (IOException e) {
+						throw new RuntimeException(e);
+					}
+					return false;
+				}).initGenerator().buildAndOutput();
 		Assertions.assertThrows(RuntimeException.class, () -> mcr.createProcedure().buildAndOutput());
 
 		mcr.createProcedure("advancements_clearall").setInputsInline(true).setColor("251").setPreviousStatement(null)

@@ -5,6 +5,6 @@ scopes:
     get: ${name}
     set: ${name} = ${opt.removeParentheses(value)};
   global_session:
-    init: public static boolean ${var.getName()} = ${var.getValue()};
+    init: public static Object ${var.getName()} = ${var.getValue()};
     get: ${JavaModName}Variables.${name}
     set: ${JavaModName}Variables.${name} = ${opt.removeParentheses(value)};

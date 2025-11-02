@@ -10,6 +10,7 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.function.Function;
 
 public class FileUtils {
 	public static void deleteNonEmptyDirector(File directory) {
@@ -79,6 +80,14 @@ public class FileUtils {
 
 	public static String tryGenerateProcedureBuilderCode(String json, String fileName,
 			String pluginFactoryVariableName) {
+		Function<String, String> buildTypesConvertor = check -> {
+			BuiltInTypes ch;
+			if ((ch = BuiltInTypes.getType(check)) != null) {
+				return "BuiltInTypes." + ch.name();
+			} else {
+				return "\"" + check + "\"";
+			}
+		};
 		Gson gson = new Gson();
 		var file = gson.fromJson(json, JsonObject.class);
 		StringBuilder builder = new StringBuilder();
@@ -91,19 +100,31 @@ public class FileUtils {
 			for (JsonElement jsonElement : args0) {
 				var arg = jsonElement.getAsJsonObject();
 				var type = arg.get("type").getAsString();
-				var name = arg.get("name").getAsString();
+
 				switch (type) {
 				case "input_value" -> {
+					var name = arg.get("name").getAsString();
 					builder.append(".appendArgs0InputValue(\"").append(name).append("\"");
 					if (arg.has("check")) {
 						var check = arg.get("check").getAsString();
-						builder.append(", \"").append(check).append("\")");
+						builder.append(", ").append(buildTypesConvertor.apply(check)).append(")");
 					} else {
 						builder.append(")");
 					}
 				}
 				case "input_statement" -> {
+					var name = arg.get("name").getAsString();
 					builder.append(".appendArgs0StatementInput(\"").append(name).append("\")");
+				}
+				case "field_image" -> {
+					var src = arg.get("src").getAsString();
+					var width = arg.get("width").getAsInt();
+					var height = arg.get("height").getAsInt();
+					builder.append(".appendArgs0FieldImage(\"").append(src).append("\", ").append(width).append(", ")
+							.append(height).append(")");
+				}
+				default -> {
+					builder.append("/*Missing %s*/".formatted(arg.toString()));
 				}
 				}
 			}
@@ -122,8 +143,7 @@ public class FileUtils {
 		}
 		if (file.has("output")) {
 			JsonElement type = file.get("output");
-			BuiltInTypes builtInTypes = BuiltInTypes.getType(type.getAsString());
-			String type1 = (builtInTypes == null) ? type.toString() : "BuiltInTypes." + builtInTypes.name();
+			String type1 = buildTypesConvertor.apply(type.getAsString());
 			builder.append(".setOutput(").append(type1).append(")");
 		}
 		if (file.has("previousStatement")) {
