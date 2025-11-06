@@ -54,27 +54,31 @@ public class DataListBuilder extends FileOutputBuilder<Map<String, String>> impl
 		return appendElement(element, Collections.emptyMap(), map);
 	}
 
-	public DataListBuilder appendStringElement(String element, String defaultMapping) {
-		return appendElement(element, "\"" + defaultMapping + "\"");
-	}
-
 	public DataListBuilder appendElement(String element, String readableName, List<String> map) {
 		return appendElement(element, Map.of("readable_name", readableName), map);
 	}
 
-	public DataListBuilder appendElement(String element, Map<String, String> external, List<String> map) {
-		var addition1 = map.toString();
-		var elementResult = element + (!external.isEmpty() ?
-				':' + System.lineSeparator() + "  " + external.entrySet().stream()
+	/**
+	 * @param element              element name
+	 * @param definitionMap        like Map.of("readable_name","he")
+	 * @param defaultListInMapping default list
+	 * @return this
+	 */
+	public DataListBuilder appendElement(String element, Map<String, String> definitionMap,
+			List<String> defaultListInMapping) {
+		var addition1 = defaultListInMapping.toString();
+		var elementResult = element + (!definitionMap.isEmpty() ?
+				':' + System.lineSeparator() + "  " + definitionMap.entrySet().stream()
 						.map(entry -> entry.getKey() + ": \"" + entry.getValue() + "\"")
 						.collect(Collectors.joining(System.lineSeparator() + "  ")) :
 				"");
-		if (map.isEmpty()) {
-			map = new ArrayList<>();
-			map.add("");
+
+		if (defaultListInMapping.isEmpty()) {
+			defaultListInMapping = new ArrayList<>();
+			defaultListInMapping.add("");
 		}
-		appendElement(elementResult, map.size() <= 1 ?
-				map.getFirst() :
+		appendElement(elementResult, defaultListInMapping.size() <= 1 ?
+				defaultListInMapping.getFirst() :
 				System.lineSeparator() + " - " + addition1.substring(1, addition1.length() - 1)
 						.replace(",", System.lineSeparator() + " -"));
 		return this;
@@ -88,6 +92,11 @@ public class DataListBuilder extends FileOutputBuilder<Map<String, String>> impl
 		return appendElement(DEFAULT_KEY, defaultMapping);
 	}
 
+	/**
+	 *
+	 * @param mapTemplate _mcreator_map_template
+	 * @return this
+	 */
 	public DataListBuilder setMapTemplate(String mapTemplate) {
 		String MAP_TEMPLATE = "_mcreator_map_template";
 		return appendElement(MAP_TEMPLATE, "\"" + mapTemplate + "\"");

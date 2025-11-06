@@ -18,6 +18,8 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
+import static org.cdc.framework.utils.yaml.YamlDataUtils.str;
+
 public class ProceduresTest {
 
 	private final String pluginPath = "build/plugins";
@@ -115,7 +117,7 @@ public class ProceduresTest {
 				  - "air"
 				""").initGenerator().buildAndOutput();
 		mcr.createDataList("testexternal").appendElement("test1", "test", List.of("1"))
-				.appendElement("test2", Map.of("read", "book"), List.of()).initGenerator().buildAndOutput();
+				.appendElement("test2", Map.of("read", "book"), List.of(str("test"))).initGenerator().buildAndOutput();
 		mcr.initGenerator(Generators.FORGE1201);
 	}
 
