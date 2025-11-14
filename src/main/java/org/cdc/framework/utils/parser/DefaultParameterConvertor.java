@@ -59,8 +59,10 @@ public class DefaultParameterConvertor implements Function<Parameter, String> {
 			return BuilderUtils.getStatementPlaceHolder(parameter.getNameAsString());
 		} else if (parameter.isAnnotationPresent(Field.class)) {
 			return BuilderUtils.getFieldPlaceHolder(parameter.getNameAsString());
-		} else {
+		} else if (parameter.isAnnotationPresent(Input.class)) {
 			return BuilderUtils.getInputPlaceHolder(parameter.getNameAsString());
+		} else {
+			return "";
 		}
 	}
 }

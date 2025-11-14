@@ -150,7 +150,7 @@ public class MethodParser implements TypeSolver {
 
 	private String tryFindParameter(NameExpr nameExpr) {
 		var op = methodDeclaration.getParameterByName(nameExpr.getNameAsString());
-		if (op.isPresent()) {
+		if (op.isPresent() && op.get().getAnnotations().isNonEmpty()) {
 			return parameterStringFunction.apply(op.get());
 		}
 		return nameExpr.getNameAsString();

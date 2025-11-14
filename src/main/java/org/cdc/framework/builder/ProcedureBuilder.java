@@ -583,6 +583,11 @@ public class ProcedureBuilder extends JsonBuilder implements IGeneratorInit {
 		return setLanguage(languageBuilder, result);
 	}
 
+	public ProcedureBuilder setMutator(String mutator){
+		result.getAsJsonObject().addProperty("mutator",mutator);
+		return this;
+	}
+
 	@CanIgnoreReturnValue public ProcedureBuilder setLanguage(LanguageBuilder languageBuilder, String value) {
 		flags.flagToSetLang = true;
 		if (isType) {

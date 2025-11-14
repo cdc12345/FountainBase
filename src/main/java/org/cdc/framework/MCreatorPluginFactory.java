@@ -27,6 +27,8 @@ public class MCreatorPluginFactory {
 		return new MCreatorPluginFactory(new File(folder));
 	}
 
+	private static final String CURRENT_VERSION = MCreatorVersions.V_2025_3;
+
 	private String currentInit;
 
 	private final File rootPath;
@@ -36,7 +38,7 @@ public class MCreatorPluginFactory {
 
 	public MCreatorPluginFactory(File rootPath) {
 		this.rootPath = rootPath;
-		this.version = MCreatorVersions.V_2025_2;
+		this.version = MCreatorVersions.V_2025_3;
 		this.toolkit = new ToolKit();
 	}
 
@@ -113,15 +115,17 @@ public class MCreatorPluginFactory {
 	public ProcedureBuilder createProcedure(String name) {
 		createFolder("procedures");
 		ProcedureBuilder builder = new ProcedureBuilder(rootPath);
-		try {
-			var class1 = this.getClass().getClassLoader()
-					.loadClass("org.cdc.framework.builder." + version + ".ProcedureBuilder");
-			builder = (ProcedureBuilder) class1.getConstructor(new Class[] { File.class }).newInstance(rootPath);
-		} catch (ClassNotFoundException ignored) {
+		if (!CURRENT_VERSION.equals(version)) {
+			try {
+				var class1 = this.getClass().getClassLoader()
+						.loadClass("org.cdc.framework.builder." + version + ".ProcedureBuilder");
+				builder = (ProcedureBuilder) class1.getConstructor(new Class[] { File.class }).newInstance(rootPath);
+			} catch (ClassNotFoundException ignored) {
 
-		} catch (InvocationTargetException | InstantiationException | IllegalAccessException |
-				 NoSuchMethodException e) {
-			throw new RuntimeException(e);
+			} catch (InvocationTargetException | InstantiationException | IllegalAccessException |
+					 NoSuchMethodException e) {
+				throw new RuntimeException(e);
+			}
 		}
 		if (name != null) {
 			builder.setName(name);
@@ -137,15 +141,17 @@ public class MCreatorPluginFactory {
 	public AITasksBuilder createAITask(String name) {
 		createFolder("aitasks");
 		AITasksBuilder builder = new AITasksBuilder(rootPath);
-		try {
-			var class1 = this.getClass().getClassLoader()
-					.loadClass("org.cdc.framework.builder." + version + ".AITasksBuilder");
-			builder = (AITasksBuilder) class1.getConstructor(new Class[] { File.class }).newInstance(rootPath);
-		} catch (ClassNotFoundException ignored) {
+		if (!CURRENT_VERSION.equals(version)) {
+			try {
+				var class1 = this.getClass().getClassLoader()
+						.loadClass("org.cdc.framework.builder." + version + ".AITasksBuilder");
+				builder = (AITasksBuilder) class1.getConstructor(new Class[] { File.class }).newInstance(rootPath);
+			} catch (ClassNotFoundException ignored) {
 
-		} catch (InvocationTargetException | InstantiationException | IllegalAccessException |
-				 NoSuchMethodException e) {
-			throw new RuntimeException(e);
+			} catch (InvocationTargetException | InstantiationException | IllegalAccessException |
+					 NoSuchMethodException e) {
+				throw new RuntimeException(e);
+			}
 		}
 		if (name != null) {
 			builder.setName(name);
@@ -161,15 +167,17 @@ public class MCreatorPluginFactory {
 	public VariableBuilder createVariable(IVariableType type) {
 		createFolder("variables");
 		VariableBuilder builder = new VariableBuilder(rootPath);
-		try {
-			var class1 = this.getClass().getClassLoader()
-					.loadClass("org.cdc.framework.builder." + version + ".VariableBuilder");
-			builder = (VariableBuilder) class1.getConstructor(new Class[] { File.class }).newInstance(rootPath);
-		} catch (ClassNotFoundException ignored) {
+		if (!CURRENT_VERSION.equals(version)) {
+			try {
+				var class1 = this.getClass().getClassLoader()
+						.loadClass("org.cdc.framework.builder." + version + ".VariableBuilder");
+				builder = (VariableBuilder) class1.getConstructor(new Class[] { File.class }).newInstance(rootPath);
+			} catch (ClassNotFoundException ignored) {
 
-		} catch (InvocationTargetException | InstantiationException | IllegalAccessException |
-				 NoSuchMethodException e) {
-			throw new RuntimeException(e);
+			} catch (InvocationTargetException | InstantiationException | IllegalAccessException |
+					 NoSuchMethodException e) {
+				throw new RuntimeException(e);
+			}
 		}
 		if (type != null) {
 			builder.setName(type.getVariableType()).setBlocklyVariableType(type.getBlocklyVariableType());
@@ -180,32 +188,36 @@ public class MCreatorPluginFactory {
 
 	public LanguageBuilder createDefaultLanguage() {
 		createFolder("lang");
-		try {
-			var class1 = this.getClass().getClassLoader()
-					.loadClass("org.cdc.framework.builder." + version + ".LanguageBuilder");
-			return (LanguageBuilder) class1.getConstructor(new Class[] { File.class, String.class })
-					.newInstance(rootPath, "texts");
-		} catch (ClassNotFoundException ignored) {
+		if (!CURRENT_VERSION.equals(version)) {
+			try {
+				var class1 = this.getClass().getClassLoader()
+						.loadClass("org.cdc.framework.builder." + version + ".LanguageBuilder");
+				return (LanguageBuilder) class1.getConstructor(new Class[] { File.class, String.class })
+						.newInstance(rootPath, "texts");
+			} catch (ClassNotFoundException ignored) {
 
-		} catch (InvocationTargetException | InstantiationException | IllegalAccessException |
-				 NoSuchMethodException e) {
-			throw new RuntimeException(e);
+			} catch (InvocationTargetException | InstantiationException | IllegalAccessException |
+					 NoSuchMethodException e) {
+				throw new RuntimeException(e);
+			}
 		}
 		return new LanguageBuilder(rootPath, "texts");
 	}
 
 	public LanguageBuilder createLanguage(Locale locale) {
 		createFolder("lang");
-		try {
-			var class1 = this.getClass().getClassLoader()
-					.loadClass("org.cdc.framework.builder." + version + ".LanguageBuilder");
-			return (LanguageBuilder) class1.getConstructor(new Class[] { File.class, String.class })
-					.newInstance(rootPath, "texts_" + locale.getLanguage() + "_" + locale.getCountry());
-		} catch (ClassNotFoundException ignored) {
+		if (!CURRENT_VERSION.equals(version)) {
+			try {
+				var class1 = this.getClass().getClassLoader()
+						.loadClass("org.cdc.framework.builder." + version + ".LanguageBuilder");
+				return (LanguageBuilder) class1.getConstructor(new Class[] { File.class, String.class })
+						.newInstance(rootPath, "texts_" + locale.getLanguage() + "_" + locale.getCountry());
+			} catch (ClassNotFoundException ignored) {
 
-		} catch (InvocationTargetException | InstantiationException | IllegalAccessException |
-				 NoSuchMethodException e) {
-			throw new RuntimeException(e);
+			} catch (InvocationTargetException | InstantiationException | IllegalAccessException |
+					 NoSuchMethodException e) {
+				throw new RuntimeException(e);
+			}
 		}
 		return new LanguageBuilder(rootPath, "texts_" + locale.getLanguage() + "_" + locale.getCountry());
 	}
@@ -217,15 +229,17 @@ public class MCreatorPluginFactory {
 	public DataListBuilder createDataList(String name) {
 		createFolder("datalists");
 		DataListBuilder builder = new DataListBuilder(rootPath);
-		try {
-			var class1 = this.getClass().getClassLoader()
-					.loadClass("org.cdc.framework.builder." + version + ".DataListBuilder");
-			builder = (DataListBuilder) class1.getConstructor(new Class[] { File.class }).newInstance(rootPath);
-		} catch (ClassNotFoundException ignored) {
+		if (!CURRENT_VERSION.equals(version)) {
+			try {
+				var class1 = this.getClass().getClassLoader()
+						.loadClass("org.cdc.framework.builder." + version + ".DataListBuilder");
+				builder = (DataListBuilder) class1.getConstructor(new Class[] { File.class }).newInstance(rootPath);
+			} catch (ClassNotFoundException ignored) {
 
-		} catch (InvocationTargetException | InstantiationException | IllegalAccessException |
-				 NoSuchMethodException e) {
-			throw new RuntimeException(e);
+			} catch (InvocationTargetException | InstantiationException | IllegalAccessException |
+					 NoSuchMethodException e) {
+				throw new RuntimeException(e);
+			}
 		}
 		generatorInits.add(builder);
 		return builder.setName(name);
@@ -238,15 +252,17 @@ public class MCreatorPluginFactory {
 	public TriggerBuilder createTrigger(String name) {
 		createFolder("triggers");
 		TriggerBuilder builder = new TriggerBuilder(rootPath);
-		try {
-			var class1 = this.getClass().getClassLoader()
-					.loadClass("org.cdc.framework.builder." + version + ".TriggerBuilder");
-			builder = (TriggerBuilder) class1.getConstructor(new Class[] { File.class }).newInstance(rootPath);
-		} catch (ClassNotFoundException ignored) {
+		if (!CURRENT_VERSION.equals(version)) {
+			try {
+				var class1 = this.getClass().getClassLoader()
+						.loadClass("org.cdc.framework.builder." + version + ".TriggerBuilder");
+				builder = (TriggerBuilder) class1.getConstructor(new Class[] { File.class }).newInstance(rootPath);
+			} catch (ClassNotFoundException ignored) {
 
-		} catch (InvocationTargetException | InstantiationException | IllegalAccessException |
-				 NoSuchMethodException e) {
-			throw new RuntimeException(e);
+			} catch (InvocationTargetException | InstantiationException | IllegalAccessException |
+					 NoSuchMethodException e) {
+				throw new RuntimeException(e);
+			}
 		}
 		generatorInits.add(builder);
 		return builder.setName(name);

@@ -15,6 +15,9 @@ import java.util.*;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
+import static org.cdc.framework.utils.yaml.YamlDataUtils.keyAndValue;
+import static org.cdc.framework.utils.yaml.YamlDataUtils.str;
+
 public class DataListBuilder extends FileOutputBuilder<Map<String, String>> implements IGeneratorInit {
 	private final String DEFAULT_KEY = "_default";
 
@@ -66,10 +69,9 @@ public class DataListBuilder extends FileOutputBuilder<Map<String, String>> impl
 	 */
 	public DataListBuilder appendElement(String element, Map<String, String> definitionMap,
 			List<String> defaultListInMapping) {
-		var addition1 = defaultListInMapping.toString();
 		var elementResult = element + (!definitionMap.isEmpty() ?
 				':' + System.lineSeparator() + "  " + definitionMap.entrySet().stream()
-						.map(entry -> entry.getKey() + ": \"" + entry.getValue() + "\"")
+						.map(entry -> keyAndValue(entry.getKey(), str(entry.getValue())))
 						.collect(Collectors.joining(System.lineSeparator() + "  ")) :
 				"");
 
@@ -77,10 +79,11 @@ public class DataListBuilder extends FileOutputBuilder<Map<String, String>> impl
 			defaultListInMapping = new ArrayList<>();
 			defaultListInMapping.add("");
 		}
+		String addition1;
 		appendElement(elementResult, defaultListInMapping.size() <= 1 ?
 				defaultListInMapping.getFirst() :
-				System.lineSeparator() + " - " + addition1.substring(1, addition1.length() - 1)
-						.replace(",", System.lineSeparator() + " -"));
+				System.lineSeparator() + " - " + (addition1 = defaultListInMapping.toString()).substring(1,
+						addition1.length() - 1).replace(",", System.lineSeparator() + " -"));
 		return this;
 	}
 
@@ -93,7 +96,6 @@ public class DataListBuilder extends FileOutputBuilder<Map<String, String>> impl
 	}
 
 	/**
-	 *
 	 * @param mapTemplate _mcreator_map_template
 	 * @return this
 	 */
@@ -149,9 +151,10 @@ public class DataListBuilder extends FileOutputBuilder<Map<String, String>> impl
 		var generator1 = Paths.get(rootPath.getPath(), generatorName, "mappings", getFileFullName());
 		try {
 			System.out.println(generator1);
+			String mapString;
 			var source = new ByteArrayInputStream(
-					hashMap.toString().replace("{", "").replace("}", "").replace("=", ": ")
-							.replace(", ", System.lineSeparator()).getBytes(StandardCharsets.UTF_8));
+					(mapString = hashMap.toString()).substring(1).substring(0, mapString.length() - 2)
+							.replace("=", ": ").replace(", ", System.lineSeparator()).getBytes(StandardCharsets.UTF_8));
 			if (replace) {
 				Files.copy(source, generator1, StandardCopyOption.REPLACE_EXISTING);
 			} else {
