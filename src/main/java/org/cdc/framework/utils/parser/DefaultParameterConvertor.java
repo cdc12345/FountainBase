@@ -62,7 +62,7 @@ public class DefaultParameterConvertor implements Function<Parameter, String> {
 		} else if (parameter.isAnnotationPresent(Input.class)) {
 			return BuilderUtils.getInputPlaceHolder(parameter.getNameAsString());
 		} else {
-			return "";
+			return parameter.getNameAsString();
 		}
 	}
 }

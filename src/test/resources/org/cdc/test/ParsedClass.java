@@ -8,7 +8,7 @@ import java.util.function.Consumer;
 public class ParsedClass {
 	@Include({ "mcitems.ftl" })
 	private void parsedMethod(@Input String entity, @Field String entity1, @StatementInput Runnable runnable,
-			@StatementInput Runnable runnable1, StandardCopyOption copyOption, @ItemStackCount(2) String itemStack,
+			@StatementInput Runnable runnable1, @Input StandardCopyOption copyOption, @ItemStackCount(2) @Input String itemStack,
 			@PlaceHolderModifier("method(%s)") String testTemplate) {
 		entity.equals(entity1);
 		new Thread(() -> {

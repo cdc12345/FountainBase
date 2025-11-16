@@ -15,8 +15,7 @@ import java.util.*;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
-import static org.cdc.framework.utils.yaml.YamlDataUtils.keyAndValue;
-import static org.cdc.framework.utils.yaml.YamlDataUtils.str;
+import static org.cdc.framework.utils.yaml.YamlDataUtils.*;
 
 public class DataListBuilder extends FileOutputBuilder<Map<String, String>> implements IGeneratorInit {
 	private final String DEFAULT_KEY = "_default";
@@ -101,7 +100,7 @@ public class DataListBuilder extends FileOutputBuilder<Map<String, String>> impl
 	 */
 	public DataListBuilder setMapTemplate(String mapTemplate) {
 		String MAP_TEMPLATE = "_mcreator_map_template";
-		return appendElement(MAP_TEMPLATE, "\"" + mapTemplate + "\"");
+		return appendElement(MAP_TEMPLATE, str(mapTemplate));
 	}
 
 	@Override public Map<String, String> build() {
@@ -151,10 +150,9 @@ public class DataListBuilder extends FileOutputBuilder<Map<String, String>> impl
 		var generator1 = Paths.get(rootPath.getPath(), generatorName, "mappings", getFileFullName());
 		try {
 			System.out.println(generator1);
-			String mapString;
 			var source = new ByteArrayInputStream(
-					(mapString = hashMap.toString()).substring(1).substring(0, mapString.length() - 2)
-							.replace("=", ": ").replace(", ", System.lineSeparator()).getBytes(StandardCharsets.UTF_8));
+					hashMap.entrySet().stream().map(entry->keyAndValue(entry.getKey(),entry.getValue())).collect(
+							Collectors.joining(lineSeparator)).getBytes());
 			if (replace) {
 				Files.copy(source, generator1, StandardCopyOption.REPLACE_EXISTING);
 			} else {
