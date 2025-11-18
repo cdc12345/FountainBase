@@ -154,7 +154,7 @@ public class TriggerBuilder extends JsonBuilder implements IGeneratorInit {
 				&& BuilderUtils.isSupportProcedure(mCreatorPluginFactory.getCurrentInit());
 	}
 
-	@Override public JsonElement buildAndOutput() {
+	@Override public JsonElement buildAndOutput() throws IOException {
 		if (!flags.flagToSetLang) {
 			System.err.println("You should know the lang of " + fileName + " is not generated");
 		}

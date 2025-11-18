@@ -17,6 +17,7 @@ import java.nio.file.StandardCopyOption;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Objects;
 
 import static org.cdc.framework.utils.yaml.YamlDataUtils.str;
 
@@ -24,7 +25,7 @@ public class ProceduresTest {
 
 	private final String pluginPath = "build/plugins";
 
-	@Test public void typeTest() {
+	@Test public void typeTest() throws IOException {
 		System.out.println(new File(pluginPath).getAbsolutePath());
 		MCreatorPluginFactory mcr = new MCreatorPluginFactory(new File(pluginPath));
 		mcr.createProcedureCategory("helloworld").markType().setColor(Color.RED).buildAndOutput();
@@ -34,7 +35,7 @@ public class ProceduresTest {
 		mcr.createAITaskCategory("helloai").setColor(Color.RED).buildAndOutput();
 	}
 
-	@Test public void variableTest() {
+	@Test public void variableTest() throws IOException {
 		MCreatorPluginFactory mcr = new MCreatorPluginFactory(new File(pluginPath));
 		mcr.createVariable().setName("hey").setColor(Color.RED).setNullable(true).setIgnoredByCoverage(true)
 				.buildAndOutput();
@@ -42,7 +43,7 @@ public class ProceduresTest {
 				.setNullable(false).setIgnoredByCoverage(true).buildAndOutput();
 	}
 
-	@Test public void generatorTest() {
+	@Test public void generatorTest() throws IOException {
 		MCreatorPluginFactory mcr = new MCreatorPluginFactory(new File(pluginPath));
 		mcr.createVariable().setName("testVariable").setColor(Color.RED).setDefaultValue("empty").initGenerator()
 				.buildAndOutput();
@@ -53,7 +54,7 @@ public class ProceduresTest {
 				.setName("test");
 	}
 
-	@Test public void procedureTest() {
+	@Test public void procedureTest() throws IOException {
 		MCreatorPluginFactory mcr = new MCreatorPluginFactory(new File(pluginPath));
 		mcr.createProcedure().setName("hey_set").setCategory(BuiltInToolBoxId.Procedure.ADVANCED).setColor(Color.RED)
 				.setPreviousStatement(null).setNextStatement(null)
@@ -66,7 +67,7 @@ public class ProceduresTest {
 					MethodParser methodParser = new MethodParser();
 					methodParser.setParameterStringFunction(new DefaultParameterConvertor());
 					try {
-						methodParser.parseClass(this.getClass().getResource("ParsedClass.java").openStream());
+						methodParser.parseClass(Objects.requireNonNull(this.getClass().getResource("ParsedClass.java")).openStream());
 						methodParser.parseMethod("hey_set");
 						Files.copy(new ByteArrayInputStream(methodParser.toFTLContent().getBytes()), a,
 								StandardCopyOption.REPLACE_EXISTING);
@@ -85,7 +86,7 @@ public class ProceduresTest {
 		mcr.initGenerator(Generators.FORGE1201);
 	}
 
-	@Test public void aiTasksTest() {
+	@Test public void aiTasksTest() throws IOException {
 		MCreatorPluginFactory mcr = MCreatorPluginFactory.createFactory(pluginPath);
 		mcr.createAITask("hey_am_you").setColor(Color.RED).setPreviousStatement(null).setNextStatement(null)
 				.setGroup("name").setInputsInline(true).setToolBoxId(BuiltInToolBoxId.AITasks.COMBAT_TASKS)
@@ -93,7 +94,7 @@ public class ProceduresTest {
 		mcr.initGenerator(Generators.FORGE1201);
 	}
 
-	@Test public void triggersTest() {
+	@Test public void triggersTest() throws IOException {
 		MCreatorPluginFactory mcr = MCreatorPluginFactory.createFactory(pluginPath);
 		mcr.createTrigger().setName("hello").appendDependency("name", "type").setCancelable(true).setSide(Side.Client)
 				.setHasResult(true).initGenerator().buildAndOutput();
@@ -104,7 +105,7 @@ public class ProceduresTest {
 		mcr.initGenerator(Generators.FORGE1201);
 	}
 
-	@Test public void datalistTest() {
+	@Test public void datalistTest() throws IOException {
 		MCreatorPluginFactory mcr = MCreatorPluginFactory.createFactory(pluginPath);
 		mcr.createDataList().setName("datalist").appendElement("hello").initGenerator().buildAndOutput();
 		mcr.createDataList().setName("types").appendElement("hey", "hello").initGenerator().build();
@@ -118,7 +119,7 @@ public class ProceduresTest {
 				""").initGenerator().buildAndOutput();
 		mcr.createDataList("testexternal").appendElement("test1", "test", List.of("1"))
 				.appendElement("test2", Map.of("read", "book"), List.of(str("test"))).initGenerator().buildAndOutput();
-		mcr.initGenerator(Generators.FORGE1201);
+		mcr.initGenerator(Generators.FORGE1201,true);
 	}
 
 	@Test public void langTest() {

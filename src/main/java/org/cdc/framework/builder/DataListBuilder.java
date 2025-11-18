@@ -71,18 +71,12 @@ public class DataListBuilder extends FileOutputBuilder<Map<String, String>> impl
 		var elementResult = element + (!definitionMap.isEmpty() ?
 				':' + System.lineSeparator() + "  " + definitionMap.entrySet().stream()
 						.map(entry -> keyAndValue(entry.getKey(), str(entry.getValue())))
-						.collect(Collectors.joining(System.lineSeparator() + "  ")) :
+						.collect(Collectors.joining(lineSeparator + "  ")) :
 				"");
 
-		if (defaultListInMapping.isEmpty()) {
-			defaultListInMapping = new ArrayList<>();
-			defaultListInMapping.add("");
-		}
-		String addition1;
-		appendElement(elementResult, defaultListInMapping.size() <= 1 ?
-				defaultListInMapping.getFirst() :
-				System.lineSeparator() + " - " + (addition1 = defaultListInMapping.toString()).substring(1,
-						addition1.length() - 1).replace(",", System.lineSeparator() + " -"));
+		defaultListInMapping = new ArrayList<>(defaultListInMapping);
+		defaultListInMapping.addFirst(" ");
+		appendElement(elementResult, defaultListInMapping.size() == 2?defaultListInMapping.get(1):defaultListInMapping.stream().collect(Collectors.joining(lineSeparator + " - ")));
 		return this;
 	}
 
@@ -107,21 +101,18 @@ public class DataListBuilder extends FileOutputBuilder<Map<String, String>> impl
 		return result;
 	}
 
-	@Override public Map<String, String> buildAndOutput() {
+	@Override public Map<String, String> buildAndOutput() throws IOException {
 		if (fileName == null) {
 			throw new RuntimeException("filename can not be null");
 		}
 		var build1 = build();
-		try {
-			var build = build1.keySet().stream().filter(a -> !a.startsWith("_")).toList();
-			StringBuilder stringBuilder = new StringBuilder();
-			stringBuilder.append("- ").append(build.getFirst());
-			build.stream().skip(1).forEach(a -> stringBuilder.append(System.lineSeparator()).append("- ").append(a));
-			Files.copy(new ByteArrayInputStream(stringBuilder.toString().getBytes(StandardCharsets.UTF_8)),
-					new File(targetPath, getFileFullName()).toPath(), StandardCopyOption.REPLACE_EXISTING);
-		} catch (IOException e) {
-			throw new RuntimeException(e);
-		}
+		var build = build1.keySet().stream().filter(a -> !a.startsWith("_")).toList();
+		StringBuilder stringBuilder = new StringBuilder();
+		stringBuilder.append("- ").append(build.getFirst());
+		build.stream().skip(1).forEach(a -> stringBuilder.append(System.lineSeparator()).append("- ").append(a));
+		Files.copy(new ByteArrayInputStream(stringBuilder.toString().getBytes(StandardCharsets.UTF_8)),
+				new File(targetPath, getFileFullName()).toPath(), StandardCopyOption.REPLACE_EXISTING);
+
 		return build1;
 	}
 
@@ -151,8 +142,8 @@ public class DataListBuilder extends FileOutputBuilder<Map<String, String>> impl
 		try {
 			System.out.println(generator1);
 			var source = new ByteArrayInputStream(
-					hashMap.entrySet().stream().map(entry->keyAndValue(entry.getKey(),entry.getValue())).collect(
-							Collectors.joining(lineSeparator)).getBytes());
+					hashMap.entrySet().stream().map(entry -> keyAndValue(entry.getKey(), entry.getValue()))
+							.collect(Collectors.joining(lineSeparator)).getBytes());
 			if (replace) {
 				Files.copy(source, generator1, StandardCopyOption.REPLACE_EXISTING);
 			} else {

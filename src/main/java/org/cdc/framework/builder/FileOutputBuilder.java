@@ -4,6 +4,7 @@ package org.cdc.framework.builder;
 import org.cdc.framework.utils.FileUtils;
 
 import java.io.File;
+import java.io.IOException;
 
 public abstract class FileOutputBuilder<T> {
     protected final File rootPath;
@@ -23,5 +24,5 @@ public abstract class FileOutputBuilder<T> {
 
     public abstract T build();
 
-    public abstract T buildAndOutput();
+    public abstract T buildAndOutput() throws IOException;
 }
