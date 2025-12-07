@@ -122,7 +122,7 @@ public class TriggerBuilder extends JsonBuilder implements IGeneratorInit {
 				.collect(Collectors.joining(",", "<#-- ", " -->")));
 		builder.append(System.lineSeparator());
 		String loaderName = generatorName.split("-")[0];
-		String generatedDependencies = BuilderUtils.generateTriggerDependencies(new HashMap() {
+		String generatedDependencies = BuilderUtils.generateTriggerDependencies(new HashMap<>() {
 			{
 				dependencies.asList().forEach(a -> {
 					put(a.getAsJsonObject().get("name").getAsString(), "");

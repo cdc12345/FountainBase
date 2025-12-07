@@ -10,6 +10,8 @@ import java.util.Map;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
+import static org.cdc.framework.utils.yaml.YamlDataUtils.*;
+
 public class BuilderUtils {
 
 	public static ProcedureBuilder createOutputProcedure(MCreatorPluginFactory mCreatorPluginFactory, String name,
@@ -116,8 +118,9 @@ public class BuilderUtils {
 	}
 
 	public static String generateTriggerDependencies(Map<String, String> dependencies) {
-		String map = dependencies.entrySet().stream().map(entry -> "\""+entry.getKey() + "\": \"" + entry.getValue()+"\"")
-				.collect(Collectors.joining(", " + System.lineSeparator()+"\t\t\t"));
+		String mapCode = dependencies.entrySet().stream()
+				.map(entry -> keyAndValue(str(entry.getKey()),str(entry.getValue())))
+				.collect(Collectors.joining(", " + lineSeparator + "\t\t\t"));
 		return String.format("""
 						<#assign dependenciesCode><#compress>
 							<@procedureDependenciesCode dependencies, {
@@ -125,6 +128,6 @@ public class BuilderUtils {
 							}/>
 						</#compress></#assign>
 						execute(event<#if dependenciesCode?has_content>,</#if>${dependenciesCode});
-				""", map);
+				""", mapCode);
 	}
 }

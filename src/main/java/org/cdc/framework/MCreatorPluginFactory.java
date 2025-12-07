@@ -7,6 +7,7 @@ import org.cdc.framework.utils.BuilderUtils;
 import org.cdc.framework.utils.BuiltInTypes;
 import org.cdc.framework.utils.FileUtils;
 import org.cdc.framework.utils.MCreatorVersions;
+import org.jetbrains.annotations.Contract;
 
 import java.io.ByteArrayInputStream;
 import java.io.File;
@@ -23,7 +24,11 @@ public class MCreatorPluginFactory {
 	//generator need to be inited
 	private final ArrayList<IGeneratorInit> generatorInits = new ArrayList<>();
 
+	@Contract("null->null")
 	public static MCreatorPluginFactory createFactory(String folder) {
+		if (folder == null){
+			return null;
+		}
 		return new MCreatorPluginFactory(new File(folder));
 	}
 
@@ -204,6 +209,7 @@ public class MCreatorPluginFactory {
 		return new LanguageBuilder(rootPath, "texts");
 	}
 
+	@Contract("null->fail")
 	public LanguageBuilder createLanguage(Locale locale) {
 		createFolder("lang");
 		if (!CURRENT_VERSION.equals(version)) {

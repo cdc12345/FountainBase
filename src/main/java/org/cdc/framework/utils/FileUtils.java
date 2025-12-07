@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import org.jetbrains.annotations.Contract;
 
 import java.io.File;
 import java.io.IOException;
@@ -47,6 +48,7 @@ public class FileUtils {
 		}
 	}
 
+	@Contract("null->fail")
 	public static String loadStringFromFile(Path file) {
 		try {
 			return Files.readString(file, StandardCharsets.UTF_8);
@@ -61,6 +63,7 @@ public class FileUtils {
 		return gson.fromJson(js.get("mcreator").getAsJsonObject().get("inputs"), JsonArray.class);
 	}
 
+	@Contract("null->null")
 	public static String filterSpace(String name) {
 		if (name == null) {
 			return null;

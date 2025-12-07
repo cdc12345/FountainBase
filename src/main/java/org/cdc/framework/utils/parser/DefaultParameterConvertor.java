@@ -13,9 +13,10 @@ import java.util.List;
 import java.util.function.Function;
 
 public class DefaultParameterConvertor implements Function<Parameter, String> {
-	private List<String> originalPlaceHolder = new ArrayList<>();
+	private final List<String> originalPlaceHolder = new ArrayList<>();
 
 	@Override public String apply(Parameter parameter) {
+		System.out.println(parameter);
 		String placeholder = getPlaceHolder(parameter);
 		placeholder = placeholder.substring(2, placeholder.length() - 1);
 		originalPlaceHolder.add(placeholder);
@@ -25,8 +26,8 @@ public class DefaultParameterConvertor implements Function<Parameter, String> {
 			type = parameter.getType().resolve().asReferenceType().getTypeDeclaration().orElse(null);
 		} catch (Exception ignored) {
 		}
-		if (parameter.isAnnotationPresent(ItemStackCount.class)) {
-			var annotation = parameter.getAnnotationByClass(ItemStackCount.class);
+		if (parameter.isAnnotationPresent(ItemStackCount.class.getSimpleName())) {
+			var annotation = parameter.getAnnotationByName(ItemStackCount.class.getSimpleName());
 			final int[] count = { 1 };
 			annotation.ifPresent(annotationExpr -> annotationExpr.accept(new VoidVisitorAdapter<Void>() {
 
@@ -36,9 +37,9 @@ public class DefaultParameterConvertor implements Function<Parameter, String> {
 				}
 			}, null));
 			placeholder = "mappedMCItemToItemStackCode(%s, %d)".formatted(placeholder, count[0]);
-		} else if (parameter.isAnnotationPresent(PlaceHolderModifier.class)) {
+		} else if (parameter.isAnnotationPresent(PlaceHolderModifier.class.getSimpleName())) {
 			final String[] template = { "%s" };
-			var annotation = parameter.getAnnotationByClass(PlaceHolderModifier.class);
+			var annotation = parameter.getAnnotationByName(PlaceHolderModifier.class.getSimpleName());
 			annotation.ifPresent(annotationExpr -> annotationExpr.accept(new VoidVisitorAdapter<Void>() {
 
 				@Override public void visit(StringLiteralExpr n, Void arg) {
@@ -48,21 +49,25 @@ public class DefaultParameterConvertor implements Function<Parameter, String> {
 			}, null));
 			placeholder = template[0].formatted(placeholder);
 		}
-		if (parameter.isAnnotationPresent(EnumLabel.class) || (type != null && type.isEnum())) {
+		if (parameter.isAnnotationPresent(EnumLabel.class.getSimpleName()) || (type != null && type.isEnum())) {
 			result = parameter.getTypeAsString() + ".%s";
 		}
 		return result.formatted("${" + placeholder + "}") ;
 	}
 
 	public static String getPlaceHolder(Parameter parameter) {
-		if (parameter.isAnnotationPresent(StatementInput.class)) {
+		if (parameter.isAnnotationPresent(StatementInput.class.getSimpleName())) {
 			return BuilderUtils.getStatementPlaceHolder(parameter.getNameAsString());
-		} else if (parameter.isAnnotationPresent(Field.class)) {
+		} else if (parameter.isAnnotationPresent(Field.class.getSimpleName())) {
 			return BuilderUtils.getFieldPlaceHolder(parameter.getNameAsString());
-		} else if (parameter.isAnnotationPresent(Input.class)) {
+		} else if (parameter.isAnnotationPresent(Input.class.getSimpleName())) {
 			return BuilderUtils.getInputPlaceHolder(parameter.getNameAsString());
 		} else {
 			return parameter.getNameAsString();
 		}
+	}
+
+	public List<String> getOriginalPlaceHolder() {
+		return originalPlaceHolder;
 	}
 }

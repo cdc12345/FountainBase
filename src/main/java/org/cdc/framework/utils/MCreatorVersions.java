@@ -1,7 +1,13 @@
 package org.cdc.framework.utils;
 
+import org.jetbrains.annotations.TestOnly;
+
 public class MCreatorVersions {
+	@TestOnly
     public static class Test {
+		/**
+		 * Test version
+		 */
         public static final String V_2025_0 = "v_2025_0";
     }
 

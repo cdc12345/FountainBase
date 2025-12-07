@@ -69,14 +69,16 @@ public class DataListBuilder extends FileOutputBuilder<Map<String, String>> impl
 	public DataListBuilder appendElement(String element, Map<String, String> definitionMap,
 			List<String> defaultListInMapping) {
 		var elementResult = element + (!definitionMap.isEmpty() ?
-				':' + System.lineSeparator() + "  " + definitionMap.entrySet().stream()
+				keySuffix + lineSeparator + "  " + definitionMap.entrySet().stream()
 						.map(entry -> keyAndValue(entry.getKey(), str(entry.getValue())))
 						.collect(Collectors.joining(lineSeparator + "  ")) :
 				"");
 
 		defaultListInMapping = new ArrayList<>(defaultListInMapping);
 		defaultListInMapping.addFirst(" ");
-		appendElement(elementResult, defaultListInMapping.size() == 2?defaultListInMapping.get(1):defaultListInMapping.stream().collect(Collectors.joining(lineSeparator + " - ")));
+		appendElement(elementResult, defaultListInMapping.size() == 2 ?
+				defaultListInMapping.get(1) :
+				defaultListInMapping.stream().collect(Collectors.joining(lineSeparator + " " + valuePrefix)));
 		return this;
 	}
 
@@ -108,8 +110,8 @@ public class DataListBuilder extends FileOutputBuilder<Map<String, String>> impl
 		var build1 = build();
 		var build = build1.keySet().stream().filter(a -> !a.startsWith("_")).toList();
 		StringBuilder stringBuilder = new StringBuilder();
-		stringBuilder.append("- ").append(build.getFirst());
-		build.stream().skip(1).forEach(a -> stringBuilder.append(System.lineSeparator()).append("- ").append(a));
+		stringBuilder.append(valuePrefix).append(build.getFirst());
+		build.stream().skip(1).forEach(a -> stringBuilder.append(System.lineSeparator()).append(valuePrefix).append(a));
 		Files.copy(new ByteArrayInputStream(stringBuilder.toString().getBytes(StandardCharsets.UTF_8)),
 				new File(targetPath, getFileFullName()).toPath(), StandardCopyOption.REPLACE_EXISTING);
 
@@ -132,8 +134,8 @@ public class DataListBuilder extends FileOutputBuilder<Map<String, String>> impl
 		}
 		TreeMap<String, String> hashMap = new TreeMap<>();
 		for (Map.Entry<String, String> entry : result.entrySet()) {
-			if (entry.getKey().contains(": ")) {
-				hashMap.put(entry.getKey().substring(0, entry.getKey().indexOf(':')), entry.getValue());
+			if (entry.getKey().contains(keySuffix)) {
+				hashMap.put(entry.getKey().substring(0, entry.getKey().indexOf(keySuffix)), entry.getValue());
 			} else {
 				hashMap.put(entry.getKey(), entry.getValue());
 			}

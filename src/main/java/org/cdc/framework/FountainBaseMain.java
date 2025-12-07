@@ -3,6 +3,7 @@ package org.cdc.framework;
 import org.cdc.framework.interfaces.IFountainMain;
 import org.cdc.framework.interfaces.annotation.DefaultPluginFolder;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.ServiceLoader;
@@ -44,8 +45,12 @@ public class FountainBaseMain {
 			} else {
 				mCreatorPluginFactory1 = iterator.next();
 			}
-			a.get().generatePluginInfo(mCreatorPluginFactory1.createInfo());
-			a.get().generatePlugin(mCreatorPluginFactory1);
+			try {
+				a.get().generatePluginInfo(mCreatorPluginFactory1.createInfo());
+				a.get().generatePlugin(mCreatorPluginFactory1);
+			} catch (IOException e) {
+				throw new RuntimeException(e);
+			}
 		});
 	}
 }

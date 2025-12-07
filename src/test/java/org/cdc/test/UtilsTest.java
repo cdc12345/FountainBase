@@ -57,5 +57,10 @@ public class UtilsTest {
 		System.out.println(methodParser.toFTLContent());
 		methodParser.parseMethod("singleLineMethod");
 		System.out.println(methodParser.toFTLContent());
+		methodParser.parseMethod("creativetab_insertafter");
+		System.out.println(methodParser.toFTLContent());
+		methodParser.parseClass(this.getClass().getResource("MCSource.java").openStream());
+		methodParser.parseMethod("creativetab_insertafter");
+		System.out.println(methodParser.toFTLContent());
 	}
 }

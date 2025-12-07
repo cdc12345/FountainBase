@@ -26,6 +26,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
+import java.util.NoSuchElementException;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -67,17 +68,21 @@ public class MethodParser implements TypeSolver {
 	}
 
 	public void parseMethod(String name, Class<?>... classes) {
-		if (typeDeclaration == null) {
-			return;
-		}
-		if (classes.length != 0) {
-			String[] types = new String[classes.length];
-			for (int index = 0; index < classes.length; index++) {
-				types[index] = classes[index].getSimpleName();
+		try {
+			if (typeDeclaration == null) {
+				return;
 			}
-			methodDeclaration = typeDeclaration.getMethodsBySignature(name, types).getFirst();
-		} else {
-			methodDeclaration = typeDeclaration.getMethodsByName(name).getFirst();
+			if (classes.length != 0) {
+				String[] types = new String[classes.length];
+				for (int index = 0; index < classes.length; index++) {
+					types[index] = classes[index].getSimpleName();
+				}
+				methodDeclaration = typeDeclaration.getMethodsBySignature(name, types).getFirst();
+			} else {
+				methodDeclaration = typeDeclaration.getMethodsByName(name).getFirst();
+			}
+		} catch (NoSuchElementException e){
+			throw new NoSuchElementException(name,e);
 		}
 	}
 
@@ -98,7 +103,7 @@ public class MethodParser implements TypeSolver {
 							var para = methodDeclaration.getParameterByName(_nameExpr.getNameAsString());
 							if (para.isPresent()) {
 								var pa = para.get();
-								if (pa.isAnnotationPresent(StatementInput.class)) {
+								if (pa.isAnnotationPresent(StatementInput.class.getSimpleName())) {
 									var parentNode = n.getParentNode();
 									if (parentNode.isPresent()) {
 										var statement = new ExpressionStmt(
@@ -132,8 +137,8 @@ public class MethodParser implements TypeSolver {
 				}).collect(Collectors.joining(System.lineSeparator()));
 				atomicReference.set(str);
 			});
-			if (methodDeclaration.isAnnotationPresent(Include.class)) {
-				var annotation = methodDeclaration.getAnnotationByClass(Include.class);
+			if (methodDeclaration.isAnnotationPresent(Include.class.getSimpleName())) {
+				var annotation = methodDeclaration.getAnnotationByName(Include.class.getSimpleName());
 				annotation.ifPresent(a -> a.accept(new VoidVisitorAdapter<Void>() {
 
 					@Override public void visit(StringLiteralExpr n, Void arg) {

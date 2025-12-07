@@ -39,4 +39,11 @@ public class ParsedClass {
 			System.out.println(entity);
 		}
 	}
+
+	private void creativetab_insertafter(Event event,@Input @ItemStackCount ItemStack after,@Input @ItemStackCount ItemStack item,
+			@Field @EnumLabel CreativeModeTab.TabVisibility tabvisible) {
+		if (event instanceof BuildCreativeModeTabContentsEvent _event) {
+			_event.insertAfter(after, item, tabvisible);
+		}
+	}
 }
