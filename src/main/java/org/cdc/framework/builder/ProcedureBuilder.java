@@ -14,6 +14,7 @@ import org.cdc.framework.utils.BuilderUtils;
 import org.cdc.framework.utils.BuiltInToolBoxId;
 import org.cdc.framework.utils.ColorUtils;
 import org.cdc.framework.utils.FileUtils;
+import org.checkerframework.checker.mustcall.qual.MustCall;
 
 import java.awt.*;
 import java.io.ByteArrayInputStream;
@@ -235,8 +236,8 @@ public class ProcedureBuilder extends JsonBuilder implements IGeneratorInit {
 		return setToolBoxId(category);
 	}
 
-	public ToolBoxInitBuilder toolBoxInitBuilder() {
-		return new ToolBoxInitBuilder();
+	public ToolBoxInitBuilderBuilder toolBoxInitBuilder() {
+		return new ToolBoxInitBuilderBuilder();
 	}
 
 	public ProcedureBuilder appendArgs0Element(JsonElement jsonElement) {
@@ -514,8 +515,8 @@ public class ProcedureBuilder extends JsonBuilder implements IGeneratorInit {
 		return this;
 	}
 
-	public StatementBuilder statementBuilder() {
-		return new StatementBuilder();
+	public StatementBuilderBuilder statementBuilder() {
+		return new StatementBuilderBuilder();
 	}
 
 	public ProcedureBuilder appendExtension(String extension) {
@@ -652,9 +653,11 @@ public class ProcedureBuilder extends JsonBuilder implements IGeneratorInit {
 						}
 					});
 				}
-				if (!string.contains("addTemplate??") && string.contains("@addTemplate file")) {
-					System.err.println(
-							template.toUri() + " : it will not compatible with 2024.4 because the addTemplate");
+				if (System.getProperty("fountainbase.compatibleCheck","true").equals("true")) {
+					if (!string.contains("addTemplate??") && string.contains("@addTemplate file")) {
+						System.err.println(
+								template.toUri() + " : it will not compatible with 2024.4 because of the addTemplate");
+					}
 				}
 			} else {
 				String below2025 = """
@@ -737,9 +740,18 @@ public class ProcedureBuilder extends JsonBuilder implements IGeneratorInit {
 
 	@Override public JsonElement buildAndOutput() throws IOException {
 		if (!flags.flagToSetLang) {
-			System.err.println("You should know the lang of " + fileName + " is not generated");
+			System.err.println("The lang of " + fileName + " is not generated");
 		}
 		return super.buildAndOutput();
+	}
+
+	public class StatementBuilderBuilder {
+		protected StatementBuilderBuilder(){
+
+		}
+		public StatementBuilder setName(String name) {
+			return new StatementBuilder().setName(name);
+		}
 	}
 
 	public class StatementBuilder extends JsonBuilder {
@@ -757,6 +769,7 @@ public class ProcedureBuilder extends JsonBuilder implements IGeneratorInit {
 		 * @param name this should be the statementinput's name
 		 * @return this
 		 */
+		@MustCall
 		public StatementBuilder setName(String name) {
 			result.getAsJsonObject().addProperty("name", name);
 			return this;
@@ -792,6 +805,16 @@ public class ProcedureBuilder extends JsonBuilder implements IGeneratorInit {
 			}
 			ProcedureBuilder.this.appendStatement(build());
 			return ProcedureBuilder.this;
+		}
+	}
+
+	public class ToolBoxInitBuilderBuilder{
+		protected ToolBoxInitBuilderBuilder(){
+
+		}
+
+		public ToolBoxInitBuilder setName(String name) {
+			return new ToolBoxInitBuilder().setName(name);
 		}
 	}
 
@@ -860,7 +883,7 @@ public class ProcedureBuilder extends JsonBuilder implements IGeneratorInit {
 		public ToolBoxInitBuilder appendEntityIterator() {
 			return appendPlaceHolder("entity_iterator");
 		}
-
+		@MustCall("setName")
 		public ProcedureBuilder buildAndReturn() {
 			if (!flagToSetName) {
 				System.err.println("Empty name of toolboxinit");

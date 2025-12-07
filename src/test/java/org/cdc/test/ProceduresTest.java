@@ -122,7 +122,7 @@ public class ProceduresTest {
 		mcr.initGenerator(Generators.FORGE1201,true);
 	}
 
-	@Test public void langTest() {
+	@SuppressWarnings("UnresolvedPropertyKey") @Test public void langTest() {
 		MCreatorPluginFactory mcr = MCreatorPluginFactory.createFactory(pluginPath);
 		mcr.createDefaultLanguage().appendLocalization("test", "test").buildAndOutput();
 		mcr.createLanguage(Locale.getDefault()).appendLocalization("test1", "test1").buildAndOutput();
