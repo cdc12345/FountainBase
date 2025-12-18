@@ -1,5 +1,6 @@
 package org.cdc.framework;
 
+import com.google.errorprone.annotations.CanIgnoreReturnValue;
 import org.cdc.framework.builder.*;
 import org.cdc.framework.interfaces.IGeneratorInit;
 import org.cdc.framework.interfaces.IVariableType;
@@ -12,10 +13,12 @@ import org.jetbrains.annotations.Contract;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.Locale;
 
@@ -24,9 +27,8 @@ public class MCreatorPluginFactory {
 	//generator need to be inited
 	private final ArrayList<IGeneratorInit> generatorInits = new ArrayList<>();
 
-	@Contract("null->null")
-	public static MCreatorPluginFactory createFactory(String folder) {
-		if (folder == null){
+	@Contract("null->null") public static MCreatorPluginFactory createFactory(String folder) {
+		if (folder == null) {
 			return null;
 		}
 		return new MCreatorPluginFactory(new File(folder));
@@ -47,11 +49,12 @@ public class MCreatorPluginFactory {
 		this.toolkit = new ToolKit();
 	}
 
-	public void createFolder(String name) {
+	@CanIgnoreReturnValue public File createFolder(String name) {
 		var file = new File(rootPath, name);
 		if (file.mkdirs()) {
 			System.out.println(file.getPath());
 		}
+		return file;
 	}
 
 	public void createProcedureTemplateFolder() {
@@ -209,8 +212,7 @@ public class MCreatorPluginFactory {
 		return new LanguageBuilder(rootPath, "texts");
 	}
 
-	@Contract("null->fail")
-	public LanguageBuilder createLanguage(Locale locale) {
+	@Contract("null->fail") public LanguageBuilder createLanguage(Locale locale) {
 		createFolder("lang");
 		if (!CURRENT_VERSION.equals(version)) {
 			try {
@@ -353,6 +355,14 @@ public class MCreatorPluginFactory {
 
 		public void clearPlugin() {
 			FileUtils.deleteEmptyDirectoryInDirectory(rootPath);
+		}
+
+		@Contract("null,_->fail; _,null->fail") public void addElementIcon(String elementName, InputStream image)
+				throws IOException {
+			if (elementName == null)
+				throw new IOException("elementName should not be null");
+			File file = new File(createFolder("themes/default_dark/images/mod_types"), elementName + ".png");
+			Files.copy(image, file.toPath(), StandardCopyOption.REPLACE_EXISTING);
 		}
 	}
 }

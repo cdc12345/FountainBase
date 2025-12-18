@@ -17,15 +17,19 @@ public class DefaultParameterConvertor implements Function<Parameter, String> {
 
 	@Override public String apply(Parameter parameter) {
 		System.out.println(parameter);
+		//Replace with placeholder
 		String placeholder = getPlaceHolder(parameter);
 		placeholder = placeholder.substring(2, placeholder.length() - 1);
 		originalPlaceHolder.add(placeholder);
 		String result = "%s";
+		//Type of it
 		ResolvedTypeDeclaration type = null;
 		try {
 			type = parameter.getType().resolve().asReferenceType().getTypeDeclaration().orElse(null);
 		} catch (Exception ignored) {
 		}
+
+		//Try to decorate it.
 		if (parameter.isAnnotationPresent(ItemStackCount.class.getSimpleName())) {
 			var annotation = parameter.getAnnotationByName(ItemStackCount.class.getSimpleName());
 			final int[] count = { 1 };
@@ -47,12 +51,13 @@ public class DefaultParameterConvertor implements Function<Parameter, String> {
 					super.visit(n, arg);
 				}
 			}, null));
-			placeholder = template[0].formatted(placeholder);
+			placeholder = template[0].replace("%s",placeholder);
 		}
 		if (parameter.isAnnotationPresent(EnumLabel.class.getSimpleName()) || (type != null && type.isEnum())) {
 			result = parameter.getTypeAsString() + ".%s";
 		}
-		return result.formatted("${" + placeholder + "}") ;
+		// avoid to some accident
+		return result.replace("%s","${" + placeholder + "}") ;
 	}
 
 	public static String getPlaceHolder(Parameter parameter) {

@@ -27,6 +27,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.util.NoSuchElementException;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -126,16 +127,35 @@ public class MethodParser implements TypeSolver {
 				String str = blockStmt.getStatements().size() == 1 ?
 						blockStmt.getStatement(0).toString() :
 						blockStmt.toString();
-				str = str.lines().map(line -> {
-					var lineTrim = line.trim();
-					if (lineTrim.startsWith("${statement") && line.endsWith("};")) {
-						return line.substring(0, line.length() - 1);
-					} else if (lineTrim.startsWith("//")) {
-						return line.replaceFirst("//", "");
+				// Parsing Template
+				String template;
+				if (methodDeclaration.getComment().isPresent()){
+					System.out.println("Dividing");
+					AtomicInteger group1 = new AtomicInteger();
+					var sections = str.lines().map(line -> {
+						var lineTrim = line.trim();
+						// statement.run();
+						if (lineTrim.startsWith("${statement") && line.endsWith("};")) {
+							return line.substring(0, line.length() - 1);
+						}
+						return line;
+					}).collect(Collectors.groupingBy(line->{
+						var lineTrim = line.trim();
+						if (lineTrim.startsWith("// Divide")){
+							group1.addAndGet(1);
+						}
+						return group1.get();
+					}));
+					template = methodDeclaration.getComment().get().getContent();
+					for (int index = 0; index <= group1.get(); index++){
+						if (sections.containsKey(index)){
+							template = template.replace("%"+index,sections.get(index).stream().filter(a->!a.isEmpty()&&!a.contains("// Divide")).collect(Collectors.joining(System.lineSeparator())));
+						}
 					}
-					return line;
-				}).collect(Collectors.joining(System.lineSeparator()));
-				atomicReference.set(str);
+					atomicReference.set(template);
+				} else {
+					atomicReference.set(str);
+				}
 			});
 			if (methodDeclaration.isAnnotationPresent(Include.class.getSimpleName())) {
 				var annotation = methodDeclaration.getAnnotationByName(Include.class.getSimpleName());
@@ -143,7 +163,7 @@ public class MethodParser implements TypeSolver {
 
 					@Override public void visit(StringLiteralExpr n, Void arg) {
 						var result = atomicReference.get();
-						atomicReference.set("<#include \"%s\">".formatted(n.asString()).concat(System.lineSeparator())
+						atomicReference.set("<#include \""+n.asString()+"\">"
 								.concat(result));
 						super.visit(n, arg);
 					}

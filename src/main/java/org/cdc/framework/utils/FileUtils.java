@@ -14,7 +14,11 @@ import java.nio.file.Path;
 import java.util.function.Function;
 
 public class FileUtils {
+	@Contract("null->_")
 	public static void deleteNonEmptyDirector(File directory) {
+		if (directory == null) {
+			return;
+		}
 		try {
 			File[] files = directory.listFiles();
 
@@ -33,6 +37,9 @@ public class FileUtils {
 	}
 
 	public static void deleteEmptyDirectoryInDirectory(File directory) {
+		if (directory == null) {
+			return;
+		}
 		try {
 			File[] files = directory.listFiles();
 
@@ -57,6 +64,7 @@ public class FileUtils {
 		}
 	}
 
+	@Contract("null->fail")
 	public static JsonArray loadInputsFromFile(Path file) {
 		Gson gson = new Gson();
 		var js = gson.fromJson(loadStringFromFile(file), JsonObject.class);
@@ -275,6 +283,7 @@ public class FileUtils {
 		return builder.toString();
 	}
 
+	@Contract("null->fail")
 	public static String getFileNameWithExtension(Path file) {
 		return file.toFile().getName().split("\\.")[0];
 	}

@@ -26,7 +26,7 @@ tasks.withType(JavaCompile.class).configureEach {
 jar {
     manifest {
         attributes(
-                "Main-Class": "org.cdc"
+                "Main-Class": "org.cdc.framework.Main"
         )
     }
 }

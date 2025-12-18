@@ -11,6 +11,7 @@ public class YamlDataUtils {
 	public static String valuePrefix = "- ";
 	public static String keySuffix = ": ";
 
+
 	public static String str(String value) {
 		return "\"" + value + "\"";
 	}

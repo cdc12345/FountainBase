@@ -1,11 +1,15 @@
 package org.cdc.test;
 
-import org.cdc.framework.utils.parser.annotation.*;
-
 import java.nio.file.StandardCopyOption;
 import java.util.function.Consumer;
 
 public class ParsedClass {
+	/*
+%0
+	<#if eseseses>
+%1
+	</#if>
+	 */
 	@Include({ "mcitems.ftl" })
 	private void parsedMethod(@Input String entity, @Field String entity1, @StatementInput Runnable runnable,
 			@StatementInput Runnable runnable1, @Input StandardCopyOption copyOption, @ItemStackCount(2) @Input String itemStack,
@@ -19,11 +23,10 @@ public class ParsedClass {
 			runnable1.run();
 		});
 		if (true) {
-			//<#if eseseses>
+			// Divide
 			System.out.println(copyOption);
 			System.out.println(itemStack);
 			System.out.println(testTemplate);
-			//</#if>
 		}
 	}
 
@@ -34,9 +37,17 @@ public class ParsedClass {
 		}
 	}
 
+	/*
+<@head>%0</@head>
+%1
+<@tail>%2</@tail>
+ 	*/
+	@Include({ "mcitems.ftl" })
 	private void singleLineMethod(String entity, String entity1) {
 		if (entity.equals(entity1)) {
+			// Divide
 			System.out.println(entity);
+			// Divide
 		}
 	}
 

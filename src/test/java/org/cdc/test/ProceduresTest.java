@@ -52,6 +52,7 @@ public class ProceduresTest {
 
 		mcr.createInfo().setId("test").setAuthor("cdc12345").addSupportedVersion(MCreatorVersions.V_2025_1)
 				.setName("test");
+		mcr.getToolKit().clearGenerator();
 	}
 
 	@Test public void procedureTest() throws IOException {

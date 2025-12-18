@@ -2,6 +2,7 @@ package org.cdc.framework.utils;
 
 import org.cdc.framework.builder.ProcedureBuilder;
 import org.cdc.framework.interfaces.IVariableType;
+import org.jetbrains.annotations.Contract;
 
 public enum BuiltInTypes implements IVariableType {
 	Number("number", "Number"), Direction("direction", "Direction"), Entity("entity", "Entity"), ItemStack("itemstack",
@@ -9,7 +10,11 @@ public enum BuiltInTypes implements IVariableType {
 			"MCItemBlock"), DamageSource("damagesource", "DamageSource"), ActionResultType("actionresulttype",
 			"ActionResultType"), World("world", "");
 
+	@Contract("null->null")
 	public static BuiltInTypes getType(String name) {
+		if (name == null){
+			return null;
+		}
 		for (BuiltInTypes types : BuiltInTypes.values()) {
 			if (types.higherName.equals(name) || types.lowerName.equals(name)) {
 				return types;

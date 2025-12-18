@@ -1,2 +1,3 @@
 rootProject.name = 'FountainBase'
 
+include 'FountainBaseAnnotations'
