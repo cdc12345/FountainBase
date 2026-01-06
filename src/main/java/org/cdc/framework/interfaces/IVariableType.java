@@ -6,12 +6,14 @@ public interface IVariableType {
 
 	/**
 	 * higherName
+	 * eg. ActionResultType
 	 * @return name
 	 */
     String getBlocklyVariableType();
 
     /**
      * lowerName
+	 * eg. actionresulttype
      * @return name
      */
     String getVariableType();

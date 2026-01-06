@@ -114,7 +114,7 @@ public class LanguageBuilder extends FileOutputBuilder<Properties> {
 
 	/**
 	 * 在所有语言文件设置完成后调用
-	 *
+	 * This should be called after all entries appended
 	 * @return result
 	 */
 	@Override public Properties buildAndOutput() {

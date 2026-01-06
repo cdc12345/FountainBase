@@ -285,6 +285,11 @@ public class MCreatorPluginFactory {
 		}
 	}
 
+	/**
+	 *
+	 * @param name
+	 * @return
+	 */
 	public ProcedureBuilder createProcedureCategory(String name) {
 		return BuilderUtils.createProcedureCategory(this, name);
 	}

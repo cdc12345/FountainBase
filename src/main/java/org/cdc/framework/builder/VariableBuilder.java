@@ -68,32 +68,67 @@ public class VariableBuilder extends JsonBuilder implements IGeneratorInit {
 		return this;
 	}
 
+	/**
+	 * coverage
+	 * @param ignoredByCoverage boolean
+	 * @return this
+	 */
 	public VariableBuilder setIgnoredByCoverage(boolean ignoredByCoverage) {
 		result.getAsJsonObject().addProperty("ignoredByCoverage", ignoredByCoverage);
 		return this;
 	}
 
+	/**
+	 * this will be generated after initGenerator
+	 * @param defaultValue default value
+	 * @return this
+	 */
 	public VariableBuilder setDefaultValue(String defaultValue) {
 		this.defaultValue = defaultValue;
 		return this;
 	}
 
 	//Localizations
+
+	/**
+	 * blockly.block.get_var__{fileName} = {text}
+	 * @param languageBuilder language
+	 * @param text eg. get ActionResultType
+	 * @return this
+	 */
 	public VariableBuilder setGetterText(LanguageBuilder languageBuilder, String text) {
 		languageBuilder.appendLocalization("blockly.block.get_var_" + this.fileName, text);
 		return this;
 	}
 
+	/**
+	 * blockly.block.set_var_{fileName} = {text}
+	 * @param languageBuilder language
+	 * @param text eg. set ActionResultType
+	 * @return this
+	 */
 	public VariableBuilder setSetterText(LanguageBuilder languageBuilder, String text) {
 		languageBuilder.appendLocalization("blockly.block.set_var_" + this.fileName, text);
 		return this;
 	}
 
+	/**
+	 * blockly.block.return_{fileName} = {text}
+	 * @param languageBuilder language
+	 * @param text eg. return ActionResultType
+	 * @return this
+	 */
 	public VariableBuilder setReturnText(LanguageBuilder languageBuilder, String text) {
 		languageBuilder.appendLocalization("blockly.block.return_" + this.fileName, text);
 		return this;
 	}
 
+	/**
+	 * blockly.block.custom_dependency_{fileName} = {text}
+	 * @param languageBuilder language
+	 * @param text eg. ActionResultType Dependency
+	 * @return this
+	 */
 	public VariableBuilder setCustomDependency(LanguageBuilder languageBuilder, String text) {
 		languageBuilder.appendLocalization("blockly.block.custom_dependency_" + this.fileName, text);
 		return this;

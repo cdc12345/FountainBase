@@ -46,6 +46,12 @@ public class BuilderUtils {
 		return createProcedureCategory(mCreatorPluginFactory, category.getName());
 	}
 
+	/**
+	 *
+	 * @param mCreatorPluginFactory
+	 * @param name
+	 * @return
+	 */
 	public static ProcedureBuilder createProcedureCategory(MCreatorPluginFactory mCreatorPluginFactory, String name) {
 		var aitaskscat = mCreatorPluginFactory.createProcedure();
 		if (name != null) {

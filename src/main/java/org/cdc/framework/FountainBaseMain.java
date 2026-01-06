@@ -23,6 +23,7 @@ public class FountainBaseMain {
 					mCreatorPluginFactoryArrayList.add(pathToFactory.get(a));
 				}
 			});
+
 		}
 
 		var iterator = mCreatorPluginFactoryArrayList.iterator();

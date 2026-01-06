@@ -18,5 +18,9 @@ public class BuiltInImages {
     @Deprecated
     public static final String NULL = "./res/null.png";
 
+    /**
+     * width: 8,
+     * height: 24
+     */
     public static final String NULLABLE = "./res/null.png";
 }

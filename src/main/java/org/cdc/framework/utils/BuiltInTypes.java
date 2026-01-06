@@ -8,7 +8,7 @@ public enum BuiltInTypes implements IVariableType {
 	Number("number", "Number"), Direction("direction", "Direction"), Entity("entity", "Entity"), ItemStack("itemstack",
 			"MCItem"), Boolean("logic", "Boolean"), String("string", "String"), BlockState("blockstate",
 			"MCItemBlock"), DamageSource("damagesource", "DamageSource"), ActionResultType("actionresulttype",
-			"ActionResultType"), World("world", "");
+			"ActionResultType"), World("world", ""),Vector("vector","Vector");
 
 	@Contract("null->null")
 	public static BuiltInTypes getType(String name) {
