@@ -18,6 +18,7 @@ import java.util.stream.Collectors;
 import static org.cdc.framework.utils.yaml.YamlDataUtils.*;
 
 public class DataListBuilder extends FileOutputBuilder<Map<String, String>> implements IGeneratorInit {
+
 	private final String DEFAULT_KEY = "_default";
 
 	private final Map<String, String> result;
@@ -140,16 +141,16 @@ public class DataListBuilder extends FileOutputBuilder<Map<String, String>> impl
 				hashMap.put(entry.getKey(), entry.getValue());
 			}
 		}
-		var generator1 = Paths.get(rootPath.getPath(), generatorName, "mappings", getFileFullName());
+		var mappingPath = Paths.get(rootPath.getPath(), generatorName, "mappings", getFileFullName());
 		try {
-			System.out.println(generator1);
+			System.out.println(mappingPath);
 			var source = new ByteArrayInputStream(
 					hashMap.entrySet().stream().map(entry -> keyAndValue(entry.getKey(), entry.getValue()))
 							.collect(Collectors.joining(lineSeparator)).getBytes());
-			if (replace) {
-				Files.copy(source, generator1, StandardCopyOption.REPLACE_EXISTING);
+			if (replace || getFileFullName().equals("types.yaml")) {
+				Files.copy(source, mappingPath, StandardCopyOption.REPLACE_EXISTING);
 			} else {
-				Files.copy(source, generator1);
+				Files.copy(source, mappingPath);
 			}
 		} catch (IOException ignored) {
 		}

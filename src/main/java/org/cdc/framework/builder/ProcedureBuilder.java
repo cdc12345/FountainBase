@@ -31,6 +31,7 @@ public class ProcedureBuilder extends JsonBuilder implements IGeneratorInit {
 	public static String category = null;
 
 	private final ArrayList<String> sequence = new ArrayList<>();
+	private final HashMap<String, String> nameToTypes = new HashMap<>();
 
 	protected final JsonObject mcreator;
 	protected final JsonArray inputs;
@@ -243,6 +244,16 @@ public class ProcedureBuilder extends JsonBuilder implements IGeneratorInit {
 	public ProcedureBuilder appendArgs0Element(JsonElement jsonElement) {
 		args0.add(jsonElement);
 		return this;
+	}
+
+	/**
+	 * general input value
+	 *
+	 * @param name name
+	 * @return this
+	 */
+	public ProcedureBuilder appendArgs0InputValue(String name) {
+		return appendArgs0InputValue(name, (String) null);
 	}
 
 	public ProcedureBuilder appendArgs0InputValue(String name, String higherName) {
@@ -495,9 +506,9 @@ public class ProcedureBuilder extends JsonBuilder implements IGeneratorInit {
 		return this;
 	}
 
-	public ProcedureBuilder appendArgs0MultipleLinesField(String name,String content){
+	public ProcedureBuilder appendArgs0MultipleLinesField(String name, String content) {
 		JsonObject jsonObject = new JsonObject();
-		jsonObject.addProperty("type","field_multilinetext");
+		jsonObject.addProperty("type", "field_multilinetext");
 		jsonObject.addProperty("name", name);
 		jsonObject.addProperty("text", content);
 		fields.add(name);
@@ -584,8 +595,8 @@ public class ProcedureBuilder extends JsonBuilder implements IGeneratorInit {
 		return setLanguage(languageBuilder, result);
 	}
 
-	public ProcedureBuilder setMutator(String mutator){
-		result.getAsJsonObject().addProperty("mutator",mutator);
+	public ProcedureBuilder setMutator(String mutator) {
+		result.getAsJsonObject().addProperty("mutator", mutator);
 		return this;
 	}
 
@@ -631,10 +642,13 @@ public class ProcedureBuilder extends JsonBuilder implements IGeneratorInit {
 		if (!procedures.exists()) {
 			procedures.mkdirs();
 		}
+		String comment = BuilderUtils.generateInputsComment(inputs) + System.lineSeparator()
+				+ BuilderUtils.generateStatementsComment(statements) + System.lineSeparator()
+				+ BuilderUtils.generateFieldsComment(fields) + System.lineSeparator();
 		try {
 			Path template = new File(procedures, fileName + ".java.ftl").toPath();
 			if (Files.exists(template) && !generatorListener.apply(template)) {
-				String string = Files.readString(template);
+				String string = Files.readString(template).replace(comment, "");
 				if (!string.startsWith("<#-- unchecked -->")) {
 					inputs.asList().stream().map(a -> BuilderUtils.getInputPlaceHolder(a.getAsString())).forEach(a -> {
 						if (!string.contains(a) && !string.contains(a.substring(2, a.length() - 1))) {
@@ -653,7 +667,7 @@ public class ProcedureBuilder extends JsonBuilder implements IGeneratorInit {
 						}
 					});
 				}
-				if (System.getProperty("fountainbase.compatibleCheck","true").equals("true")) {
+				if (System.getProperty("fountainbase.compatibleCheck", "true").equals("true")) {
 					if (!string.contains("addTemplate??") && string.contains("@addTemplate file")) {
 						System.err.println(
 								template.toUri() + " : it will not compatible with 2024.4 because of the addTemplate");
@@ -667,10 +681,8 @@ public class ProcedureBuilder extends JsonBuilder implements IGeneratorInit {
 						<#else>
 						</#if>
 						""";
-				String builder = BuilderUtils.generateInputsComment(inputs) + System.lineSeparator()
-						+ BuilderUtils.generateStatementsComment(statements) + System.lineSeparator()
-						+ BuilderUtils.generateFieldsComment(fields) + System.lineSeparator() + below2025;
-				Files.copy(new ByteArrayInputStream(builder.getBytes(StandardCharsets.UTF_8)), template);
+				var comments = comment + below2025;
+				Files.copy(new ByteArrayInputStream(comments.getBytes(StandardCharsets.UTF_8)), template);
 			}
 		} catch (IOException e) {
 			System.out.println(e.getMessage());
@@ -746,9 +758,10 @@ public class ProcedureBuilder extends JsonBuilder implements IGeneratorInit {
 	}
 
 	public class StatementBuilderBuilder {
-		protected StatementBuilderBuilder(){
+		protected StatementBuilderBuilder() {
 
 		}
+
 		public StatementBuilder setName(String name) {
 			return new StatementBuilder().setName(name);
 		}
@@ -769,8 +782,7 @@ public class ProcedureBuilder extends JsonBuilder implements IGeneratorInit {
 		 * @param name this should be the statementinput's name
 		 * @return this
 		 */
-		@MustCall
-		public StatementBuilder setName(String name) {
+		@MustCall public StatementBuilder setName(String name) {
 			result.getAsJsonObject().addProperty("name", name);
 			return this;
 		}
@@ -808,8 +820,8 @@ public class ProcedureBuilder extends JsonBuilder implements IGeneratorInit {
 		}
 	}
 
-	public class ToolBoxInitBuilderBuilder{
-		protected ToolBoxInitBuilderBuilder(){
+	public class ToolBoxInitBuilderBuilder {
+		protected ToolBoxInitBuilderBuilder() {
 
 		}
 
@@ -883,8 +895,8 @@ public class ProcedureBuilder extends JsonBuilder implements IGeneratorInit {
 		public ToolBoxInitBuilder appendEntityIterator() {
 			return appendPlaceHolder("entity_iterator");
 		}
-		@MustCall("setName")
-		public ProcedureBuilder buildAndReturn() {
+
+		@MustCall("setName") public ProcedureBuilder buildAndReturn() {
 			if (!flagToSetName) {
 				System.err.println("Empty name of toolboxinit");
 			}
