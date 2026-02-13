@@ -118,10 +118,10 @@ public class ProcedureBuilder extends JsonBuilder implements IGeneratorInit {
 		return this;
 	}
 
-	@ProcedureCategoryLikeMethod public ProcedureBuilder setColor(int color) {
+	@ProcedureCategoryLikeMethod public ProcedureBuilder setColor(int hue) {
 		flags.flagToSetColor = true;
-		ProcedureBuilder.color = color;
-		result.getAsJsonObject().add(colorKey, new JsonPrimitive(color));
+		ProcedureBuilder.color = hue;
+		result.getAsJsonObject().add(colorKey, new JsonPrimitive(hue));
 		return this;
 	}
 
